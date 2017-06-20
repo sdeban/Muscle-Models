@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+
+<head></head>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+  /*   Spring-Mass model looping example. Example of Runge-Kutta 4th Order (RK4) integration. At large time steps, RK4 performs well because it is refining the estimate in each time step by taking a weighted average of four estimates. Other integrators like Euler and Verlet need absurdly small time steps for the same accuracy, which on balance is not as efficient. RK4 is the gold standard. Author: Stephen M. Deban, University of South Florida. */
+
+  // Load google chart API for graphing.
+  google.charts.load('current', {
+    'packages': ['corechart']
+  }); // Load the corechart package which has line charts and others.
+
+  // Execute the simulation and graphing upon page load.
+  window.onload = function() {
+    runSim.click(); // 'runSim' is the id for the 'apply' button.
+  }
+
+  //Simulation settings
+
+  function springMass() {
+
+    // Get values from form in webpage. NOTE: '+' coerces the strings retrieved to numbers. Default values are stored in the form elements in the html.
+    var duration = +document.getElementById("duration-input").value; // Duration in seconds.
+    var steps = +document.getElementById("steps-input").value; // Steps in simulation.
+    var mass = +document.getElementById("mass-input").value; // Mass in kg.
+    var springConstant = +document.getElementById("spring-input").value; // Spring constant in N/m.
+    var dampingConstant = +document.getElementById("damping-input").value; // Damping constant in N m/s.
+    var startPosition = +document.getElementById("startPos-input").value; // Starting displacement of spring in m.
+    var timeStep = duration / steps; // Size in seconds of time step.
+    var time = [];
+    for (var i = 0; i != steps + 1; ++i) time[i] = i * timeStep // Loop to fill time vector with timesteps to be used in graphing. Numbers will not be precise at 14 decimal places, but it doesn't matter.
+
+    // Initialize arrays to fill.
+
+    var positionRK = [];
+    var velocityRK = [];
+    var accelerationRK = [];
+
+    // Starting conditions: first time step.
+    positionRK[0] = startPosition; // Set the first value in the position array to the starting position defined earlier.
+    accelerationRK[0] = (-springConstant * startPosition) / mass; // F = ma, essentially.
+    velocityRK[0] = 0; // No velocity at start.
+
+    // Simulation loop: time step 2 onward
+    for (var i = 1; i != steps + 1; ++i) { // Loop from 2 to the number of steps in the simulation
+
+      // Runge-Kutta 4th order method for calculating velocity, position and acceleration, using four estimates that are then averaged.
+
+      // First estimate
+      var position1 = positionRK[i - 1];
+      var velocity1 = velocityRK[i - 1];
+      var acceleration1 = -(springConstant * position1 + dampingConstant * velocity1) / mass; // Use whatever equations of motion you need to calculate the acceleration given the current position and velocity.
+
+      // Second estimate
+      var position2 = position1 + velocity1 * timeStep / 2;
+      var velocity2 = velocity1 + acceleration1 * timeStep / 2;
+      var acceleration2 = -(springConstant * position2 + dampingConstant * velocity2) / mass;
+
+      // Third estimate
+      var position3 = position1 + velocity2 * timeStep / 2;
+      var velocity3 = velocity1 + acceleration2 * timeStep / 2;
+      var acceleration3 = -(springConstant * position3 + dampingConstant * velocity3) / mass;
+
+      // Fourth estimate
+      var position4 = position1 + velocity3 * timeStep;
+      var velocity4 = velocity1 + acceleration3 * timeStep;
+      var acceleration4 = -(springConstant * position4 + dampingConstant * velocity4) / mass;
+
+      // Weighted average of four estimates
+      positionRK[i] = positionRK[i - 1] + (velocity1 + 2 * velocity2 + 2 * velocity3 + velocity4) * timeStep / 6;
+
+      velocityRK[i] = velocityRK[i - 1] + (acceleration1 + 2 * acceleration2 + 2 * acceleration3 + acceleration4) * timeStep / 6;
+
+      accelerationRK[i] = -(springConstant * positionRK[i] + dampingConstant * velocityRK[i]) / mass; // Now that we have the refined estimates for positon and velocity in this time step, we can calculate acceleration from them.
+
+    } // End of simulation loop.
+
+    // Create data arrays for graph, using transpose fn.
+    var timeVel = transpose([time, velocityRK]);
+    var timeAccel = transpose([time, accelerationRK]);
+    var data = new google.visualization.DataTable();
+
+    data.addColumn('number', 'Time');
+    data.addColumn('number', 'Velocity (m/s)');
+    data.addRows(timeVel);
+
+    var data2 = new google.visualization.DataTable();
+    data2.addColumn('number', 'Time');
+    data2.addColumn('number', 'Acceleration (m/s/s)');
+    data2.addRows(timeAccel);
+
+    var options = { // Display options, such as line thickness, color.
+      tooltip: {
+        trigger: 'selection'
+      },
+      legend: 'none',
+      lineWidth: 1,
+      chartArea: {
+        left: 70,
+        top: 6,
+        width: '80%',
+        height: '80%'
+      },
+      fontSize: 16,
+      hAxis: {
+        title: 'Time (s)',
+      },
+      vAxis: {
+        title: 'Velocity (m/s)',
+      },
+      colors: ['#286ad1']
+    }
+    // Instantiate the chart.
+    var chart1 = new google.visualization.LineChart(document.getElementById('velocity_chart'));
+
+    var chart2 = new google.visualization.LineChart(document.getElementById('accel_chart'));
+
+    // Call the draw function on the charts.
+    chart1.draw(data, options);
+
+    options.vAxis.title = 'Acceleration (m/s/s)'; // Replace the vAxis label in the options for any subsequent graphs created.
+    options.colors = ['#c91700'];
+
+    chart2.draw(data2, options);
+
+  } // End of springMass function.
+
+  // Transpose 2D Array
+  function transpose(original) { // Transpose 2D Array
+    var copy = [];
+    for (var i = 0; i < original.length; ++i) {
+      for (var j = 0; j < original[i].length; ++j) {
+        // skip undefined values to preserve sparse array
+        if (original[i][j] === undefined) continue;
+        // create row if it doesn't exist yet
+        if (copy[j] === undefined) copy[j] = [];
+        // swap the x and y coords for the copy
+        copy[j][i] = original[i][j];
+      }
+    }
+    return copy;
+  } // End of transpose function.
+
+  // TODO: Example format for To Do.
+
+</script>
+
+<body>
+  <h4 style="font-family:arial;margin: 1%">Velocity (m/s)</h4>
+  <div id="velocity_chart" style="width: 600px; height: 250px"></div>
+  <h4 style="font-family:arial;margin: 1%">Acceleration (m/s/s)</h4>
+  <div id="accel_chart" style="width: 600px; height: 250px"></div>
+  <p style="font-family:arial;margin: 1%">
+    Duration (s):
+    <input type="number" id="duration-input" value="100">
+  </p>
+  <p style="font-family:arial;margin: 1%">
+    Steps:
+    <input type="number" id="steps-input" value="2000">
+  </p>
+  <p style="font-family:arial;margin: 1% ">
+    Mass (kg):
+    <input type="number" id="mass-input" value="10">
+  </p>
+  <p style="font-family:arial;margin: 1% ">
+    Spring Constant (N/m):
+    <input type="number" id="spring-input" value="10">
+  </p>
+  <p style="font-family:arial;margin: 1% ">
+    Damping coefficient (N s/m):
+    <input type="number" id="damping-input" value="1">
+  </p>
+  <p style="font-family:arial;margin: 1% ">
+    Starting position (m):
+    <input type="number" id="startPos-input" value="1">
+  </p>
+  <button id="runSim" style="width: 200px; height: 45px; margin: 1%; font-size: 18px; background-color: #f5f5f5;" onclick="springMass()">Apply</button>
+  <button style="width: 200px; height: 45px; margin: 1%; font-size: 18px; background-color: #f5f5f5;" onclick="location.reload()">Reload</button>
+</body>
+
+</html>
