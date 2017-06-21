@@ -232,13 +232,13 @@
     } // End of main simulation loop.
 
 
-    // Create data arrays for graph, using transpose fn.
-    var timeVel = transpose([time, projectileVel]);
+    // Create data arrays for graphs, using transpose fn.
+    var timeVel = transpose([time, muscleLength]);
     var timeAccel = transpose([time, projectileAcc]);
     var data = new google.visualization.DataTable();
 
     data.addColumn('number', 'Time');
-    data.addColumn('number', 'Velocity (m/s)');
+    data.addColumn('number', 'Length (m)');
     data.addRows(timeVel);
 
     var data2 = new google.visualization.DataTable();
@@ -253,24 +253,24 @@
       legend: 'none',
       lineWidth: 1,
       chartArea: {
-        left: 70,
-        top: 6,
-        width: '80%',
-        height: '80%'
+        left: 100,
+        top: 10,
+        width: '70%',
+        height: '70%'
       },
       fontSize: 16,
       hAxis: {
         title: 'Time (s)',
       },
       vAxis: {
-        title: 'Velocity (m/s)',
+        title: 'Muscle Length (m)',
       },
       colors: ['#286ad1']
     }
     // Instantiate the chart.
-    var chart1 = new google.visualization.LineChart(document.getElementById('velocity_chart'));
+    var chart1 = new google.visualization.LineChart(document.getElementById('chart_01'));
 
-    var chart2 = new google.visualization.LineChart(document.getElementById('accel_chart'));
+    var chart2 = new google.visualization.LineChart(document.getElementById('chart_02'));
 
     // Call the draw function on the charts.
     chart1.draw(data, options);
@@ -303,10 +303,10 @@
 </script>
 
 <body>
-  <h4 style="font-family:arial;margin: 1%">Velocity (m/s)</h4>
-  <div id="velocity_chart" style="width: 600px; height: 250px"></div>
+  <h4 style="font-family:arial;margin: 1%">Muscle Length (m)</h4>
+  <div id="chart_01" style="width: 650px; height: 250px"></div>
   <h4 style="font-family:arial;margin: 1%">Acceleration (m/s/s)</h4>
-  <div id="accel_chart" style="width: 600px; height: 250px"></div>
+  <div id="chart_02" style="width: 650px; height: 250px"></div>
   <p style="font-family:arial;margin: 1%">
     Duration (s):
     <input type="number" id="duration-input" value="0.2">
