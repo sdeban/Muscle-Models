@@ -292,8 +292,6 @@
 
 
       // Create data arrays for graphs, using transpose fn.
-      var timeVel = transpose([time, muscleLength]);
-      var timeAccel = transpose([time, projectileAcc]);
       var data = new google.visualization.DataTable();
 
       data.addColumn('number', '');
@@ -303,7 +301,7 @@
       var data2 = new google.visualization.DataTable();
       data2.addColumn('number', 'Time');
       data2.addColumn('number', 'Acceleration (m/s/s)');
-      data2.addRows(timeAccel);
+      data2.addRows(transpose([time, projectileAcc]));
 
       var options = { // Display options, such as line thickness, color.
         backgroundColor: '#E4E4E4',
