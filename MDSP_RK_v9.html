@@ -7,8 +7,17 @@
       float: left;
       margin: 2px;
       padding: 0px;
-      max-width: 400px;
+      max-width: 600px;
       max-height: 300px;
+      border: 0px solid #aaaaaa;
+    }
+
+    .controls {
+      float: left;
+      margin: 5px;
+      padding: 2px;
+      max-width: 600px;
+      max-height: 200px;
       border: 0px solid #aaaaaa;
     }
 
@@ -37,8 +46,7 @@
   <div class="graph" id="chart_15"></div>
   <div class="graph" id="chart_16"></div>
 
-
-  <div class="graph">
+  <div class="controls">
     Duration (s):
     <input type="number" id="duration" value="0.08">
 
@@ -80,7 +88,8 @@
 
     //Simulation settings
 
-    function springMass() {
+    function springMass() { // Start of main simulation function
+
 
       // Get values from form in webpage. NOTE: '+' coerces the strings retrieved to numbers. Default values are stored in the form elements in the html.
       var duration = +document.getElementById("duration").value; // Duration in seconds.
@@ -90,11 +99,10 @@
       var dampingConstant = +document.getElementById("damper").value; // Damping constant in Ns/m of damper on muscle mass. Damping may reduce fast oscillation of muscle mass.
       var startPosition = +document.getElementById("startPos-input").value; // Starting displacement of spring in m.
 
-
-
       var timeStep = duration / steps; // Size in seconds of time step.
       var time = [];
       for (var i = 0; i != steps + 1; ++i) time[i] = i * timeStep // Loop to fill time vector with timesteps to be used in graphing. Numbers will not be precise at 14 decimal places, but it doesn't matter.
+
 
       // Morphological and physiological parameters
       var muscleL0 = 0.02; // Muscle resting length in meters.
@@ -111,6 +119,7 @@
       var exciteTime = 0.04; // Time for muscle excitation in seconds.
       var excitationRate = 2; // Higher numbers have higher peak rate of excitation. Must be greater than 1.
 
+
       // Trial parameters that can change between trials.
       // One or more of these conditions can be used to release latch, depending on which if statements in loop are active. The first condition reached will release latch.
       var latchTime = 0.08; // Timing of latch release in seconds from start of simulation, if used in loop.
@@ -123,9 +132,12 @@
       var minGearRatio = 1; // final gear ratio value during launch.
       var durationGearChange = 0.001; // Duration of latch release. Value near time step is effectively instantaneous.
 
+
       // Define arrays of proper length to fill with values later.
       var muscleLTForce = [];
       var muscleForce = [];
+      var musclePower = [];
+      var muscleWork = [];
       var springLength = [];
       var springForce = [];
       var projectilePos = [];
@@ -133,18 +145,32 @@
       var projectileAcc = [];
       var projectilePower = [];
 
+
+
       // Define function to generate muscle tension given length.
-      // Takes muscle length relative to L0 from 0 to 1.6 with 1.0 as L0. Up to 1.4 is reliable and based on research values, but up to 1.6 is extrapolated to yield high force values if muscle is stretched. Beyond 1.6 is unreliable, so force at 1.6 is returned.
       function muscleLTCurve(length) {
         if (length >= 0.6244 && length <= 1.6) {
-          var tension = -34.045 * length ** 5 + 204.74 * length ** 4 - 470.16 * length ** 3 + 512.43 * length ** 2 - 262.9 * length + 50.936;
+          var tension = -34.045 * length ** 5 + 204.74 * length ** 4 - 470.16 * length ** 3 + 512.43 * length ** 2 - 262.9 * length + 50.936; // Takes muscle length relative to L0 from 0 to 1.6 with 1.0 as L0. Up to 1.4 is reliable and based on research values, but up to 1.6 is extrapolated to yield high force values if muscle is stretched. Beyond 1.6 is unreliable, so force at 1.6 is returned.
         } else if (length > 1.6) {
           tension = 1.137805;
         } else if (length < 0.6244) {
           tension = 0;
         }
         return (tension);
-      }
+      } // Muscle LT function
+
+
+
+
+      // Create gear ratio profile
+      var gearRatioChange = time.map(function(i) {
+        return ((1.00098 * maxGearRatio - minGearRatio) / (1 + 2 ** ((10 * (-(2 * i + (-durationGearChange))) / -durationGearChange))) + minGearRatio);
+      }); // Create a sigmoidal gear ratio profile, starting to change from max to min at time zero over the specified duration.
+      var gearRatio = time.map(function() {
+        return gearRatioChange[0];
+      }); // Fill gear ratio vector with starting value of gear ratio change, which is extremely close to the maximum input into the equation (but not exact).
+
+      // NOTE: To find the maximum value of array: Math.max.apply(Math, arrayName); [Math.max(arrayName); will not work].
 
       // First time step in simulation.
       // Muscle, spring, projectile and gearing starting conditions.
@@ -169,20 +195,15 @@
         muscleFVForce[0] * muscleLTForce[0] * muscleExcForce[0] : 0; // Final muscle force, calculated from muscle length, velocity and excitation at first time step. Constrained to be positive because a muscle cannot push. Positive when muscle is shortening.
       springForce[0] = (springLength[0] - springL0) * springK > 0 ?
         (springLength[0] - springL0) * springK : 0; // Spring force is calculated from tendon length relative to slack length, and spring constant at current time step, as a Hookean spring: F=kx. F=(current length-slack length)*spring constant. Constrained to be positive or zero because a tendon cannot push. Positive is shortening tendon and projecting tongue mass.
-      var gearRatioChange = time.map(function(i) {
-        return ((1.00098 * maxGearRatio - minGearRatio) / (1 + 2 ** ((10 * (-(2 * i + (-durationGearChange))) / -durationGearChange))) + minGearRatio);
-      }); // Create a sigmoidal gear ratio profile, starting to change from max to min at time zero over the specified duration.
+      musclePower[0] = muscleVel[0] * muscleAcc[0]; // Calculate mass specific muscle power.
 
-      var gearRatio = time.map(function() {
-        return gearRatioChange[0];
-      }); // Fill gear ratio vector with starting value of gear ratio change, which is extremely close to the maximum input into the equation (but not exact).
 
-      // NOTE: To find the maximum value of array: Math.max.apply(Math, arrayName); [Math.max(arrayName); will not work].
+      // TODO: Add calculations for muscle work and power inside the loop, to add to array at each time step.
 
       // Simulation loop: second time step and onward using Runge-Kutta 4th order integration"
       var i = 0; // Set index to 0 so that loop starts with array value 1 (i.e., step 2)
 
-      while (i < steps) { // Loop from 1 to number of steps in simulation minus 1 because arrays start at zero.
+      while (i < steps) { // Loop from 1 (the second step) to number of steps in simulation because arrays start at zero.
         i = i + 1; // Increment index.
 
         // Calculate first of four parts of Runge-Kutta weighted average. Muscle and projectile mass acceleration, velocity, and position are calculated from muscle and tendon (spring) forces.
@@ -268,6 +289,11 @@
           muscleVel[i]) / (muscleMass * muscleFraction); // Definitive muscle mass acceleration for this time step.
         projectileAcc[i] = springForce[i] / projectileMass / gearRatio[i]; // Definitive projectile acceleration for this time step.
 
+        // Calculate power and work
+        musclePower[i] = muscleVel[i] * muscleForce[i]; // Calculate absolute muscle power in W.
+
+
+
         // Test for various conditions to determine when latch releases.
         if (latchTripped == 0) {
           if (muscleLength[i] < lengthThreshold * muscleLength[1]) {
@@ -290,19 +316,28 @@
         }
       } // End of main simulation loop.
 
+      alert("Done!");
+      // Create the chart objects and link them to HTML elements
+      {
+        var chart1 = new google.visualization.LineChart(document.getElementById('chart_01'));
+        var chart2 = new google.visualization.LineChart(document.getElementById('chart_02'));
+        var chart3 = new google.visualization.LineChart(document.getElementById('chart_03'));
+        var chart4 = new google.visualization.LineChart(document.getElementById('chart_04'));
+        var chart5 = new google.visualization.LineChart(document.getElementById('chart_05'));
+        var chart6 = new google.visualization.LineChart(document.getElementById('chart_06'));
+        var chart7 = new google.visualization.LineChart(document.getElementById('chart_07'));
+        var chart8 = new google.visualization.LineChart(document.getElementById('chart_08'));
+        var chart9 = new google.visualization.LineChart(document.getElementById('chart_09'));
+        var chart10 = new google.visualization.LineChart(document.getElementById('chart_10'));
+        var chart11 = new google.visualization.LineChart(document.getElementById('chart_11'));
+        var chart12 = new google.visualization.LineChart(document.getElementById('chart_12'));
+        var chart13 = new google.visualization.LineChart(document.getElementById('chart_13'));
+        var chart14 = new google.visualization.LineChart(document.getElementById('chart_14'));
+        var chart15 = new google.visualization.LineChart(document.getElementById('chart_15'));
+        var chart16 = new google.visualization.LineChart(document.getElementById('chart_16'));
+      }
 
-      // TODO: Create a function to make graph, inputting data, label, color and id (graph number).
-      // Create data arrays for graphs, using transpose fn.
-      var data = new google.visualization.DataTable();
-      data.addColumn('number', '');
-      data.addColumn('number', '');
-      data.addRows(transpose([time, muscleLength]));
-
-      var data2 = new google.visualization.DataTable();
-      data2.addColumn('number', 'Time');
-      data2.addColumn('number', 'Acceleration (m/s/s)');
-      data2.addRows(transpose([time, projectileAcc]));
-
+      // Place chart options into an object
       var options = { // Display options, such as line thickness, color.
         backgroundColor: '#E4E4E4',
         title: ' ',
@@ -318,32 +353,128 @@
           left: 55,
           top: 22,
           width: '80%',
-          height: '70%'
+          height: '65%'
         },
         fontSize: 14,
         hAxis: {
           title: 'Time (s)',
         },
         colors: ['#286ad1']
-      }
-      // Instantiate the chart.
-      var chart1 = new google.visualization.LineChart(document.getElementById('chart_01'));
+      } // Chart options
 
-      var chart2 = new google.visualization.LineChart(document.getElementById('chart_02'));
 
-      var chart3 = new google.visualization.LineChart(document.getElementById('chart_03'));
+      // Create data arrays for graphs, using transpose fn.
+      var data01 = new google.visualization.DataTable(); // Create the chart data table
+      data01.addColumn('number', ''); // Add a column for one variable
+      data01.addColumn('number', ''); // Add a column for a sceond variable
+      data01.addRows(transpose([time, muscleLength])); // Add the data as rows, using the transpose function defined below to rotate a 2D array consisting of two vectors, x and y.
+
+      var data02 = new google.visualization.DataTable();
+      data02.addColumn('number', '');
+      data02.addColumn('number', '');
+      data02.addRows(transpose([time, muscleVel]));
+
+      var data03 = new google.visualization.DataTable();
+      data03.addColumn('number', '');
+      data03.addColumn('number', '');
+      data03.addRows(transpose([time, muscleForce]));
+
+      var data04 = new google.visualization.DataTable();
+      data04.addColumn('number', '');
+      data04.addColumn('number', '');
+      data04.addRows(transpose([time, musclePower]));
+
+      var data05 = new google.visualization.DataTable();
+      data05.addColumn('number', '');
+      data05.addColumn('number', '');
+      data05.addRows(transpose([time, projectilePos]));
+
+      var data06 = new google.visualization.DataTable();
+      data06.addColumn('number', '');
+      data06.addColumn('number', '');
+      data06.addRows(transpose([time, projectileVel]));
+
+      var data07 = new google.visualization.DataTable();
+      data07.addColumn('number', '');
+      data07.addColumn('number', '');
+      data07.addRows(transpose([time, projectileAcc]));
+
+      var data08 = new google.visualization.DataTable();
+      data08.addColumn('number', '');
+      data08.addColumn('number', '');
+      data08.addRows(transpose([time, muscleVel]));
+
+      var data09 = new google.visualization.DataTable();
+      data09.addColumn('number', '');
+      data09.addColumn('number', '');
+      data09.addRows(transpose([time, muscleVel]));
+
+      var data10 = new google.visualization.DataTable();
+      data10.addColumn('number', '');
+      data10.addColumn('number', '');
+      data10.addRows(transpose([time, muscleVel]));
+
+      var data11 = new google.visualization.DataTable();
+      data11.addColumn('number', '');
+      data11.addColumn('number', '');
+      data11.addRows(transpose([time, muscleVel]));
+
+      var data12 = new google.visualization.DataTable();
+      data12.addColumn('number', '');
+      data12.addColumn('number', '');
+      data12.addRows(transpose([time, muscleVel]));
+
+      var data13 = new google.visualization.DataTable();
+      data13.addColumn('number', '');
+      data13.addColumn('number', '');
+      data13.addRows(transpose([time, muscleVel]));
+
+      var data14 = new google.visualization.DataTable();
+      data14.addColumn('number', '');
+      data14.addColumn('number', '');
+      data14.addRows(transpose([time, muscleVel]));
+
+      var data15 = new google.visualization.DataTable();
+      data15.addColumn('number', '');
+      data15.addColumn('number', '');
+      data15.addRows(transpose([time, muscleVel]));
+
+      var data16 = new google.visualization.DataTable();
+      data16.addColumn('number', '');
+      data16.addColumn('number', '');
+      data16.addRows(transpose([time, muscleVel]));
+
 
 
       // Call the draw function on the charts.
       options.title = 'Muscle Length (m)'; // Replace the vAxis label in the options for any subsequent graphs created.
-      chart1.draw(data, options);
-
-      //   options.vAxis.title = 'Acceleration (m/s/s)'; // Replace the vAxis label in the options for any subsequent graphs created.
-      options.title = 'Acceleration (m/s/s)'; // Replace the vAxis label in the options for any subsequent graphs created.
       options.colors = ['#c91700'];
+      chart1.draw(data01, options);
 
-      chart2.draw(data2, options);
-      chart3.draw(data, options);
+      options.title = 'Muscle Velocity (m/s)';
+      options.colors = ['#c91700'];
+      chart2.draw(data02, options);
+
+      options.title = 'Muscle Force (N)';
+      options.colors = ['#c91700'];
+      chart3.draw(data03, options);
+
+      options.title = 'Muscle Power (W)';
+      options.colors = ['#c91700'];
+      chart4.draw(data04, options);
+
+      options.title = 'Projectile Position (m)';
+      options.colors = ['#234cba'];
+      chart5.draw(data05, options);
+
+      options.title = 'Projectile Velocity (m/s)';
+      options.colors = ['#234cba'];
+      chart6.draw(data06, options);
+
+      options.title = 'Projectile Acceleration (m/s/s)';
+      options.colors = ['#234cba'];
+      chart7.draw(data07, options);
+
 
     } // End of muscleSim function.
 
