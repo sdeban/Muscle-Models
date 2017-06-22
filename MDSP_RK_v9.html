@@ -1,39 +1,64 @@
 <!doctype html>
 <html>
 
-<head></head>
+<head>
+  <style>
+    .graph {
+      float: left;
+      margin: 2px;
+      padding: 0px;
+      max-width: 400px;
+      max-height: 300px;
+      border: 0px solid #aaaaaa;
+    }
+
+    body {
+      font-family: arial;
+    }
+
+  </style>
+</head>
 
 <body>
-  <h4 style="font-family:arial;margin: 1%">Muscle Length (m)</h4>
-  <p id="chart_01" style="width: 650px; height: 250px"></p>
-  <h4 style="font-family:arial;margin: 1%">Acceleration (m/s/s)</h4>
-  <div id="chart_02" style="width: 650px; height: 250px"></div>
-  <p style="font-family:arial;margin: 1%">
+  <div class="graph" id="chart_01"></div>
+  <div class="graph" id="chart_02"></div>
+  <div class="graph" id="chart_03"></div>
+  <div class="graph" id="chart_04"></div>
+  <div class="graph" id="chart_05"></div>
+  <div class="graph" id="chart_06"></div>
+  <div class="graph" id="chart_07"></div>
+  <div class="graph" id="chart_08"></div>
+  <div class="graph" id="chart_09"></div>
+  <div class="graph" id="chart_10"></div>
+  <div class="graph" id="chart_11"></div>
+  <div class="graph" id="chart_12"></div>
+
+
+  <div class="graph">
     Duration (s):
-    <input type="number" id="duration-input" value="0.08">
-  </p>
-  <p style="font-family:arial;margin: 1%">
-    Steps:
-    <input type="number" id="steps-input" value="12000">
-  </p>
-  <p style="font-family:arial;margin: 1% ">
-    Mass (kg):
-    <input type="number" id="mass-input" value="10">
-  </p>
-  <p style="font-family:arial;margin: 1% ">
-    Spring Constant (N/m):
-    <input type="number" id="spring-input" value="10">
-  </p>
-  <p style="font-family:arial;margin: 1% ">
-    Damping coefficient (N s/m):
-    <input type="number" id="damping-input" value="1">
-  </p>
-  <p style="font-family:arial;margin: 1% ">
-    Starting position (m):
-    <input type="number" id="startPos-input" value="1">
-  </p>
-  <button id="runSim" style="width: 200px; height: 45px; margin: 1%; font-size: 18px; background-color: #f5f5f5;" onclick="springMass()">Apply</button>
-  <button style="width: 200px; height: 45px; margin: 1%; font-size: 18px; background-color: #f5f5f5;" onclick="location.reload()">Reload</button>
+    <input type="number" id="duration" value="0.08">
+
+    <p>Steps:<input type="number" id="steps" value="12000">
+    </p>
+    <p>
+      Mass (kg):
+      <input type="number" id="mass" value="10">
+    </p>
+    <p>
+      Spring Constant (N/m):
+      <input type="number" id="spring" value="10">
+    </p>
+    <p>
+      Damping coefficient (N s/m):
+      <input type="number" id="damper" value="0.1">
+    </p>
+    <p>
+      Starting position (m):
+      <input type="number" id="startPos-input" value="1">
+    </p>
+    <button id="runSim" onclick="springMass()">Apply</button>
+    <button onclick="location.reload()">Reload</button>
+  </div>
 
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script type="text/javascript">
@@ -54,20 +79,18 @@
     function springMass() {
 
       // Get values from form in webpage. NOTE: '+' coerces the strings retrieved to numbers. Default values are stored in the form elements in the html.
-      var duration = +document.getElementById("duration-input").value; // Duration in seconds.
-      var steps = +document.getElementById("steps-input").value; // Steps in simulation.
-      var mass = +document.getElementById("mass-input").value; // Mass in kg.
-      var springConstant = +document.getElementById("spring-input").value; // Spring constant in N/m.
-      var dampingConstant = +document.getElementById("damping-input").value; // Damping constant in N m/s.
+      var duration = +document.getElementById("duration").value; // Duration in seconds.
+      var steps = +document.getElementById("steps").value; // Steps in simulation.
+      var mass = +document.getElementById("mass").value; // Mass in kg.
+      var springConstant = +document.getElementById("spring").value; // Spring constant in N/m.
+      var dampingConstant = +document.getElementById("damper").value; // Damping constant in Ns/m of damper on muscle mass. Damping may reduce fast oscillation of muscle mass.
       var startPosition = +document.getElementById("startPos-input").value; // Starting displacement of spring in m.
-
 
 
 
       var timeStep = duration / steps; // Size in seconds of time step.
       var time = [];
       for (var i = 0; i != steps + 1; ++i) time[i] = i * timeStep // Loop to fill time vector with timesteps to be used in graphing. Numbers will not be precise at 14 decimal places, but it doesn't matter.
-
 
       // Morphological and physiological parameters
       var muscleL0 = 0.02; // Muscle resting length in meters.
@@ -80,7 +103,6 @@
       var projectileMass = 1e-05; // Mass of tongue projectile in kg. 1.6e-05 is realistic.
       var springK = 20; // Tendon spring constant in N/m. Realistic values not known.
       var springL0 = 0.02; // Tendon slack length in m.
-      var dampingConstant = 0; // Damping constant in Ns/m of damper on muscle mass. Damping may reduce fast oscillation of muscle mass.
       var muscleFraction = 0.3; // Fraction of muscle mass that is modeled as accelerated muscle mass. Needs to be at least 0.3 or oscillations will occur unless time step is tiny.
       var exciteTime = 0.04; // Time for muscle excitation in seconds.
       var excitationRate = 2; // Higher numbers have higher peak rate of excitation. Must be greater than 1.
@@ -280,23 +302,25 @@
       data2.addRows(timeAccel);
 
       var options = { // Display options, such as line thickness, color.
+        backgroundColor: '#E4E4E4',
+        title: 'Muscle Length',
         tooltip: {
           trigger: 'selection'
         },
         legend: 'none',
-        lineWidth: 1,
+        lineWidth: 1.5,
+        //
         chartArea: {
-          left: 100,
-          top: 10,
-          width: '70%',
+          backgroundColor: '#f8f8f8',
+
+          left: 55,
+          top: 22,
+          width: '80%',
           height: '70%'
         },
-        fontSize: 16,
+        fontSize: 14,
         hAxis: {
           title: 'Time (s)',
-        },
-        vAxis: {
-          title: 'Muscle Length (m)',
         },
         colors: ['#286ad1']
       }
@@ -305,13 +329,18 @@
 
       var chart2 = new google.visualization.LineChart(document.getElementById('chart_02'));
 
+      var chart3 = new google.visualization.LineChart(document.getElementById('chart_03'));
+
+
       // Call the draw function on the charts.
       chart1.draw(data, options);
 
-      options.vAxis.title = 'Acceleration (m/s/s)'; // Replace the vAxis label in the options for any subsequent graphs created.
+      //   options.vAxis.title = 'Acceleration (m/s/s)'; // Replace the vAxis label in the options for any subsequent graphs created.
+      options.title = 'Acceleration (m/s/s)'; // Replace the vAxis label in the options for any subsequent graphs created.
       options.colors = ['#c91700'];
 
       chart2.draw(data2, options);
+      chart3.draw(data, options);
 
     } // End of muscleSim function.
 
