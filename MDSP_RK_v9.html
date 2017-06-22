@@ -32,6 +32,10 @@
   <div class="graph" id="chart_10"></div>
   <div class="graph" id="chart_11"></div>
   <div class="graph" id="chart_12"></div>
+  <div class="graph" id="chart_13"></div>
+  <div class="graph" id="chart_14"></div>
+  <div class="graph" id="chart_15"></div>
+  <div class="graph" id="chart_16"></div>
 
 
   <div class="graph">
@@ -56,8 +60,8 @@
       Starting position (m):
       <input type="number" id="startPos-input" value="1">
     </p>
-    <button id="runSim" onclick="springMass()">Apply</button>
-    <button onclick="location.reload()">Reload</button>
+    <button onclick="location.reload()">Reset and Reload</button>
+    <button id="runSim" onclick="springMass()">Apply New Values</button>
   </div>
 
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -292,9 +296,9 @@
       var timeAccel = transpose([time, projectileAcc]);
       var data = new google.visualization.DataTable();
 
-      data.addColumn('number', 'Time');
-      data.addColumn('number', 'Length (m)');
-      data.addRows(timeVel);
+      data.addColumn('number', '');
+      data.addColumn('number', '');
+      data.addRows(transpose([time, muscleLength]));
 
       var data2 = new google.visualization.DataTable();
       data2.addColumn('number', 'Time');
@@ -303,7 +307,7 @@
 
       var options = { // Display options, such as line thickness, color.
         backgroundColor: '#E4E4E4',
-        title: 'Muscle Length',
+        title: ' ',
         tooltip: {
           trigger: 'selection'
         },
@@ -333,6 +337,7 @@
 
 
       // Call the draw function on the charts.
+      options.title = 'Muscle Length (m)'; // Replace the vAxis label in the options for any subsequent graphs created.
       chart1.draw(data, options);
 
       //   options.vAxis.title = 'Acceleration (m/s/s)'; // Replace the vAxis label in the options for any subsequent graphs created.
