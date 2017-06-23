@@ -2,13 +2,14 @@
 <html>
 
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     .graph {
       float: left;
-      margin: 2px;
+      margin: 0px;
       padding: 0px;
-      max-width: 600px;
-      max-height: 300px;
+      max-width: 400px;
+      max-height: 400px;
       border: 0px solid #aaaaaa;
     }
 
@@ -16,7 +17,7 @@
       float: left;
       margin: 5px;
       padding: 2px;
-      max-width: 600px;
+      max-width: 400px;
       max-height: 200px;
       border: 0px solid #aaaaaa;
     }
@@ -136,6 +137,7 @@
       var muscleWork = [];
       var springLength = [];
       var springForce = [];
+      var springVel = [];
       var projectilePos = [];
       var projectileVel = [];
       var projectileAcc = [];
@@ -165,7 +167,6 @@
         return gearRatioChange[0];
       }); // Fill gear ratio vector with starting value of gear ratio change, which is extremely close to the maximum input into the equation (but not exact).
 
-      // NOTE: To find the maximum value of array: Math.max.apply(Math, arrayName); [Math.max(arrayName); will not work].
 
       // First time step in simulation.
       // Muscle, spring, projectile and gearing starting conditions.
@@ -193,12 +194,11 @@
       musclePower[0] = muscleVel[0] * muscleAcc[0]; // Calculate mass specific muscle power.
 
 
-      // TODO: Add calculations for muscle work and power inside the loop, to add to array at each time step.
 
       // Simulation loop: second time step and onward using Runge-Kutta 4th order integration"
       var i = 0; // Set index to 0 so that loop starts with array value 1 (i.e., step 2)
 
-      while (i < steps) { // Loop from 1 (the second step) to number of steps in simulation because arrays start at zero.
+      while (i != steps) { // Loop from 1 (the second step) to number of steps in simulation because arrays start at zero.
         i = i + 1; // Increment index.
 
         // Calculate first of four parts of Runge-Kutta weighted average. Muscle and projectile mass acceleration, velocity, and position are calculated from muscle and tendon (spring) forces.
@@ -285,8 +285,11 @@
         projectileAcc[i] = springForce[i] / projectileMass / gearRatio[i]; // Definitive projectile acceleration for this time step.
 
         // Calculate power and work
+        muscleWork[i] = muscleForce[i] * (muscleLength[1] - muscleLength[i]);
         musclePower[i] = muscleVel[i] * muscleForce[i]; // Calculate absolute muscle power in W.
-
+        projectilePower[i] = projectileVel[i] * projectileAcc[i];
+        springVel[i] = projectileVel[i] - muscleVel[i];
+        // TODO: Add calculations for muscle work inside the loop, to add to array at each time step.
 
 
         // Test for various conditions to determine when latch releases.
@@ -296,6 +299,7 @@
             latchTripped = 1
           }
 
+          // TODO: Whis isn't latch working?
           if (muscleForce[i] > forceThreshold) {
             gearRatio.splice(i, gearRatioChange); // Asks if muscle force is above threshold value specified, and if so, it makes gear ratio from this point onward transition to final value.
             latchTripped = 1
@@ -334,16 +338,16 @@
 
       // Place chart options into an object
       var options = { // Display options, such as line thickness, color.
-        backgroundColor: '#f0f0f0',
+        backgroundColor: '#efefef',
         title: ' ',
         tooltip: {
           trigger: 'selection'
         },
         legend: 'none',
-        lineWidth: 1,
+        lineWidth: 1.5,
         //
         chartArea: {
-          backgroundColor: '#f8f8f8',
+          backgroundColor: 'rgb(250, 250, 250)',
 
           left: 55,
           top: 22,
@@ -353,97 +357,101 @@
         fontSize: 14,
         hAxis: {
           title: 'Time (s)',
+          minValue: 0,
+          maxValue: duration
         },
         colors: ['#286ad1']
       } // Chart options
 
-      var shortTime = downsample(time); // Downsample the time array for faster graphing.
+      var shortTime = downSample(time); // downSample the time array for faster graphing.
 
       // Create data arrays for graphs, using transpose fn.
       var data01 = new google.visualization.DataTable(); // Create the chart data table
       data01.addColumn('number', ''); // Add a column for one variable
       data01.addColumn('number', ''); // Add a column for a sceond variable
-      data01.addRows(transpose([shortTime, downsample(muscleLength)])); // Add the data as rows, using the transpose function defined below to rotate a 2D array consisting of two vectors, x and y.
+      data01.addRows(transpose([shortTime, downSample(muscleWork)])); // Add the data as rows, using the transpose function defined below to rotate a 2D array consisting of two vectors, x and y.
 
       var data02 = new google.visualization.DataTable();
       data02.addColumn('number', '');
       data02.addColumn('number', '');
-      data02.addRows(transpose([shortTime, downsample(muscleVel)]));
+      data02.addRows(transpose([shortTime, downSample(muscleVel)]));
 
       var data03 = new google.visualization.DataTable();
       data03.addColumn('number', '');
       data03.addColumn('number', '');
-      data03.addRows(transpose([shortTime, downsample(muscleForce)]));
+      data03.addRows(transpose([shortTime, downSample(muscleForce)]));
 
       var data04 = new google.visualization.DataTable();
       data04.addColumn('number', '');
       data04.addColumn('number', '');
-      data04.addRows(transpose([shortTime, downsample(musclePower)]));
+      data04.addRows(transpose([shortTime, downSample(musclePower)]));
 
       var data05 = new google.visualization.DataTable();
       data05.addColumn('number', '');
       data05.addColumn('number', '');
-      data05.addRows(transpose([shortTime, downsample(projectilePos)]));
+      data05.addRows(transpose([shortTime, downSample(projectilePos)]));
 
       var data06 = new google.visualization.DataTable();
       data06.addColumn('number', '');
       data06.addColumn('number', '');
-      data06.addRows(transpose([shortTime, downsample(projectileVel)]));
+      data06.addRows(transpose([shortTime, downSample(projectileVel)]));
 
       var data07 = new google.visualization.DataTable();
       data07.addColumn('number', '');
       data07.addColumn('number', '');
-      data07.addRows(transpose([shortTime, downsample(projectileAcc)]));
+      data07.addRows(transpose([shortTime, downSample(projectileAcc)]));
 
       var data08 = new google.visualization.DataTable();
       data08.addColumn('number', '');
       data08.addColumn('number', '');
-      data08.addRows(transpose([shortTime, downsample(projectileAcc)]));
+      data08.addRows(transpose([shortTime, downSample(projectilePower)]));
 
       var data09 = new google.visualization.DataTable();
       data09.addColumn('number', '');
       data09.addColumn('number', '');
-      data09.addRows(transpose([shortTime, downsample(projectileAcc)]));
+      data09.addRows(transpose([shortTime, downSample(springLength)]));
 
       var data10 = new google.visualization.DataTable();
       data10.addColumn('number', '');
       data10.addColumn('number', '');
-      data10.addRows(transpose([shortTime, downsample(projectileAcc)]));
+      data10.addRows(transpose([shortTime, downSample(springVel)]));
 
       var data11 = new google.visualization.DataTable();
       data11.addColumn('number', '');
       data11.addColumn('number', '');
-      data11.addRows(transpose([shortTime, downsample(projectileAcc)]));
+      data11.addRows(transpose([shortTime, downSample(muscleExcForce)]));
 
       var data12 = new google.visualization.DataTable();
       data12.addColumn('number', '');
       data12.addColumn('number', '');
-      data12.addRows(transpose([shortTime, downsample(projectileAcc)]));
+      data12.addRows(transpose([downSample(muscleLength), downSample(muscleLTForce)]));
 
-      var data13 = new google.visualization.DataTable();
-      data13.addColumn('number', '');
-      data13.addColumn('number', '');
-      data13.addRows(transpose([shortTime, downsample(projectileAcc)]));
+      /*
+            var data13 = new google.visualization.DataTable();
+            data13.addColumn('number', '');
+            data13.addColumn('number', '');
+            data13.addRows(transpose([shortTime, downSample(projectileAcc)]));
 
-      var data14 = new google.visualization.DataTable();
-      data14.addColumn('number', '');
-      data14.addColumn('number', '');
-      data14.addRows(transpose([shortTime, downsample(projectileAcc)]));
+            var data14 = new google.visualization.DataTable();
+            data14.addColumn('number', '');
+            data14.addColumn('number', '');
+            data14.addRows(transpose([shortTime, downSample(projectileAcc)]));
 
-      var data15 = new google.visualization.DataTable();
-      data15.addColumn('number', '');
-      data15.addColumn('number', '');
-      data15.addRows(transpose([shortTime, downsample(projectileAcc)]));
+            var data15 = new google.visualization.DataTable();
+            data15.addColumn('number', '');
+            data15.addColumn('number', '');
+            data15.addRows(transpose([shortTime, downSample(projectileAcc)]));
 
-      var data16 = new google.visualization.DataTable();
-      data16.addColumn('number', '');
-      data16.addColumn('number', '');
-      data16.addRows(transpose([shortTime, downsample(projectileAcc)]));
+            var data16 = new google.visualization.DataTable();
+            data16.addColumn('number', '');
+            data16.addColumn('number', '');
+            data16.addRows(transpose([shortTime, downSample(projectileAcc)]));
 
+      */
 
 
       // Call the draw function on the charts.
-      options.title = 'Muscle Length (m)'; // Replace the vAxis label in the options for any subsequent graphs created.
+      options.title = 'Muscle Length (m)'; // Replace options for any subsequent graphs created.
       options.colors = ['#c91700'];
       chart1.draw(data01, options);
 
@@ -471,18 +479,46 @@
       options.colors = ['#234cba'];
       chart7.draw(data07, options);
 
+      options.title = 'Projectile Power (W/kg)';
+      options.colors = ['#234cba'];
+      chart8.draw(data08, options);
+
+      options.title = 'Spring Length (m)';
+      options.colors = ['#158032'];
+      chart9.draw(data09, options);
+
+      options.title = 'Spring Shortening Velocity (m/s)';
+      options.colors = ['#158032'];
+      chart10.draw(data10, options);
+
+      options.title = 'Muscle Excitation';
+      options.colors = ['#c91700'];
+      chart11.draw(data11, options);
+
+      options.title = 'Muscle Tension vs Length';
+      options.colors = ['#c91700'];
+      options.hAxis.title = 'Muscle length (m)';
+      options.hAxis.minValue = muscleL0 * 0.5;
+      options.hAxis.maxValue = muscleL0 * 1.65;
+      chart12.draw(data12, options);
+
+
 
     } // End of muscleSim function.
 
-    // Downsample array to 1000 values for faster graphing
-    function downsample(originalArray) {
-      var newArray = [];
-      var scaleFactor = Math.round(originalArray.length / 1000);
-      for (var i = 0; i < 1000; ++i) { // Could probably do this with a .map function.
-        newArray[i] = originalArray[Math.round(i * scaleFactor) + 1];
+
+    // Downsample array for faster graphing
+    function downSample(longArray) {
+      var shortLength = 1000;
+      var shortArray = new Array(shortLength);
+      var scaleFactor = (longArray.length / shortLength); // Create factor by which to skip values in long array.
+      for (var i = 0; i < shortLength; ++i) { // Could probably do this with a .map function.
+        //     shortArray[i] = Number(longArray[Math.round(i * scaleFactor) + 1].toPrecision(6));
+        shortArray[i] = longArray[Math.round(i * scaleFactor) + 1];
+        // Grab value from long array and convert to fewer significant figures before adding to short array.
       }
-      return newArray;
-    } // End of downsample function
+      return shortArray;
+    } // End of downSample function
 
 
     // Transpose 2D Array
@@ -501,7 +537,8 @@
       return copy;
     } // End of transpose function.
 
-    // TODO: Example format for To Do.
+
+    // NOTE: To find the maximum value of array: Math.max.apply(Math, arrayName); [Math.max(arrayName); will not work].
 
   </script>
 
