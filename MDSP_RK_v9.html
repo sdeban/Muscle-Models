@@ -28,7 +28,8 @@
   </style>
 </head>
 
-<body>
+<body onload="springMass();">
+
   <div class="graph" id="chart_01"></div>
   <div class="graph" id="chart_02"></div>
   <div class="graph" id="chart_03"></div>
@@ -48,9 +49,9 @@
 
   <div class="controls">
     Duration (s):
-    <input type="number" id="duration" value="0.08">
+    <input type="number" id="duration" value="0.2">
 
-    <p>Steps:<input type="number" id="steps" value="12000">
+    <p>Steps:<input type="number" id="steps" value="100000">
     </p>
     <p>
       Mass (kg):
@@ -81,10 +82,6 @@
       'packages': ['corechart']
     }); // Load the corechart package which has line charts and others.
 
-    // Execute the simulation and graphing upon page load.
-    window.onload = function() {
-      runSim.click(); // 'runSim' is the id for the 'apply' button.
-    }
 
     //Simulation settings
 
@@ -102,7 +99,6 @@
       var timeStep = duration / steps; // Size in seconds of time step.
       var time = [];
       for (var i = 0; i != steps + 1; ++i) time[i] = i * timeStep // Loop to fill time vector with timesteps to be used in graphing. Numbers will not be precise at 14 decimal places, but it doesn't matter.
-
 
       // Morphological and physiological parameters
       var muscleL0 = 0.02; // Muscle resting length in meters.
@@ -144,7 +140,6 @@
       var projectileVel = [];
       var projectileAcc = [];
       var projectilePower = [];
-
 
 
       // Define function to generate muscle tension given length.
@@ -316,7 +311,7 @@
         }
       } // End of main simulation loop.
 
-      alert("Done!");
+      // alert("Done!");
       // Create the chart objects and link them to HTML elements
       {
         var chart1 = new google.visualization.LineChart(document.getElementById('chart_01'));
@@ -345,7 +340,7 @@
           trigger: 'selection'
         },
         legend: 'none',
-        lineWidth: 1.5,
+        lineWidth: 1,
         //
         chartArea: {
           backgroundColor: '#f8f8f8',
@@ -362,87 +357,88 @@
         colors: ['#286ad1']
       } // Chart options
 
+      var shortTime = downsample(time); // Downsample the time array for faster graphing.
 
       // Create data arrays for graphs, using transpose fn.
       var data01 = new google.visualization.DataTable(); // Create the chart data table
       data01.addColumn('number', ''); // Add a column for one variable
       data01.addColumn('number', ''); // Add a column for a sceond variable
-      data01.addRows(transpose([time, muscleLength])); // Add the data as rows, using the transpose function defined below to rotate a 2D array consisting of two vectors, x and y.
+      data01.addRows(transpose([shortTime, downsample(muscleLength)])); // Add the data as rows, using the transpose function defined below to rotate a 2D array consisting of two vectors, x and y.
 
       var data02 = new google.visualization.DataTable();
       data02.addColumn('number', '');
       data02.addColumn('number', '');
-      data02.addRows(transpose([time, muscleVel]));
+      data02.addRows(transpose([shortTime, downsample(muscleVel)]));
 
       var data03 = new google.visualization.DataTable();
       data03.addColumn('number', '');
       data03.addColumn('number', '');
-      data03.addRows(transpose([time, muscleForce]));
+      data03.addRows(transpose([shortTime, downsample(muscleForce)]));
 
       var data04 = new google.visualization.DataTable();
       data04.addColumn('number', '');
       data04.addColumn('number', '');
-      data04.addRows(transpose([time, musclePower]));
+      data04.addRows(transpose([shortTime, downsample(musclePower)]));
 
       var data05 = new google.visualization.DataTable();
       data05.addColumn('number', '');
       data05.addColumn('number', '');
-      data05.addRows(transpose([time, projectilePos]));
+      data05.addRows(transpose([shortTime, downsample(projectilePos)]));
 
       var data06 = new google.visualization.DataTable();
       data06.addColumn('number', '');
       data06.addColumn('number', '');
-      data06.addRows(transpose([time, projectileVel]));
+      data06.addRows(transpose([shortTime, downsample(projectileVel)]));
 
       var data07 = new google.visualization.DataTable();
       data07.addColumn('number', '');
       data07.addColumn('number', '');
-      data07.addRows(transpose([time, projectileAcc]));
+      data07.addRows(transpose([shortTime, downsample(projectileAcc)]));
 
       var data08 = new google.visualization.DataTable();
       data08.addColumn('number', '');
       data08.addColumn('number', '');
-      data08.addRows(transpose([time, muscleVel]));
+      data08.addRows(transpose([shortTime, downsample(projectileAcc)]));
 
       var data09 = new google.visualization.DataTable();
       data09.addColumn('number', '');
       data09.addColumn('number', '');
-      data09.addRows(transpose([time, muscleVel]));
+      data09.addRows(transpose([shortTime, downsample(projectileAcc)]));
 
       var data10 = new google.visualization.DataTable();
       data10.addColumn('number', '');
       data10.addColumn('number', '');
-      data10.addRows(transpose([time, muscleVel]));
+      data10.addRows(transpose([shortTime, downsample(projectileAcc)]));
 
       var data11 = new google.visualization.DataTable();
       data11.addColumn('number', '');
       data11.addColumn('number', '');
-      data11.addRows(transpose([time, muscleVel]));
+      data11.addRows(transpose([shortTime, downsample(projectileAcc)]));
 
       var data12 = new google.visualization.DataTable();
       data12.addColumn('number', '');
       data12.addColumn('number', '');
-      data12.addRows(transpose([time, muscleVel]));
+      data12.addRows(transpose([shortTime, downsample(projectileAcc)]));
 
       var data13 = new google.visualization.DataTable();
       data13.addColumn('number', '');
       data13.addColumn('number', '');
-      data13.addRows(transpose([time, muscleVel]));
+      data13.addRows(transpose([shortTime, downsample(projectileAcc)]));
 
       var data14 = new google.visualization.DataTable();
       data14.addColumn('number', '');
       data14.addColumn('number', '');
-      data14.addRows(transpose([time, muscleVel]));
+      data14.addRows(transpose([shortTime, downsample(projectileAcc)]));
 
       var data15 = new google.visualization.DataTable();
       data15.addColumn('number', '');
       data15.addColumn('number', '');
-      data15.addRows(transpose([time, muscleVel]));
+      data15.addRows(transpose([shortTime, downsample(projectileAcc)]));
 
       var data16 = new google.visualization.DataTable();
       data16.addColumn('number', '');
       data16.addColumn('number', '');
-      data16.addRows(transpose([time, muscleVel]));
+      data16.addRows(transpose([shortTime, downsample(projectileAcc)]));
 
 
 
@@ -477,6 +473,17 @@
 
 
     } // End of muscleSim function.
+
+    // Downsample array to 1000 values for faster graphing
+    function downsample(originalArray) {
+      var newArray = [];
+      var scaleFactor = Math.round(originalArray.length / 1000);
+      for (var i = 0; i < 1000; ++i) { // Could probably do this with a .map function.
+        newArray[i] = originalArray[Math.round(i * scaleFactor) + 1];
+      }
+      return newArray;
+    } // End of downsample function
+
 
     // Transpose 2D Array
     function transpose(original) { // Transpose 2D Array
