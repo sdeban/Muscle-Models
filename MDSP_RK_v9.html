@@ -35,6 +35,7 @@
   <div class="graph" id="chart_03"></div>
   <div class="graph" id="chart_02"></div>
   <div class="graph" id="chart_04"></div>
+  <div class="graph" id="chart_13"></div>
   <div class="graph" id="chart_05"></div>
   <div class="graph" id="chart_06"></div>
   <div class="graph" id="chart_07"></div>
@@ -43,7 +44,6 @@
   <div class="graph" id="chart_10"></div>
   <div class="graph" id="chart_11"></div>
   <div class="graph" id="chart_12"></div>
-  <div class="graph" id="chart_13"></div>
   <div class="graph" id="chart_14"></div>
   <div class="graph" id="chart_15"></div>
   <div class="graph" id="chart_16"></div>
@@ -320,15 +320,15 @@
       // alert("Done!");
       // Create the chart objects and link them to HTML elements
       {
-        var chart1 = new google.visualization.LineChart(document.getElementById('chart_01'));
-        var chart2 = new google.visualization.LineChart(document.getElementById('chart_02'));
-        var chart3 = new google.visualization.LineChart(document.getElementById('chart_03'));
-        var chart4 = new google.visualization.LineChart(document.getElementById('chart_04'));
-        var chart5 = new google.visualization.LineChart(document.getElementById('chart_05'));
-        var chart6 = new google.visualization.LineChart(document.getElementById('chart_06'));
-        var chart7 = new google.visualization.LineChart(document.getElementById('chart_07'));
-        var chart8 = new google.visualization.LineChart(document.getElementById('chart_08'));
-        var chart9 = new google.visualization.LineChart(document.getElementById('chart_09'));
+        var chart01 = new google.visualization.LineChart(document.getElementById('chart_01'));
+        var chart02 = new google.visualization.LineChart(document.getElementById('chart_02'));
+        var chart03 = new google.visualization.LineChart(document.getElementById('chart_03'));
+        var chart04 = new google.visualization.LineChart(document.getElementById('chart_04'));
+        var chart05 = new google.visualization.LineChart(document.getElementById('chart_05'));
+        var chart06 = new google.visualization.LineChart(document.getElementById('chart_06'));
+        var chart07 = new google.visualization.LineChart(document.getElementById('chart_07'));
+        var chart08 = new google.visualization.LineChart(document.getElementById('chart_08'));
+        var chart09 = new google.visualization.LineChart(document.getElementById('chart_09'));
         var chart10 = new google.visualization.LineChart(document.getElementById('chart_10'));
         var chart11 = new google.visualization.LineChart(document.getElementById('chart_11'));
         var chart12 = new google.visualization.LineChart(document.getElementById('chart_12'));
@@ -339,14 +339,14 @@
       }
 
       // Place chart options into an object
-      var options = { // Display options, such as line thickness, color.
+      var options = { // Display options, such as line thickness, color, axis settings.
         backgroundColor: '#efefef',
         title: ' ',
         tooltip: {
           trigger: 'selection'
         },
         legend: 'none',
-        lineWidth: 1.5,
+        lineWidth: 1.3,
         //
         chartArea: {
           backgroundColor: 'rgb(250, 250, 250)',
@@ -361,6 +361,7 @@
           minValue: 0,
           maxValue: duration
         },
+        vAxis: {},
         colors: ['#286ad1', '#286ad1']
       } // Chart options
 
@@ -422,96 +423,108 @@
       data11.addColumn('number', '');
       data11.addRows(transpose([shortTime, downSample(muscleExcForce)]));
 
+      var data13 = new google.visualization.DataTable();
+      data13.addColumn('number', '');
+      data13.addColumn('number', '');
+      data13.addRows(transpose([shortTime, downSample(muscleWork)]));
+
       var data12 = new google.visualization.DataTable();
       data12.addColumn('number', '');
       data12.addColumn('number', '');
       data12.addColumn('number', '');
       data12.addRows(transpose([downSample(muscleLength), downSample(muscleLTForce), downSample(muscleRelForce)]));
 
-      /*
-            var data13 = new google.visualization.DataTable();
-            data13.addColumn('number', '');
-            data13.addColumn('number', '');
-            data13.addRows(transpose([shortTime, downSample(projectileAcc)]));
+      var data14 = new google.visualization.DataTable();
+      data14.addColumn('number', '');
+      data14.addColumn('number', '');
+      data14.addColumn('number', '');
+      data14.addRows(transpose([downSample(muscleVel), downSample(muscleFVForce), downSample(muscleForce)]));
 
-            var data14 = new google.visualization.DataTable();
-            data14.addColumn('number', '');
-            data14.addColumn('number', '');
-            data14.addRows(transpose([shortTime, downSample(projectileAcc)]));
+      var data15 = new google.visualization.DataTable();
+      data15.addColumn('number', '');
+      data15.addColumn('number', '');
+      data15.addRows(transpose([shortTime, downSample(gearRatio)]));
 
-            var data15 = new google.visualization.DataTable();
-            data15.addColumn('number', '');
-            data15.addColumn('number', '');
-            data15.addRows(transpose([shortTime, downSample(projectileAcc)]));
-
-            var data16 = new google.visualization.DataTable();
-            data16.addColumn('number', '');
-            data16.addColumn('number', '');
-            data16.addRows(transpose([shortTime, downSample(projectileAcc)]));
-
-      */
 
 
       // Call the draw function on the charts.
       options.title = 'Muscle Length (m)'; // Replace options for any subsequent graphs created.
       options.colors = ['#c91700'];
-      chart1.draw(data01, options);
+      chart01.draw(data01, options);
 
-      options.title = 'Muscle Velocity (m/s)';
+      options.title = 'Muscle Velocity (m/s)'; // Remember, these options are inherited by the graphs below.
       options.colors = ['#c91700'];
-      chart2.draw(data02, options);
+      chart02.draw(data02, options);
 
       options.title = 'Muscle Force (N)';
       options.colors = ['#c91700'];
-      chart3.draw(data03, options);
+      chart03.draw(data03, options);
 
       options.title = 'Muscle Power (W)';
       options.colors = ['#c91700'];
-      chart4.draw(data04, options);
+      chart04.draw(data04, options);
 
       options.title = 'Projectile Position (m)';
       options.colors = ['#234cba'];
-      chart5.draw(data05, options);
+      chart05.draw(data05, options);
 
       options.title = 'Projectile Velocity (m/s)';
       options.colors = ['#234cba'];
-      chart6.draw(data06, options);
+      chart06.draw(data06, options);
 
-      options.title = 'Projectile Acceleration (m/s/s)';
+      options.title = 'Projectile Acceleration (m/s/s)'; // Remember, these options are inherited by the graphs below.
       options.colors = ['#234cba'];
-      chart7.draw(data07, options);
+      chart07.draw(data07, options);
 
       options.title = 'Projectile Power (W/kg)';
       options.colors = ['#234cba'];
-      chart8.draw(data08, options);
+      chart08.draw(data08, options);
 
       options.title = 'Spring Length (m)';
       options.colors = ['#158032'];
-      chart9.draw(data09, options);
+      chart09.draw(data09, options);
 
       options.title = 'Spring Shortening Velocity (m/s)';
       options.colors = ['#158032'];
       chart10.draw(data10, options);
 
-      options.title = 'Muscle Excitation';
+      options.title = 'Muscle Excitation'; // Remember, these options are inherited by the graphs below.
       options.colors = ['#c91700'];
       chart11.draw(data11, options);
+
+      options.title = 'Muscle Work (J)';
+      options.colors = ['#c91700'];
+      chart13.draw(data13, options);
 
       options.title = 'Muscle Tension vs Length';
       options.colors = ['#c91700', '#5d39d3'];
       options.hAxis.title = 'Muscle length (m)';
       options.hAxis.minValue = muscleL0 * 0.5;
-      options.hAxis.maxValue = muscleL0 * 1.65;
+      options.hAxis.maxValue = muscleL0 * 1.5;
       chart12.draw(data12, options);
 
+      options.title = 'Muscle Force vs Velocity'; // Remember, these options are inherited by the graphs below.
+      options.colors = ['#c91700', '#5d39d3'];
+      options.hAxis.title = 'Muscle velocity (m/s)';
+      options.hAxis.minValue = 0;
+      options.hAxis.maxValue = muscleP0;
+      chart14.draw(data14, options);
 
+      options.title = 'Gear Ratio';
+      options.colors = ['#000000'];
+      options.hAxis.title = 'Time (s)';
+      options.hAxis.minValue = 0;
+      options.hAxis.maxValue = duration;
+      options.vAxis.minValue = 0;
+      options.vAxis.maxValue = gearRatio[1];
+      chart15.draw(data15, options);
 
     } // End of muscleSim function.
 
 
-    // Downsample array for faster graphing
+    // Downsample array for much, much faster graphing. More than about 500 points isn't necessary.
     function downSample(longArray) {
-      var shortLength = 1000;
+      var shortLength = 500;
       var shortArray = new Array(shortLength);
       var scaleFactor = (longArray.length / shortLength); // Create factor by which to skip values in long array.
       for (var i = 0; i < shortLength; ++i) { // Could probably do this with a .map function.
