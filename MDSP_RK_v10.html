@@ -129,8 +129,9 @@
       var latchTripped = 0; // Sets latch sensor to 0, to allow time of latch release to be captured regardless of condition that triggered it.
       var indexLatchTripped = 0;
       var timeLatchTripped = 0;
-      var maxGearRatio = 10000; // gear ratio at start of trial.
-      var minGearRatio = 1; // final gear ratio value during launch.
+      var gearRatioIndex = 0; // Counter to index gear ratio profile array.
+      var maxGearRatio = 10000; // Gear ratio at start of trial.
+      var minGearRatio = 1; // Final gear ratio value during launch.
       var durationGearChange = +document.getElementById("durGearChange").value; // Duration of latch release. Value near time step is effectively instantaneous.
 
 
@@ -147,7 +148,6 @@
       var projectileVel = [];
       var projectileAcc = [];
       var projectilePower = [];
-      var gearRatioChange = [];
       var gearRatio = [];
       var latchCondition = [];
 
@@ -165,12 +165,9 @@
 
 
       // Create gear ratio profile
-      gearRatioChange = time.map(function(i) { // Create a sigmoidal gear ratio profile, starting to change from max to min at time zero over the specified duration.
+      gearRatio = time.map(function(i) { // Create a sigmoidal gear ratio profile, starting to change from max to min at time zero over the specified duration.
         return (1.0009765 * maxGearRatio - minGearRatio) / (1 + Math.pow(2, 10 * -(2 * i - durationGearChange) / -durationGearChange)) + minGearRatio;
       })
-      gearRatio = time.map(function() {
-        return gearRatioChange[0];
-      }); // Fill gear ratio vector with starting value of gear ratio change, which is extremely close to the maximum input into the equation (but not exact).
 
 
 
@@ -218,7 +215,7 @@
         var muscleForce1 = muscleForce[i - 1]; // Last muscle force to be used in calculation of muscle acceleration.
         var muscleAcc1 = (muscleForce1 - springForce1 - dampingConstant * muscleVel1) /
           (muscleMass * muscleFraction); // Muscle mass acceleration is calculated by balance of forces from tendon and muscle in previous time step, using a=F/m: a=(previous muscle force-previous tendon force)/(muscle mass*fraction of muscle mass accelerated). Positive is increasing muscle shortening velocity. Acceleration corresponding to last length and velocity, to be used in Runge-Kutta integration.
-        var projectileAcc1 = springForce1 / projectileMass / gearRatio[i]; // Projectile mass acceleration is calculated using tendon force divided by gear ratio, as a=F/m: a=previous tendon force/projectile mass/gear ratio. Positive or zero. Positive is increasing projection velocity of projectile.
+        var projectileAcc1 = springForce1 / projectileMass / gearRatio[gearRatioIndex]; // Projectile mass acceleration is calculated using tendon force divided by gear ratio, as a=F/m: a=previous tendon force/projectile mass/gear ratio. Positive or zero. Positive is increasing projection velocity of projectile.
 
         // Calculate second of four parts of Runge-Kutta weighted average.
         var muscleLength2 = muscleLength1 + muscleVel1 * timeStep / 2; // Intermediate muscle length estimate to be averaged into final estimate using Runge-Kutta integration.
@@ -235,7 +232,7 @@
           (springLength2 - springL0) * springK : 0;
         var muscleAcc2 = (muscleForce2 - springForce2 - dampingConstant * muscleVel2) /
           (muscleMass * muscleFraction); // Muscle mass acceleration is calculated by balance of forces from tendon and muscle
-        var projectileAcc2 = springForce2 / projectileMass / gearRatio[i];
+        var projectileAcc2 = springForce2 / projectileMass / gearRatio[gearRatioIndex];
 
         // Calculate third of four parts of Runge-Kutta weighted average.
         var muscleLength3 = muscleLength1 + muscleVel2 * timeStep / 2;
@@ -251,7 +248,7 @@
           (springLength3 - springL0) * springK : 0;
         var muscleAcc3 = (muscleForce3 - springForce3 - dampingConstant * muscleVel3) /
           (muscleMass * muscleFraction);
-        var projectileAcc3 = springForce3 / projectileMass / gearRatio[i];
+        var projectileAcc3 = springForce3 / projectileMass / gearRatio[gearRatioIndex];
 
         // Calculate fourth of four parts of Runge-Kutta weighted average. Note timestep is not divided by two.
         var muscleLength4 = muscleLength1 + muscleVel3 * timeStep;
@@ -267,7 +264,7 @@
         var springForce4 = (springLength4 - springL0) * springK > 0 ?
           (springLength4 - springL0) * springK : 0;
         var muscleAcc4 = (muscleForce4 - springForce4 - dampingConstant * muscleVel4) / (muscleMass * muscleFraction);
-        var projectileAcc4 = springForce4 / projectileMass / gearRatio[i];
+        var projectileAcc4 = springForce4 / projectileMass / gearRatio[gearRatioIndex];
 
         // Calculate new positions and velocities by weighted average.
         muscleLength[i] = muscleLength[i - 1] - (muscleVel1 + muscleVel2 * 2 + muscleVel3 * 2 + muscleVel4) *
@@ -289,7 +286,7 @@
           (springLength[i] - springL0) * springK : 0; // Definitive spring force for this time step.
         muscleAcc[i] = (muscleForce[i] - springForce[i] - dampingConstant *
           muscleVel[i]) / (muscleMass * muscleFraction); // Definitive muscle mass acceleration for this time step.
-        projectileAcc[i] = springForce[i] / projectileMass / gearRatio[i]; // Definitive projectile acceleration for this time step.
+        projectileAcc[i] = springForce[i] / projectileMass / gearRatio[gearRatioIndex]; // Definitive projectile acceleration for this time step.
 
         // Calculate power and work
         muscleWork[i] = muscleForce[i] * (muscleLength[1] - muscleLength[i]);
@@ -299,31 +296,17 @@
         springVel[i] = projectileVel[i] - muscleVel[i];
 
         latchCondition[i] = latchTripped;
+
         // Test for various conditions to determine when latch releases.
-        if (latchTripped == 0) {
-          if (muscleLength[i] < lengthThreshold * muscleLength[1]) {
-            gearRatio = gearRatio.slice(0, i).concat(gearRatioChange); // Asks if muscle length is below threshold value specified, and if so, it makes gear ratio from this point onward transition to final value.
-            latchTripped = 1
-          }
-
-          // TODO: Trigger is working but doing weird things with the array. What I'm going to try next is to use only the gearRatioChange array but only grab the first value for gearRatio until the latch trips and then let it use an iterator that starts once the latch trips (such as current i minus what i was when latch tripped). No splicing of arrays or maintaining two arrays.
-
-          if (muscleForce[i] > forceThreshold) {
-            gearRatio = gearRatio.slice(0, i).concat(gearRatioChange); // Asks if muscle force is above threshold value specified, and if so, it makes gear ratio from this point onward transition to final value.
-            latchTripped = 1
-          }
-
-          if (time[i] > latchTime) {
-            gearRatio = gearRatio.slice(0, i).concat(gearRatioChange); // Condition for release of latch at specified time, if this is used.
-            latchTripped = 1
-          }
-
-          timeLatchTripped = time[i]; // Record time latch was tripped. This will keep changing until latch is tripped.
-          indexLatchTripped = i; // iteration number at which latch tripped.
+        if ((muscleLength[i] < lengthThreshold * muscleLength[1]) || (muscleForce[i] > forceThreshold) || (time[i] > latchTime)) {
+          //console.log('tripped   ');; // Asks if muscle length is below threshold value specified, and if so, it makes gear ratio from this point onward transition to final value.
+          ++gearRatioIndex;
+          latchTripped = 1;
         }
+
       } // End of main simulation loop.
 
-      // alert("Done!");
+
       // Create the chart objects and link them to HTML elements
       {
         var chart01 = new google.visualization.LineChart(document.getElementById('chart_01'));
@@ -459,7 +442,7 @@
       var data16 = new google.visualization.DataTable();
       data16.addColumn('number', '');
       data16.addColumn('number', '');
-      data16.addRows(transpose([shortTime, downSample(gearRatioChange)]));
+      data16.addRows(transpose([shortTime, downSample(gearRatio)]));
 
 
       // Call the draw function on the charts.
@@ -512,14 +495,14 @@
       chart13.draw(data13, options);
 
       options.title = 'Muscle Tension vs Length';
-      options.colors = ['#cc8a82', '#5d39d3'];
+      options.colors = ['#e5a8a1', '#5d39d3'];
       options.hAxis.title = 'Muscle length (m)';
       options.hAxis.minValue = muscleL0 * 0.5;
       options.hAxis.maxValue = muscleL0 * 1.5;
       chart12.draw(data12, options);
 
       options.title = 'Muscle Force vs Velocity'; // Remember, these options are inherited by the graphs below.
-      options.colors = ['#cc8a82', '#5d39d3'];
+      options.colors = ['#e5a8a1', '#5d39d3'];
       options.hAxis.title = 'Muscle velocity (m/s)';
       options.hAxis.minValue = 0;
       options.hAxis.maxValue = muscleP0;
@@ -549,11 +532,10 @@
     function downSample(longArray) {
       var shortLength = 500;
       var shortArray = new Array(shortLength);
-      var scaleFactor = (longArray.length / shortLength); // Create factor by which to skip values in long array.
+      var scaleFactor = Math.round(longArray.length / shortLength); // Create factor by which to skip values in long array.
       for (var i = 0; i < shortLength; ++i) { // Could probably do this with a .map function.
         //     shortArray[i] = Number(longArray[Math.round(i * scaleFactor) + 1].toPrecision(6));
-        shortArray[i] = longArray[Math.round(i * scaleFactor) + 1];
-        // Grab value from long array and convert to fewer significant figures before adding to short array.
+        shortArray[i] = longArray[i * scaleFactor + 1]; // Grab value from long array and add to short array.
       }
       return shortArray;
     } // End of downSample function
