@@ -52,26 +52,52 @@
   <div class="graph" id="chart_16"></div>
   <form></form>
   <div class="controlBlock">
-    <div>Duration (s):<input style="width: 5em;font-size: 0.8em" type="number" id="duration" value="0.07"></div>
-    <div>Steps:<input style="width: 5em; font-size: 0.8em" type="number" id="steps" value="50000"></div>
-    <div>Latch time (s):<input style="width: 5em;font-size: 0.8em" type="number" id="latchTime" value="0.05"></div>
-    <div>Latch duration (s):<input style="width: 5em;font-size: 0.8em" type="number" id="durGearChange" value="0.005"></div>
+    <div>Duration (s):
+      <input style="width: 5em;font-size: 0.8em" type="number" id="duration" value="0.07">
+    </div>
+    <div>Steps:
+      <input style="width: 5em; font-size: 0.8em" type="number" id="steps" value="50000">
+    </div>
+    <div>Latch time (s):
+      <input style="width: 5em;font-size: 0.8em" type="number" id="latchTime" value="0.05">
+    </div>
+    <div>Latch duration (s):
+      <input style="width: 5em;font-size: 0.8em" type="number" id="durGearChange" value="0.005">
+    </div>
   </div>
 
 
   <div class="controlBlock">
-    <div>Muscle L0 (m):<input style="width: 5em;font-size: 0.8em" type="number" id="muscleL0" value="0.02"></div>
-    <div>Muscle P0 (N):<input style="width: 5em;font-size: 0.8em" type="number" id="muscleP0" value="0.2"></div>
-    <div>Muscle Vmax (m/s):<input style="width: 5em;font-size: 0.8em" type="number" id="muscleVmax" value="0.3"></div>
-    <div>Muscle starting length (L0):<input style="width: 5em;font-size: 0.8em" type="number" id="muscleStartLength" value="1.2"></div>
-    <div>Excitation (s):<input style="width: 5em;font-size: 0.8em" type="number" id="excitationTime" value="0.03"></div>
+    <div>Muscle L0 (m):
+      <input style="width: 5em;font-size: 0.8em" type="number" id="muscleL0" value="0.02">
+    </div>
+    <div>Muscle P0 (N):
+      <input style="width: 5em;font-size: 0.8em" type="number" id="muscleP0" value="0.2">
+    </div>
+    <div>Muscle Vmax (m/s):
+      <input style="width: 5em;font-size: 0.8em" type="number" id="muscleVmax" value="0.3">
+    </div>
+    <div>Muscle starting length (L0):
+      <input style="width: 5em;font-size: 0.8em" type="number" id="muscleStartLength" value="1.2">
+    </div>
+    <div>Excitation (s):
+      <input style="width: 5em;font-size: 0.8em" type="number" id="excitationTime" value="0.03">
+    </div>
   </div>
 
   <div class="controlBlock">
-    <div>Projectile mass (kg):<input style="width: 5em;font-size: 0.8em" type="number" id="mass" value="1e-05"></div>
-    <div>Spring constant (N/m):<input style="width: 5em;font-size: 0.8em" type="number" id="spring" value="20"></div>
-    <div>Spring slack length (m):<input style="width: 5em;font-size: 0.8em" type="number" id="springL0" value="0.02"></div>
-    <div>Damping coef. (N s/m):<input style="width: 5em;font-size: 0.8em" type="number" id="damper" value="0.1"></div>
+    <div>Projectile mass (kg):
+      <input style="width: 5em;font-size: 0.8em" type="number" id="mass" value="1e-05">
+    </div>
+    <div>Spring constant (N/m):
+      <input style="width: 5em;font-size: 0.8em" type="number" id="spring" value="20">
+    </div>
+    <div>Spring slack length (m):
+      <input style="width: 5em;font-size: 0.8em" type="number" id="springL0" value="0.02">
+    </div>
+    <div>Damping coef. (N s/m):
+      <input style="width: 5em;font-size: 0.8em" type="number" id="damper" value="0.1">
+    </div>
   </div>
 
   </form>
@@ -84,7 +110,7 @@
 
     // If enter key is pressed, then run the simulation with the entered values.
     document.onkeypress = function(e) {
-      e = e || window.event; // Assing window event to e, if there is an event.
+      var e = e || window.event; // Assing window event to e, if there is an event.
       var charCode = (typeof e.which == "number") ? e.which : e.keyCode;
       if (charCode == 13) springMass(); // Run simulation if the key pressed is the enter key
     }
@@ -93,6 +119,13 @@
     google.charts.load('current', {
       'packages': ['corechart']
     }); // Load the corechart package which has line charts and others.
+
+    // Check if local web storage is supported by browser.
+    if (typeof(Storage) != "undefined") {
+      // Code for localStorage/sessionStorage.
+    } else {
+      alert("No Local Web Storage support!")
+    }
 
     // Simulation settings
 
@@ -335,35 +368,35 @@
 
       // Place chart options into an object
       var options = { // Display options, such as line thickness, color, axis settings.
-        backgroundColor: '#efefef',
-        title: ' ',
-        tooltip: {
-          trigger: 'selection',
-        },
-        legend: 'none',
-        lineWidth: 1.3,
-        //
-        chartArea: {
-          backgroundColor: 'rgb(250, 250, 250)',
-          left: '15%',
-          top: '15%',
-          width: '77%',
-          height: '60%'
-        },
-        fontName: 'Arial',
-        fontSize: 13,
-        hAxis: {
-          format: '#.####',
-          title: 'Time (s)',
-          minValue: 0,
-          maxValue: duration
-        },
-        vAxis: {
-          format: '#.####'
-        },
-        colors: ['#286ad1', '#286ad1'],
+          backgroundColor: '#efefef',
+          title: ' ',
+          tooltip: {
+            trigger: 'selection',
+          },
+          legend: 'none',
+          lineWidth: 1.3,
+          //
+          chartArea: {
+            backgroundColor: 'rgb(250, 250, 250)',
+            left: '15%',
+            top: '15%',
+            width: '77%',
+            height: '60%'
+          },
+          fontName: 'Arial',
+          fontSize: 13,
+          hAxis: {
+            format: '#.####',
+            title: 'Time (s)',
+            minValue: 0,
+            maxValue: duration
+          },
+          vAxis: {
+            format: '#.####'
+          },
+          colors: ['#286ad1', '#286ad1'],
 
-      } // End of chart options
+        } // End of chart options
 
       var shortTime = downSample(time); // downSample the time array for faster graphing.
 
@@ -545,7 +578,6 @@
       }
       return shortArray;
     } // End of downSample function
-
 
     // Transpose 2D Array
     function transpose(original) { // Transpose 2D Array
