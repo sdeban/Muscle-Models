@@ -52,13 +52,13 @@
   <div class="graph" id="chart_16"></div>
 
   <div class="controlBlock">
-    <div>Duration (s):<input style="width: 5em;font-size: 0.8em" type="number" id="duration" value="0.2"></div>
+    <div>Duration (s):<input style="width: 5em;font-size: 0.8em" type="number" id="duration" value="0.07"></div>
     <div>Steps:<input style="width: 5em; font-size: 0.8em" type="number" id="steps" value="100000"></div>
   </div>
 
   <div class="controlBlock">
     <div>Muscle L0 (m):<input style="width: 5em;font-size: 0.8em" type="number" id="muscleL0" value="0.02"></div>
-    <div>Muscle P0 (N):<input style="width: 5em;font-size: 0.8em" type="number" id="muscleP0" value="0.15"></div>
+    <div>Muscle P0 (N):<input style="width: 5em;font-size: 0.8em" type="number" id="muscleP0" value="0.2"></div>
     <div>Muscle Vmax (m/s):<input style="width: 5em;font-size: 0.8em" type="number" id="muscleVmax" value="0.3"></div>
     <div>Muscle starting length (L0):<input style="width: 5em;font-size: 0.8em" type="number" id="muscleStartLength" value="1.2"></div>
   </div>
@@ -70,11 +70,10 @@
     <div>Damping coef. (N s/m):<input style="width: 5em;font-size: 0.8em" type="number" id="damper" value="0.1"></div>
   </div>
 
-
   <div class="controlBlock">
-    <div>Excitation time (s):<input style="width: 5em;font-size: 0.8em" type="number" id="excitationTime" value="0.04"></div>
-    <div>Latch time (s):<input style="width: 5em;font-size: 0.8em" type="number" id="latchTime" value="0.08"></div>
-    <div>Latch duration (s):<input style="width: 5em;font-size: 0.8em" type="number" id="durGearChange" value="0.01"></div>
+    <div>Excitation time (s):<input style="width: 5em;font-size: 0.8em" type="number" id="excitationTime" value="0.03"></div>
+    <div>Latch time (s):<input style="width: 5em;font-size: 0.8em" type="number" id="latchTime" value="0.05"></div>
+    <div>Latch duration (s):<input style="width: 5em;font-size: 0.8em" type="number" id="durGearChange" value="0.005"></div>
   </div>
 
   <div class="controlBlock">
@@ -92,7 +91,7 @@
     }); // Load the corechart package which has line charts and others.
 
 
-    //Simulation settings
+    // Simulation settings
 
     function springMass() { // Start of main simulation function
 
@@ -127,13 +126,12 @@
       var forceThreshold = muscleP0 * 0.5; // Muscle force at which gear ratio drops to 1.
       var lengthThreshold = 0.3; // Muscle length as percent of starting length at which gear ratio drops to 1.
       var latchTripped = 0; // Sets latch sensor to 0, to allow time of latch release to be captured regardless of condition that triggered it.
-      var indexLatchTripped = 0;
-      var timeLatchTripped = 0;
+      var indexLatchTripped = 0; // Index latch tripped, to be filled later.
+      var timeLatchTripped = 0; // Time latch tripped, to be filled later.
       var gearRatioIndex = 0; // Counter to index gear ratio profile array.
       var maxGearRatio = 10000; // Gear ratio at start of trial.
       var minGearRatio = 1; // Final gear ratio value during launch.
       var durationGearChange = +document.getElementById("durGearChange").value; // Duration of latch release. Value near time step is effectively instantaneous.
-
 
       // Define arrays of proper length to fill with values later.
       var muscleLTForce = [];
@@ -170,8 +168,6 @@
       })
 
 
-
-
       // First time step in simulation.
       // Muscle, spring, projectile and gearing starting conditions.
       var exciteMax = 1; // Maximum excitation level of muscle, with 1 being full excitation.
@@ -196,7 +192,6 @@
       springForce[0] = (springLength[0] - springL0) * springK > 0 ?
         (springLength[0] - springL0) * springK : 0; // Spring force is calculated from tendon length relative to slack length, and spring constant at current time step, as a Hookean spring: F=kx. F=(current length-slack length)*spring constant. Constrained to be positive or zero because a tendon cannot push. Positive is shortening tendon and projecting tongue mass.
       musclePower[0] = muscleVel[0] * muscleAcc[0]; // Calculate mass specific muscle power.
-
 
 
       // Simulation loop: second time step and onward using Runge-Kutta 4th order integration"
@@ -295,18 +290,21 @@
         projectilePower[i] = projectileVel[i] * projectileAcc[i];
         springVel[i] = projectileVel[i] - muscleVel[i];
 
-        latchCondition[i] = latchTripped;
-
         // Test for various conditions to determine when latch releases.
         if ((muscleLength[i] < lengthThreshold * muscleLength[1]) || (muscleForce[i] > forceThreshold) || (time[i] > latchTime)) {
-          //console.log('tripped   ');; // Asks if muscle length is below threshold value specified, and if so, it makes gear ratio from this point onward transition to final value.
-          ++gearRatioIndex;
-          latchTripped = 1;
+          // Asks if muscle length is below threshold value specified, force is above threshold, or time is at preset latch time, and if so, it makes gear ratio from this point onward transition to final value.
+          ++gearRatioIndex; // Index the counter to move through gear ratio profile array.
+          if (latchTripped != 1) { // If latch has not tripped (this is the first time conditions are met)...
+            indexLatchTripped = [i]; // store index, so we have the time of latch, and...
+            timeLatchTripped = time[i]; // convert to time, and...
+            latchTripped = 1; // switch latchTripped from 0 to 1.
+          }
         }
+        latchCondition[i] = latchTripped; // Fill array with latch condition to graph.
 
       } // End of main simulation loop.
 
-
+      console.log(timeLatchTripped);
       // Create the chart objects and link them to HTML elements
       {
         var chart01 = new google.visualization.LineChart(document.getElementById('chart_01'));
@@ -357,7 +355,7 @@
         },
         colors: ['#286ad1', '#286ad1'],
 
-      } // Chart options
+      } // End of chart options
 
       var shortTime = downSample(time); // downSample the time array for faster graphing.
 
@@ -442,7 +440,7 @@
       var data16 = new google.visualization.DataTable();
       data16.addColumn('number', '');
       data16.addColumn('number', '');
-      data16.addRows(transpose([shortTime, downSample(gearRatio)]));
+      data16.addRows(transpose([shortTime, downSample(latchCondition)]));
 
 
       // Call the draw function on the charts.
@@ -508,7 +506,7 @@
       options.hAxis.maxValue = muscleP0;
       chart14.draw(data14, options);
 
-      options.title = 'Gear Ratio';
+      options.title = 'Gear Ratio Profile Shape (not time)';
       options.colors = ['#000000'];
       options.hAxis.title = 'Time (s)';
       options.hAxis.minValue = 0;
@@ -517,11 +515,11 @@
       options.vAxis.maxValue = maxGearRatio;
       chart15.draw(data15, options);
 
-      options.title = 'Gear Ratio Change';
+      options.title = 'Latch Condition';
       options.hAxis.minValue = 0;
       options.hAxis.maxValue = duration;
       options.vAxis.minValue = 0;
-      options.vAxis.maxValue = maxGearRatio;
+      options.vAxis.maxValue = 1;
       chart16.draw(data16, options);
 
 
