@@ -6,11 +6,11 @@
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
   /*   Spring-Mass model looping example.  
-    
-      NOTE: This does not work in this javascript implementation. Why?
-    
-    
-    Author: Stephen M. Deban, University of South Florida. */
+
+        NOTE: This does not work in this javascript implementation. Why?
+
+
+      Author: Stephen M. Deban, University of South Florida. */
 
   // Load google chart API for graphing.
   google.charts.load('current', {
@@ -73,8 +73,8 @@
 
 
     // Create data arrays for graph, using transpose fn.
-    var timeVel = transpose([time, velocityVV]);
-    var timeAccel = transpose([time, accelerationVV]);
+    var timeVel = transpose([downSample(time), downSample(velocityVV)]);
+    var timeAccel = transpose([downSample(time), downSample(accelerationVV)]);
     var data = new google.visualization.DataTable();
 
     data.addColumn('number', 'Time');
@@ -143,6 +143,25 @@
     }
     return copy;
   } // End of transpose function.
+
+
+
+
+  // Downsample array for faster graphing
+  function downSample(longArray) {
+    var shortLength = 1000;
+    var shortArray = new Array(shortLength);
+    var scaleFactor = (longArray.length / shortLength); // Create factor by which to skip values in long array.
+    for (var i = 0; i < shortLength; ++i) { // Could probably do this with a .map function.
+      //     shortArray[i] = Number(longArray[Math.round(i * scaleFactor) + 1].toPrecision(6));
+      shortArray[i] = longArray[Math.round(i * scaleFactor) + 1];
+      // Grab value from long array and convert to fewer significant figures before adding to short array.
+    }
+    return shortArray;
+  } // End of downSample function
+
+
+
 
   // TODO: Example format for To Do.
 
