@@ -71,7 +71,7 @@
   </div>
 
   <div class="controlBlock">
-    <div>Excitation time (s):<input style="width: 5em;font-size: 0.8em" type="number" id="excitationTime" value="0.03"></div>
+    <div>Excitation (s):<input style="width: 5em;font-size: 0.8em" type="number" id="excitationTime" value="0.03"></div>
     <div>Latch time (s):<input style="width: 5em;font-size: 0.8em" type="number" id="latchTime" value="0.05"></div>
     <div>Latch duration (s):<input style="width: 5em;font-size: 0.8em" type="number" id="durGearChange" value="0.005"></div>
   </div>
@@ -300,11 +300,16 @@
             latchTripped = 1; // switch latchTripped from 0 to 1.
           }
         }
-        latchCondition[i] = latchTripped; // Fill array with latch condition to graph.
 
       } // End of main simulation loop.
 
-      console.log(timeLatchTripped);
+      // Create final gear ratio vs time for graphing.
+      var latchPadding = []; // Create array to fill with the first value of the gear ratio.
+      var padding = indexLatchTripped; // Number of values to add to padding array.
+      while (padding--) latchPadding[padding] = gearRatio[1]; // Fill padding array with first value of gear ratio.
+      var finalGearRatio = latchPadding.concat(gearRatio); // Add padding array to gear ratio array and put in new array.
+      finalGearRatio.length = gearRatio.length; // Trim new array to the length of the original gear ratio array.
+
       // Create the chart objects and link them to HTML elements
       {
         var chart01 = new google.visualization.LineChart(document.getElementById('chart_01'));
@@ -435,12 +440,12 @@
       var data15 = new google.visualization.DataTable();
       data15.addColumn('number', '');
       data15.addColumn('number', '');
-      data15.addRows(transpose([shortTime, downSample(gearRatio)]));
+      data15.addRows(transpose([shortTime, downSample(finalGearRatio)]));
 
       var data16 = new google.visualization.DataTable();
       data16.addColumn('number', '');
       data16.addColumn('number', '');
-      data16.addRows(transpose([shortTime, downSample(latchCondition)]));
+      data16.addRows(transpose([shortTime, downSample(finalGearRatio)]));
 
 
       // Call the draw function on the charts.
@@ -506,7 +511,7 @@
       options.hAxis.maxValue = muscleP0;
       chart14.draw(data14, options);
 
-      options.title = 'Gear Ratio Profile Shape (not time)';
+      options.title = 'Gear Ratio Profile';
       options.colors = ['#000000'];
       options.hAxis.title = 'Time (s)';
       options.hAxis.minValue = 0;
@@ -515,11 +520,11 @@
       options.vAxis.maxValue = maxGearRatio;
       chart15.draw(data15, options);
 
-      options.title = 'Latch Condition';
+      options.title = 'Gear Ratio Profile';
       options.hAxis.minValue = 0;
       options.hAxis.maxValue = duration;
       options.vAxis.minValue = 0;
-      options.vAxis.maxValue = 1;
+      options.vAxis.maxValue = maxGearRatio;
       chart16.draw(data16, options);
 
 
