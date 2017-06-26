@@ -17,7 +17,7 @@
       float: left;
       margin: 4px;
       padding: 2px;
-      width: 300;
+      width: 360;
       max-height: 200px;
       border: 0px solid #aaaaaa;
       line-height: 150%;
@@ -50,17 +50,21 @@
   <div class="graph" id="chart_14"></div>
   <div class="graph" id="chart_15"></div>
   <div class="graph" id="chart_16"></div>
-
+  <form></form>
   <div class="controlBlock">
     <div>Duration (s):<input style="width: 5em;font-size: 0.8em" type="number" id="duration" value="0.07"></div>
-    <div>Steps:<input style="width: 5em; font-size: 0.8em" type="number" id="steps" value="100000"></div>
+    <div>Steps:<input style="width: 5em; font-size: 0.8em" type="number" id="steps" value="50000"></div>
+    <div>Latch time (s):<input style="width: 5em;font-size: 0.8em" type="number" id="latchTime" value="0.05"></div>
+    <div>Latch duration (s):<input style="width: 5em;font-size: 0.8em" type="number" id="durGearChange" value="0.005"></div>
   </div>
+
 
   <div class="controlBlock">
     <div>Muscle L0 (m):<input style="width: 5em;font-size: 0.8em" type="number" id="muscleL0" value="0.02"></div>
     <div>Muscle P0 (N):<input style="width: 5em;font-size: 0.8em" type="number" id="muscleP0" value="0.2"></div>
     <div>Muscle Vmax (m/s):<input style="width: 5em;font-size: 0.8em" type="number" id="muscleVmax" value="0.3"></div>
     <div>Muscle starting length (L0):<input style="width: 5em;font-size: 0.8em" type="number" id="muscleStartLength" value="1.2"></div>
+    <div>Excitation (s):<input style="width: 5em;font-size: 0.8em" type="number" id="excitationTime" value="0.03"></div>
   </div>
 
   <div class="controlBlock">
@@ -70,26 +74,25 @@
     <div>Damping coef. (N s/m):<input style="width: 5em;font-size: 0.8em" type="number" id="damper" value="0.1"></div>
   </div>
 
+  </form>
   <div class="controlBlock">
-    <div>Excitation (s):<input style="width: 5em;font-size: 0.8em" type="number" id="excitationTime" value="0.03"></div>
-    <div>Latch time (s):<input style="width: 5em;font-size: 0.8em" type="number" id="latchTime" value="0.05"></div>
-    <div>Latch duration (s):<input style="width: 5em;font-size: 0.8em" type="number" id="durGearChange" value="0.005"></div>
-  </div>
-
-  <div class="controlBlock">
-    <button onclick="location.reload()">Reset and Reload</button>
     <button id="runSim" onclick="springMass()">Apply New Values</button>
   </div>
-
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script type="text/javascript">
     /*   Spring-Mass model looping example. Example of Runge-Kutta 4th Order (RK4) integration. At large time steps, RK4 performs well because it is refining the estimate in each time step by taking a weighted average of four estimates. Other integrators like Euler and Verlet need absurdly small time steps for the same accuracy, which on balance is not as efficient. RK4 is the gold standard. Author: Stephen M. Deban, University of South Florida. */
+
+    // If enter key is pressed, then run the simulation with the entered values.
+    document.onkeypress = function(e) {
+      e = e || window.event; // Assing window event to e, if there is an event.
+      var charCode = (typeof e.which == "number") ? e.which : e.keyCode;
+      if (charCode == 13) springMass(); // Run simulation if the key pressed is the enter key
+    }
 
     // Load google chart API for graphing.
     google.charts.load('current', {
       'packages': ['corechart']
     }); // Load the corechart package which has line charts and others.
-
 
     // Simulation settings
 
@@ -116,7 +119,7 @@
       var shapeFV = 3; // Curvature of force-velocity relation. Larger values are more curved, with 0 a straight line. Value of 3 is about what frog limb muscle shows. To convert to and from Marsh and Bennett's power ratio use powerRatio=1/(shapeFV+2*sqrt(shapeFV+1)+2) and shapeFV=(1-2*sqrt(powerRatio))/powerRatio
       var powerRatio = 1 / (shapeFV + 2 * Math.sqrt(shapeFV + 1) + 2); // Convert shapeFV to power ratio.
       var muscleMass = 1e-05; // Combined mass of projector muscles in kg. 8e-06 is realistic.
-      var muscleFraction = 0.3; // Fraction of muscle mass that is modeled as accelerated muscle mass. Needs to be at least 0.3 or oscillations will occur unless time step is tiny.
+      var muscleFraction = 0.1; // Fraction of muscle mass that is modeled as accelerated muscle mass. Needs to be at least 0.3 or oscillations will occur unless time step is tiny.
       var excitationTime = +document.getElementById("excitationTime").value; // Time for muscle excitation in seconds.
       var excitationRate = 2; // Higher numbers have higher peak rate of excitation. Must be greater than 1.
 
@@ -520,11 +523,11 @@
       options.vAxis.maxValue = maxGearRatio;
       chart15.draw(data15, options);
 
-      options.title = 'Gear Ratio Profile';
+      options.title = 'Your Ad Here!';
       options.hAxis.minValue = 0;
-      options.hAxis.maxValue = duration;
+      options.hAxis.maxValue = 10;
       options.vAxis.minValue = 0;
-      options.vAxis.maxValue = maxGearRatio;
+      options.vAxis.maxValue = 10;
       chart16.draw(data16, options);
 
 
