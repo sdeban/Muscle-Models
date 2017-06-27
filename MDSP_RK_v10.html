@@ -8,21 +8,41 @@
       float: left;
       margin: 0px;
       padding: auto;
-      width: 360px;
-      max-height: 360px;
+      width: 410px;
+      height: 205px;
       border: 0px solid #ffffff;
     }
 
-    .controlBlock {
+    #graphBlock {
+      float: left;
+      max-width: 1300px;
+    }
+
+    #controlBlock {
       float: left;
       margin: 4px;
-      padding: 2px;
-      width: 360;
-      max-height: 200px;
+      margin-top: 2px;
+      padding: 0px;
+      width: 400;
+      height: 100%;
       border: 0px solid #aaaaaa;
       line-height: 150%;
       font-size: 90%;
       font-family: Verdana;
+    }
+
+    #footer {
+      clear: both;
+      padding: 10px;
+      text-align: right;
+    }
+
+    h1 {
+      font-family: Verdana;
+      font-size: 300%;
+      color: cornflowerblue;
+      margin: 0.2em;
+      margin-left: 0;
     }
 
     body {
@@ -34,43 +54,32 @@
 
 <body onload="springMass();">
 
-  <div class="graph" id="chart_01"></div>
-  <div class="graph" id="chart_03"></div>
-  <div class="graph" id="chart_02"></div>
-  <div class="graph" id="chart_04"></div>
-  <div class="graph" id="chart_13"></div>
-  <div class="graph" id="chart_05"></div>
-  <div class="graph" id="chart_06"></div>
-  <div class="graph" id="chart_07"></div>
-  <div class="graph" id="chart_08"></div>
-  <div class="graph" id="chart_09"></div>
-  <div class="graph" id="chart_10"></div>
-  <div class="graph" id="chart_11"></div>
-  <div class="graph" id="chart_12"></div>
-  <div class="graph" id="chart_14"></div>
-  <div class="graph" id="chart_15"></div>
-  <div class="graph" id="chart_16"></div>
-  <form></form>
-  <div class="controlBlock">
+  <div id="controlBlock">
+    <h1>MSDP v10</h1>
+    <br/>
+    <b>Settings</b>
     <div>Duration (s):
       <input style="width: 5em;font-size: 0.8em" type="number" id="duration" value="0.07">
     </div>
     <div>Steps:
       <input style="width: 5em; font-size: 0.8em" type="number" id="steps" value="50000">
     </div>
+    <br/>
+    <b>Latch release</b>
     <div>Latch time (s):
       <input style="width: 5em;font-size: 0.8em" type="number" id="latchTime" value="0.05">
     </div>
     <div>Length threshold (L0):
       <input style="width: 5em;font-size: 0.8em" type="number" id="lengthThreshold" value="0.3">
     </div>
+    <div>Force threshold (P0):
+      <input style="width: 5em;font-size: 0.8em" type="number" id="forceThreshold" value="0.7">
+    </div>
     <div>Latch duration (s):
       <input style="width: 5em;font-size: 0.8em" type="number" id="durGearChange" value="0.005">
     </div>
-  </div>
-
-
-  <div class="controlBlock">
+    <br/>
+    <b>Muscle</b>
     <div>Muscle L0 (m):
       <input style="width: 5em;font-size: 0.8em" type="number" id="muscleL0" value="0.02">
     </div>
@@ -86,27 +95,51 @@
     <div>Excitation (s):
       <input style="width: 5em;font-size: 0.8em" type="number" id="excitationTime" value="0.03">
     </div>
-  </div>
-
-  <div class="controlBlock">
+    <br/>
+    <b>Projectile</b>
     <div>Projectile mass (kg):
       <input style="width: 5em;font-size: 0.8em" type="number" id="mass" value="1e-05">
     </div>
+    <br/>
+    <b>Spring</b>
     <div>Spring constant (N/m):
       <input style="width: 5em;font-size: 0.8em" type="number" id="spring" value="20">
     </div>
     <div>Spring slack length (m):
       <input style="width: 5em;font-size: 0.8em" type="number" id="springL0" value="0.02">
     </div>
+    <br/>
+    <b>Damper</b>
     <div>Damping coef. (N s/m):
       <input style="width: 5em;font-size: 0.8em" type="number" id="damper" value="0.1">
     </div>
+    <br />
+    <button id="runSim" onclick="springMass()">Apply New Values</button>
+    <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> Works best with Chrome.
+    <br />Safari gets sluggish.
   </div>
 
-  </form>
-  <div class="controlBlock">
-    <button id="runSim" onclick="springMass()">Apply New Values</button>
+
+  <div id="graphBlock">
+    <div class="graph" id="chart_01"></div>
+    <div class="graph" id="chart_03"></div>
+    <div class="graph" id="chart_02"></div>
+    <div class="graph" id="chart_04"></div>
+    <div class="graph" id="chart_13"></div>
+    <div class="graph" id="chart_05"></div>
+    <div class="graph" id="chart_06"></div>
+    <div class="graph" id="chart_07"></div>
+    <div class="graph" id="chart_08"></div>
+    <div class="graph" id="chart_09"></div>
+    <div class="graph" id="chart_10"></div>
+    <div class="graph" id="chart_11"></div>
+    <div class="graph" id="chart_12"></div>
+    <div class="graph" id="chart_14"></div>
+    <div class="graph" id="chart_15"></div>
   </div>
+
+
+
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script type="text/javascript">
     /*   Spring-Mass model looping example. Example of Runge-Kutta 4th Order (RK4) integration. At large time steps, RK4 performs well because it is refining the estimate in each time step by taking a weighted average of four estimates. Other integrators like Euler and Verlet need absurdly small time steps for the same accuracy, which on balance is not as efficient. RK4 is the gold standard. Author: Stephen M. Deban, University of South Florida. */
@@ -162,7 +195,7 @@
       // Trial parameters that can change between trials.
       // One or more of these conditions can be used to release latch, depending on which if statements in loop are active. The first condition reached will release latch.
       var latchTime = +document.getElementById("latchTime").value; // Timing of latch release in seconds from start of simulation, if used in loop.
-      var forceThreshold = muscleP0 * 0.99; // Muscle force at which gear ratio drops to 1.
+      var forceThreshold = +document.getElementById("forceThreshold").value * muscleP0; // Muscle force at which gear ratio drops to 1.
       var lengthThreshold = +document.getElementById("lengthThreshold").value; // Muscle length as percent of starting length at which gear ratio drops to 1.
       var latchTripped = 0; // Sets latch sensor to 0, to allow time of latch release to be captured regardless of condition that triggered it.
       var indexLatchTripped = 0; // Index latch tripped, to be filled later.
@@ -366,7 +399,6 @@
         var chart13 = new google.visualization.LineChart(document.getElementById('chart_13'));
         var chart14 = new google.visualization.LineChart(document.getElementById('chart_14'));
         var chart15 = new google.visualization.LineChart(document.getElementById('chart_15'));
-        var chart16 = new google.visualization.LineChart(document.getElementById('chart_16'));
       }
 
       // Place chart options into an object
@@ -387,7 +419,7 @@
           height: '60%'
         },
         fontName: 'Arial',
-        fontSize: 13,
+        fontSize: 14,
         hAxis: {
           format: '#.####',
           title: 'Time (s)',
@@ -481,11 +513,6 @@
       data15.addColumn('number', '');
       data15.addRows(transpose([shortTime, downSample(finalGearRatio)]));
 
-      var data16 = new google.visualization.DataTable();
-      data16.addColumn('number', '');
-      data16.addColumn('number', '');
-      data16.addRows(transpose([shortTime, downSample(finalGearRatio)]));
-
 
       // Call the draw function on the charts.
       options.title = 'Muscle Length (m)'; // Replace options for any subsequent graphs created.
@@ -558,13 +585,6 @@
       options.vAxis.minValue = 0;
       options.vAxis.maxValue = maxGearRatio;
       chart15.draw(data15, options);
-
-      options.title = 'Your Ad Here!';
-      options.hAxis.minValue = 0;
-      options.hAxis.maxValue = 10;
-      options.vAxis.minValue = 0;
-      options.vAxis.maxValue = 10;
-      chart16.draw(data16, options);
 
 
     } // End of muscleSim function.
