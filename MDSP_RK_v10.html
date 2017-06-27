@@ -7,7 +7,7 @@
     .graph {
       float: left;
       margin: 0px;
-      padding: 0px;
+      padding: auto;
       width: 360px;
       max-height: 360px;
       border: 0px solid #ffffff;
@@ -60,6 +60,9 @@
     </div>
     <div>Latch time (s):
       <input style="width: 5em;font-size: 0.8em" type="number" id="latchTime" value="0.05">
+    </div>
+    <div>Length threshold (L0):
+      <input style="width: 5em;font-size: 0.8em" type="number" id="lengthThreshold" value="0.3">
     </div>
     <div>Latch duration (s):
       <input style="width: 5em;font-size: 0.8em" type="number" id="durGearChange" value="0.005">
@@ -159,8 +162,8 @@
       // Trial parameters that can change between trials.
       // One or more of these conditions can be used to release latch, depending on which if statements in loop are active. The first condition reached will release latch.
       var latchTime = +document.getElementById("latchTime").value; // Timing of latch release in seconds from start of simulation, if used in loop.
-      var forceThreshold = muscleP0 * 0.5; // Muscle force at which gear ratio drops to 1.
-      var lengthThreshold = 0.3; // Muscle length as percent of starting length at which gear ratio drops to 1.
+      var forceThreshold = muscleP0 * 0.99; // Muscle force at which gear ratio drops to 1.
+      var lengthThreshold = +document.getElementById("lengthThreshold").value; // Muscle length as percent of starting length at which gear ratio drops to 1.
       var latchTripped = 0; // Sets latch sensor to 0, to allow time of latch release to be captured regardless of condition that triggered it.
       var indexLatchTripped = 0; // Index latch tripped, to be filled later.
       var timeLatchTripped = 0; // Time latch tripped, to be filled later.
@@ -327,7 +330,7 @@
         springVel[i] = projectileVel[i] - muscleVel[i];
 
         // Test for various conditions to determine when latch releases.
-        if ((muscleLength[i] < lengthThreshold * muscleLength[1]) || (muscleForce[i] > forceThreshold) || (time[i] > latchTime)) {
+        if ((muscleLength[i] < lengthThreshold * muscleL0) || (muscleForce[i] > forceThreshold) || (time[i] > latchTime)) {
           // Asks if muscle length is below threshold value specified, force is above threshold, or time is at preset latch time, and if so, it makes gear ratio from this point onward transition to final value.
           ++gearRatioIndex; // Index the counter to move through gear ratio profile array.
           if (latchTripped != 1) { // If latch has not tripped (this is the first time conditions are met)...
@@ -368,35 +371,35 @@
 
       // Place chart options into an object
       var options = { // Display options, such as line thickness, color, axis settings.
-          backgroundColor: '#efefef',
-          title: ' ',
-          tooltip: {
-            trigger: 'selection',
-          },
-          legend: 'none',
-          lineWidth: 1.3,
-          //
-          chartArea: {
-            backgroundColor: 'rgb(250, 250, 250)',
-            left: '15%',
-            top: '15%',
-            width: '77%',
-            height: '60%'
-          },
-          fontName: 'Arial',
-          fontSize: 13,
-          hAxis: {
-            format: '#.####',
-            title: 'Time (s)',
-            minValue: 0,
-            maxValue: duration
-          },
-          vAxis: {
-            format: '#.####'
-          },
-          colors: ['#286ad1', '#286ad1'],
+        backgroundColor: '#efefef',
+        title: ' ',
+        tooltip: {
+          trigger: 'selection',
+        },
+        legend: 'none',
+        lineWidth: 1.3,
+        //
+        chartArea: {
+          backgroundColor: 'rgb(250, 250, 250)',
+          left: '15%',
+          top: '15%',
+          width: '77%',
+          height: '60%'
+        },
+        fontName: 'Arial',
+        fontSize: 13,
+        hAxis: {
+          format: '#.####',
+          title: 'Time (s)',
+          minValue: 0,
+          maxValue: duration
+        },
+        vAxis: {
+          format: '#.####'
+        },
+        colors: ['#286ad1', '#286ad1'],
 
-        } // End of chart options
+      } // End of chart options
 
       var shortTime = downSample(time); // downSample the time array for faster graphing.
 
@@ -533,7 +536,7 @@
       options.colors = ['#c91700'];
       chart13.draw(data13, options);
 
-      options.title = 'Muscle Tension vs Length';
+      options.title = 'Muscle Rel. Tension vs Length';
       options.colors = ['#e5a8a1', '#5d39d3'];
       options.hAxis.title = 'Muscle length (m)';
       options.hAxis.minValue = muscleL0 * 0.5;
@@ -566,6 +569,7 @@
 
     } // End of muscleSim function.
 
+    var chart01 = null;
 
     // Downsample array for much, much faster graphing. More than about 500 points isn't necessary.
     function downSample(longArray) {
