@@ -1,5 +1,6 @@
 <!doctype html>
 <html>
+<!-- Muscle-Spring-Damper-Projectile simulation. Stephen M. Deban, Department of Integrative Biology, University of South Florida, Tampa. -->
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,7 +35,8 @@
     #footer {
       clear: both;
       padding: 10px;
-      text-align: right;
+      text-align: center;
+      color: #cccccc;
     }
 
     h1 {
@@ -115,10 +117,9 @@
     </div>
     <br />
     <button id="runSim" onclick="springMass()">Apply New Values</button>
-    <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> Works best with Chrome.
-    <br />Safari gets sluggish.
+    <br />
+    <br />
   </div>
-
 
   <div id="graphBlock">
     <div class="graph" id="chart_01"></div>
@@ -138,7 +139,7 @@
     <div class="graph" id="chart_15"></div>
   </div>
 
-
+  <div id="footer">Muscle-Spring-Damper-Projectile simulation. 2017. Stephen M. Deban, Department of Integrative Biology, University of South Florida, Tampa. </div>
 
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script type="text/javascript">
@@ -403,35 +404,35 @@
 
       // Place chart options into an object
       var options = { // Display options, such as line thickness, color, axis settings.
-        backgroundColor: '#efefef',
-        title: ' ',
-        tooltip: {
-          trigger: 'selection',
-        },
-        legend: 'none',
-        lineWidth: 1.3,
-        //
-        chartArea: {
-          backgroundColor: 'rgb(250, 250, 250)',
-          left: '15%',
-          top: '15%',
-          width: '77%',
-          height: '60%'
-        },
-        fontName: 'Arial',
-        fontSize: 14,
-        hAxis: {
-          format: '#.####',
-          title: 'Time (s)',
-          minValue: 0,
-          maxValue: duration
-        },
-        vAxis: {
-          format: '#.####'
-        },
-        colors: ['#286ad1', '#286ad1'],
+          backgroundColor: '#efefef',
+          title: ' ',
+          tooltip: {
+            trigger: 'selection',
+          },
+          legend: 'none',
+          lineWidth: 1.3,
+          //
+          chartArea: {
+            backgroundColor: 'rgb(250, 250, 250)',
+            left: '15%',
+            top: '15%',
+            width: '77%',
+            height: '60%'
+          },
+          fontName: 'Arial',
+          fontSize: 14,
+          hAxis: {
+            format: '#.####',
+            title: 'Time (s)',
+            minValue: 0,
+            maxValue: duration
+          },
+          vAxis: {
+            format: '#.####'
+          },
+          colors: ['#286ad1', '#286ad1'],
 
-      } // End of chart options
+        } // End of chart options
 
       var shortTime = downSample(time); // downSample the time array for faster graphing.
 
