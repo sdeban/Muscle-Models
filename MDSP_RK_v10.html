@@ -25,10 +25,11 @@
       margin-top: 2px;
       padding: 0px;
       width: 20%;
+      min-width: 300px;
       height: 100%;
       border: 0px solid #aaaaaa;
       line-height: 150%;
-      font-size: 90%;
+      font-size: 100%;
       font-family: Verdana, Arial, sans-serif;
     }
 
@@ -43,9 +44,15 @@
       font-family: Verdana, Arial, sans-serif;
       font-size: 330%;
       font-style: italic;
-      color: cornflowerblue;
+      color: royalblue;
       margin: 0.2em;
       margin-left: 0;
+    }
+
+    input[type="number"] {
+      color: royalblue;
+      width: 5em;
+      font-size: 1em;
     }
 
     body {
@@ -64,59 +71,60 @@
     <br/><br/>
     <b>Settings</b>
     <div>Duration (s):
-      <input style="width: 5em;font-size: 0.8em" type="number" id="duration" value="0.08">
+      <input type="number" id="duration" value="0.08">
     </div>
     <div>Steps:
-      <input style="width: 5em; font-size: 0.8em" type="number" id="steps" value="20000">
+      <input type="range" id="steps" value="20" max="200" step="10" oninput="stepsOutput.value = steps.value+'k'">
+      <output style="color: royalblue" id="stepsOutput">20k</output>
     </div>
     <br/>
     <b>Latch release</b>
     <div>Latch time (s):
-      <input style="width: 5em;font-size: 0.8em" type="number" id="latchTime" value="0.06">
+      <input type="number" id="latchTime" value="0.06">
     </div>
     <div>Length threshold (L0):
-      <input style="width: 5em;font-size: 0.8em" type="number" id="lengthThreshold" value="0.3">
+      <input type="number" id="lengthThreshold" value="0.3">
     </div>
     <div>Force threshold (P0):
-      <input style="width: 5em;font-size: 0.8em" type="number" id="forceThreshold" value="0.7">
+      <input type="number" id="forceThreshold" value="0.7">
     </div>
     <div>Latch duration (s):
-      <input style="width: 5em;font-size: 0.8em" type="number" id="durGearChange" value="0.002">
+      <input type="number" id="durGearChange" value="0.002">
     </div>
     <br/>
     <b>Muscle</b>
     <div>Muscle L0 (m):
-      <input style="width: 5em;font-size: 0.8em" type="number" id="muscleL0" value="0.02">
+      <input type="number" id="muscleL0" value="0.02">
     </div>
     <div>Muscle P0 (N):
-      <input style="width: 5em;font-size: 0.8em" type="number" id="muscleP0" value="0.2">
+      <input type="number" id="muscleP0" value="0.2">
     </div>
     <div>Muscle Vmax (m/s):
-      <input style="width: 5em;font-size: 0.8em" type="number" id="muscleVmax" value="0.3">
+      <input type="number" id="muscleVmax" value="0.3">
     </div>
-    <div>Muscle starting length (L0):
-      <input style="width: 5em;font-size: 0.8em" type="number" id="muscleStartLength" value="1.2">
+    <div>Muscle init. length (L0):
+      <input type="number" id="muscleStartLength" value="1.2">
     </div>
     <div>Excitation (s):
-      <input style="width: 5em;font-size: 0.8em" type="number" id="excitationTime" value="0.03">
+      <input type="number" id="excitationTime" value="0.03">
     </div>
     <br/>
     <b>Projectile</b>
     <div>Projectile mass (kg):
-      <input style="width: 5em;font-size: 0.8em" type="number" id="mass" value="1e-05">
+      <input type="number" id="mass" value="1e-05">
     </div>
     <br/>
     <b>Spring</b>
     <div>Spring constant (N/m):
-      <input style="width: 5em;font-size: 0.8em" type="number" id="spring" value="20">
+      <input type="number" id="spring" value="20">
     </div>
     <div>Spring slack length (m):
-      <input style="width: 5em;font-size: 0.8em" type="number" id="springL0" value="0.02">
+      <input type="number" id="springL0" value="0.02">
     </div>
     <br/>
     <b>Damper</b>
     <div>Damping coef. (N s/m):
-      <input style="width: 5em;font-size: 0.8em" type="number" id="damper" value="0.01">
+      <input type="number" id="damper" value="0.01">
     </div>
     <br />
     <button id="runSim" onclick="springMass()">Apply New Values</button>
@@ -174,7 +182,7 @@
 
       // Get values from form in webpage. NOTE: '+' coerces the strings retrieved to numbers. Default values are stored in the form elements in the html.
       var duration = +document.getElementById("duration").value; // Duration in seconds.
-      var steps = +document.getElementById("steps").value; // Steps in simulation.
+      var steps = +document.getElementById("steps").value * 1000; // Steps in simulation. Value from form times 1000.
       var projectileMass = +document.getElementById("mass").value; // Mass in kg.
       var springK = +document.getElementById("spring").value; // Tendon spring constant in N/m. Realistic values not known.
       var dampingConstant = +document.getElementById("damper").value; // Damping constant in Ns/m of damper on muscle mass. Damping may reduce fast oscillation of muscle mass.
@@ -434,7 +442,7 @@
         vAxis: {
           format: '#.####'
         },
-        colors: ['#286ad1', '#286ad1'],
+        colors: ['royalblue', 'royalblue'],
 
       } // End of chart options
 
@@ -537,19 +545,19 @@
       chart04.draw(data04, options);
 
       options.title = 'Projectile Position (m)';
-      options.colors = ['#234cba'];
+      options.colors = ['royalblue'];
       chart05.draw(data05, options);
 
       options.title = 'Projectile Velocity (m/s)';
-      options.colors = ['#234cba'];
+      options.colors = ['royalblue'];
       chart06.draw(data06, options);
 
       options.title = 'Projectile Acceleration (m/s/s)'; // Remember, these options are inherited by the graphs below.
-      options.colors = ['#234cba'];
+      options.colors = ['royalblue'];
       chart07.draw(data07, options);
 
       options.title = 'Projectile Power (W/kg)';
-      options.colors = ['#234cba'];
+      options.colors = ['royalblue'];
       chart08.draw(data08, options);
 
       options.title = 'Spring Length (m)';
