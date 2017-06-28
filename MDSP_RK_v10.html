@@ -8,15 +8,15 @@
     .graph {
       float: left;
       margin: 0px;
+      margin: auto;
       padding: auto;
-      width: 410px;
-      height: 205px;
-      border: 0px solid #ffffff;
+      max-width: 380px;
+      height: 200px;
     }
 
     #graphBlock {
       float: left;
-      max-width: 1300px;
+      max-width: 78%;
     }
 
     #controlBlock {
@@ -24,12 +24,12 @@
       margin: 4px;
       margin-top: 2px;
       padding: 0px;
-      width: 400;
+      width: 20%;
       height: 100%;
       border: 0px solid #aaaaaa;
       line-height: 150%;
       font-size: 90%;
-      font-family: Verdana;
+      font-family: Verdana, Arial, sans-serif;
     }
 
     #footer {
@@ -40,8 +40,9 @@
     }
 
     h1 {
-      font-family: Verdana;
-      font-size: 300%;
+      font-family: Verdana, Arial, sans-serif;
+      font-size: 330%;
+      font-style: italic;
       color: cornflowerblue;
       margin: 0.2em;
       margin-left: 0;
@@ -57,19 +58,21 @@
 <body onload="springMass();">
 
   <div id="controlBlock">
-    <h1>MSDP v10</h1>
+    <h1>MSDP</h1>
+    v 10
     <br/>
+    <br/><br/>
     <b>Settings</b>
     <div>Duration (s):
-      <input style="width: 5em;font-size: 0.8em" type="number" id="duration" value="0.07">
+      <input style="width: 5em;font-size: 0.8em" type="number" id="duration" value="0.08">
     </div>
     <div>Steps:
-      <input style="width: 5em; font-size: 0.8em" type="number" id="steps" value="50000">
+      <input style="width: 5em; font-size: 0.8em" type="number" id="steps" value="20000">
     </div>
     <br/>
     <b>Latch release</b>
     <div>Latch time (s):
-      <input style="width: 5em;font-size: 0.8em" type="number" id="latchTime" value="0.05">
+      <input style="width: 5em;font-size: 0.8em" type="number" id="latchTime" value="0.06">
     </div>
     <div>Length threshold (L0):
       <input style="width: 5em;font-size: 0.8em" type="number" id="lengthThreshold" value="0.3">
@@ -78,7 +81,7 @@
       <input style="width: 5em;font-size: 0.8em" type="number" id="forceThreshold" value="0.7">
     </div>
     <div>Latch duration (s):
-      <input style="width: 5em;font-size: 0.8em" type="number" id="durGearChange" value="0.005">
+      <input style="width: 5em;font-size: 0.8em" type="number" id="durGearChange" value="0.002">
     </div>
     <br/>
     <b>Muscle</b>
@@ -113,7 +116,7 @@
     <br/>
     <b>Damper</b>
     <div>Damping coef. (N s/m):
-      <input style="width: 5em;font-size: 0.8em" type="number" id="damper" value="0.1">
+      <input style="width: 5em;font-size: 0.8em" type="number" id="damper" value="0.01">
     </div>
     <br />
     <button id="runSim" onclick="springMass()">Apply New Values</button>
@@ -189,7 +192,7 @@
       var shapeFV = 3; // Curvature of force-velocity relation. Larger values are more curved, with 0 a straight line. Value of 3 is about what frog limb muscle shows. To convert to and from Marsh and Bennett's power ratio use powerRatio=1/(shapeFV+2*sqrt(shapeFV+1)+2) and shapeFV=(1-2*sqrt(powerRatio))/powerRatio
       var powerRatio = 1 / (shapeFV + 2 * Math.sqrt(shapeFV + 1) + 2); // Convert shapeFV to power ratio.
       var muscleMass = 1e-05; // Combined mass of projector muscles in kg. 8e-06 is realistic.
-      var muscleFraction = 0.1; // Fraction of muscle mass that is modeled as accelerated muscle mass. Needs to be at least 0.3 or oscillations will occur unless time step is tiny.
+      var muscleFraction = 0.3; // Fraction of muscle mass that is modeled as accelerated muscle mass.
       var excitationTime = +document.getElementById("excitationTime").value; // Time for muscle excitation in seconds.
       var excitationRate = 2; // Higher numbers have higher peak rate of excitation. Must be greater than 1.
 
@@ -349,7 +352,8 @@
         muscleFVForce[i] = (muscleP0 * (muscleVmax - muscleVel[i])) / (shapeFV * muscleVel[i] + muscleVmax);
         muscleForce[i] = muscleFVForce[i] * muscleLTForce[i] * muscleExcForce[i] > 0 ?
           muscleFVForce[i] * muscleLTForce[i] * muscleExcForce[i] : 0;
-        springLength[i] = projectilePos[i] - muscleLength[i]; // Calculate definitive spring length for this time step.
+        springLength[i] = (projectilePos[i] - muscleLength[i]) > springL0 ?
+          (projectilePos[i] - muscleLength[i]) : springL0; // Calculate definitive spring length for this time step, never shorter than springL0.
         springForce[i] = (springLength[i] - springL0) * springK > 0 ?
           (springLength[i] - springL0) * springK : 0; // Definitive spring force for this time step.
         muscleAcc[i] = (muscleForce[i] - springForce[i] - dampingConstant *
@@ -404,35 +408,35 @@
 
       // Place chart options into an object
       var options = { // Display options, such as line thickness, color, axis settings.
-          backgroundColor: '#efefef',
-          title: ' ',
-          tooltip: {
-            trigger: 'selection',
-          },
-          legend: 'none',
-          lineWidth: 1.3,
-          //
-          chartArea: {
-            backgroundColor: 'rgb(250, 250, 250)',
-            left: '15%',
-            top: '15%',
-            width: '77%',
-            height: '60%'
-          },
-          fontName: 'Arial',
-          fontSize: 14,
-          hAxis: {
-            format: '#.####',
-            title: 'Time (s)',
-            minValue: 0,
-            maxValue: duration
-          },
-          vAxis: {
-            format: '#.####'
-          },
-          colors: ['#286ad1', '#286ad1'],
+        backgroundColor: '#efefef',
+        title: ' ',
+        tooltip: {
+          trigger: 'selection',
+        },
+        legend: 'none',
+        lineWidth: 1.3,
+        //
+        chartArea: {
+          backgroundColor: 'rgb(250, 250, 250)',
+          left: '15%',
+          top: '15%',
+          width: '77%',
+          height: '60%'
+        },
+        fontName: 'Arial',
+        fontSize: 14,
+        hAxis: {
+          format: '#.####',
+          title: 'Time (s)',
+          minValue: 0,
+          maxValue: duration
+        },
+        vAxis: {
+          format: '#.####'
+        },
+        colors: ['#286ad1', '#286ad1'],
 
-        } // End of chart options
+      } // End of chart options
 
       var shortTime = downSample(time); // downSample the time array for faster graphing.
 
@@ -575,7 +579,7 @@
       options.colors = ['#e5a8a1', '#5d39d3'];
       options.hAxis.title = 'Muscle velocity (m/s)';
       options.hAxis.minValue = 0;
-      options.hAxis.maxValue = muscleP0;
+      options.hAxis.maxValue = muscleVmax;
       chart14.draw(data14, options);
 
       options.title = 'Gear Ratio Profile';
