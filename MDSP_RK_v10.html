@@ -74,7 +74,7 @@
       <input type="number" id="duration" value="0.08">
     </div>
     <div>Steps:
-      <input type="range" id="steps" value="20" max="200" step="10" oninput="stepsOutput.value = steps.value+'k'">
+      <input type="range" id="steps" value="20" min="5" max="200" step="5" oninput="stepsOutput.value = steps.value+'k'">
       <output style="color: royalblue" id="stepsOutput">20k</output>
     </div>
     <br/>
@@ -601,8 +601,6 @@
 
 
     } // End of muscleSim function.
-
-    var chart01 = null;
 
     // Downsample array for much, much faster graphing. More than about 500 points isn't necessary.
     function downSample(longArray) {
