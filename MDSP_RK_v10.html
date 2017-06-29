@@ -459,6 +459,8 @@
       data02.addColumn('number', '');
       data02.addRows(transpose([shortTime, downSample(muscleVel)]));
 
+      // TODO: removeColumns(columnIndex, numberOfColumns) can be used to remove data which can then be updated.
+
       var data03 = new google.visualization.DataTable();
       data03.addColumn('number', '');
       data03.addColumn('number', '');
@@ -525,7 +527,6 @@
       data15.addColumn('number', '');
       data15.addColumn('number', '');
       data15.addRows(transpose([shortTime, downSample(finalGearRatio)]));
-
 
       // Call the draw function on the charts.
       options.title = 'Muscle Length (m)'; // Replace options for any subsequent graphs created.
