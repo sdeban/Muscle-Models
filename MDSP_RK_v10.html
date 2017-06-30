@@ -91,6 +91,12 @@
     <div>Latch duration (s):
       <input type="number" id="durGearChange" value="0.002">
     </div>
+    <div>Initial gear ratio:
+      <input type="number" id="initGearRatio" value="10000">
+    </div>
+    <div>Final gear ratio:
+      <input type="number" id="finalGearRatio" value="1">
+    </div>
     <br/>
     <b>Muscle</b>
     <div>Muscle L0 (m):
@@ -213,8 +219,8 @@
       var indexLatchTripped = 0; // Index latch tripped, to be filled later.
       var timeLatchTripped = 0; // Time latch tripped, to be filled later.
       var gearRatioIndex = 0; // Counter to index gear ratio profile array.
-      var maxGearRatio = 10000; // Gear ratio at start of trial.
-      var minGearRatio = 1; // Final gear ratio value during launch.
+      var maxGearRatio = +document.getElementById("initGearRatio").value; // Gear ratio at start of trial.
+      var minGearRatio = +document.getElementById("finalGearRatio").value; // Final gear ratio value during launch.
       var durationGearChange = +document.getElementById("durGearChange").value; // Duration of latch release. Value near time step is effectively instantaneous.
 
       // Define arrays of proper length to fill with values later.
