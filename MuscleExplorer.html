@@ -1,6 +1,16 @@
 <!doctype html>
 <html>
-<!-- Muscle-Spring-Damper-Projectile simulation. Stephen M. Deban, Department of Integrative Biology, University of South Florida, Tampa. -->
+<!-- Muscle-Spring-Damper-Projectile simulation, called "Muscle Explorer" for now. 2017. Stephen M. Deban, Department of Integrative Biology, University of South Florida, Tampa. -->
+
+
+<!-- TODO: Do something with muscle mass, for calculation of mass specific values. -->
+<!-- TODO: Write complete and pretty instruction webpage, linked to simulation. -->
+<!-- TODO: Look into storage and loading of parameter sets in local storage. -->
+<!-- TODO: Fix Google Charts so they don't get recreated each time. -->
+<!-- TODO: Change spring constant to elastic modulus? -->
+<!-- TODO: Add saving of all data to csv file. -->
+
+
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,7 +40,7 @@
       border: 0px solid #aaaaaa;
       line-height: 150%;
       font-size: 100%;
-      font-family: Verdana, Arial, sans-serif;
+      font-family: "Lucida Grande", Verdana, Arial, sans-serif;
     }
 
     #footer {
@@ -41,7 +51,7 @@
     }
 
     h1 {
-      font-family: Verdana, Arial, sans-serif;
+      font-family: "Lucida Grande", Verdana, Arial, sans-serif;
       font-size: 200%;
       color: firebrick;
       margin: 0.2em;
@@ -125,7 +135,7 @@
     <div title="Stiffness of spring between muscle and projectile, in newtons per meter.">Spring constant (N/m):
       <input type="number" id="spring" value="20">
     </div>
-    <div title="Length in meters at which spring exerts no force.">Spring slack length (m):
+    <div title="Length in meters at which spring exerts no force. Has no effect on projectile movement, just starting position.">Spring slack length (m):
       <input type="number" id="springL0" value="0.02">
     </div>
     <br/>
@@ -443,7 +453,7 @@
           width: '77%',
           height: '60%'
         },
-        fontName: 'Arial',
+        fontName: 'Lucida Grande',
         fontSize: 14,
         hAxis: {
           format: '#.####',
@@ -471,7 +481,7 @@
       data02.addColumn('number', '');
       data02.addRows(transpose([shortTime, downSample(muscleVel)]));
 
-      // TODO: removeColumns(columnIndex, numberOfColumns) can be used to remove data which can then be updated.
+      // NOTE: removeColumns(columnIndex, numberOfColumns) can be used to remove data which can then be updated.
 
       var data03 = new google.visualization.DataTable();
       data03.addColumn('number', '');
