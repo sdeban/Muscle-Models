@@ -5,19 +5,37 @@
   <title>My first Chartist Tests</title>
   <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
   <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+
+  <style>
+    .ct-chart {
+      float: left;
+      margin: 0px;
+      margin: auto;
+      max-width: 500px;
+      font-size: 200%;
+      font-family: sans-serif;
+    }
+
+  </style>
 </head>
 
 <body>
-  <div class="ct-chart ct-golden-section" id="chart1"></div>
-  <div class="ct-chart ct-golden-section" id="chart2"></div>
+  <div id="graphBlock">
+    <div class="ct-chart ct-golden-section" id="chart1"></div>
+    <div class="ct-chart ct-golden-section" id="chart2"></div>
+  </div>
+  <button id="runSim" onclick="newValues()">Apply New Values</button>
 
   <script>
+    function randomSeries(length) {
+      var series = [];
+      for (i = 0; i < length; i++) series[i] = Math.random() * 100;
+      return series
+    }
+
     // Initialize a Line chart in the container with the ID chart1
-    new Chartist.Line('#chart1', {
-      labels: [1, 2, 3, 4],
-      series: [
-        [100, 120, 180, 200]
-      ]
+    var graph1 = new Chartist.Line('#chart1', {
+      series: [randomSeries(20)]
     });
 
     // Initialize a Line chart in the container with the ID chart2
@@ -27,6 +45,12 @@
         [5, 2, 8, 3]
       ]
     });
+
+    function newValues() {
+      new Chartist.Line('#chart2', {
+        series: [randomSeries(34)]
+      });
+    }
 
   </script>
 </body>
