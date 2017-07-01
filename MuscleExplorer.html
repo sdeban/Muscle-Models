@@ -9,6 +9,7 @@
 <!-- TODO: Fix Google Charts so they don't get recreated each time. -->
 <!-- TODO: Change spring constant to elastic modulus? -->
 <!-- TODO: Add saving of all data to csv file. -->
+<!-- TODO: [x] Add muscle FV shape control. -->
 
 
 
@@ -200,7 +201,6 @@
     // Simulation settings
 
     function springMass() { // Start of main simulation function
-
 
       // Get values from form in webpage. NOTE: '+' coerces the strings retrieved to numbers. Default values are stored in the form elements in the html.
       var duration = +document.getElementById("duration").value; // Duration in seconds.
