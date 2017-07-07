@@ -3,10 +3,10 @@
 <!-- Muscle-Spring-Damper-Projectile simulation, called "Muscle Explorer" for now. 2017. Stephen M. Deban, Department of Integrative Biology, University of South Florida, Tampa. -->
 
 
+<!-- TODO: Make layout responsive to device with different CSS sections for different screens. -->
 <!-- TODO: Do something with muscle mass, for calculation of mass specific values. -->
 <!-- TODO: Write complete and pretty instruction webpage, linked to simulation. -->
 <!-- TODO: Look into storage and loading of parameter sets in local storage. -->
-<!-- TODO: Fix Google Charts so they don't get recreated each time. -->
 <!-- TODO: Change spring constant to elastic modulus? -->
 <!-- TODO: Add saving of all data to csv file. -->
 <!-- TODO: [x] Add muscle FV shape control. -->
@@ -192,6 +192,7 @@
     }); // Load the corechart package which has line charts and others.
 
     // Check if local web storage is supported by browser.
+    // TODO: Use this in the future for saving and loading data.
     if (typeof(Storage) != "undefined") {
       // Code for localStorage/sessionStorage.
     } else {
