@@ -18,7 +18,6 @@
   <style>
     .graph {
       float: left;
-      margin: 0px;
       margin: auto;
       padding: auto;
       max-width: 400px;
@@ -27,7 +26,7 @@
 
     #graphBlock {
       float: left;
-      max-width: 78%;
+      max-width: 75%;
     }
 
     #controlBlock {
@@ -129,12 +128,12 @@
     <br/>
     <b>Projectile</b>
     <div title="Mass of the projectile in kg.">Projectile mass (kg):
-      <input type="number" id="mass" value="1e-05">
+      <input type="number" id="mass" value="1e-04">
     </div>
     <br/>
     <b>Spring</b>
     <div title="Stiffness of spring between muscle and projectile, in newtons per meter.">Spring constant (N/m):
-      <input type="number" id="spring" value="20">
+      <input type="number" id="spring" value="40">
     </div>
     <div title="Length in meters at which spring exerts no force. Has no effect on projectile movement, just starting position.">Spring slack length (m):
       <input type="number" id="springL0" value="0.02">
@@ -156,21 +155,21 @@
   </div>
 
   <div id="graphBlock">
-    <div class="graph" id="chart_01"></div>
-    <div class="graph" id="chart_03"></div>
-    <div class="graph" id="chart_02"></div>
-    <div class="graph" id="chart_04"></div>
-    <div class="graph" id="chart_13"></div>
-    <div class="graph" id="chart_05"></div>
-    <div class="graph" id="chart_06"></div>
-    <div class="graph" id="chart_07"></div>
-    <div class="graph" id="chart_08"></div>
-    <div class="graph" id="chart_09"></div>
-    <div class="graph" id="chart_10"></div>
-    <div class="graph" id="chart_11"></div>
-    <div class="graph" id="chart_12"></div>
-    <div class="graph" id="chart_14"></div>
-    <div class="graph" id="chart_15"></div>
+    <div title="Muscle length vs time." class="graph" id="chart_01"></div>
+    <div title="Muscle force vs time. Force is constrained to be positive, i.e., shortening." class="graph" id="chart_03"></div>
+    <div title="Muscle velocity vs time. Positive velocity is the muscle shortening." class="graph" id="chart_02"></div>
+    <div title="Absolute muscle power vs time, calculated as muscle velocity x muscle force. Not mass-specific power (unless the muscle happens to weigh 1 kg)." class="graph" id="chart_04"></div>
+    <div title="Absolute muscle work vs time, calculated as muscle force x amount of shortening from the initial length. Not mass specific." class="graph" id="chart_13"></div>
+    <div title="Projectile position vs time." class="graph" id="chart_05"></div>
+    <div title="Projectile velocity vs time." class="graph" id="chart_06"></div>
+    <div title="Projectile acceleration vs time." class="graph" id="chart_07"></div>
+    <div title="Mass-specific projectile power vs time. Calculated as projectile velocity x acceleration." class="graph" id="chart_08"></div>
+    <div title="Spring length vs time. Constrained to be equal to or longer than initial length." class="graph" id="chart_09"></div>
+    <div title="Spring velocity vs time. Positive velocity is spring shortening." class="graph" id="chart_10"></div>
+    <div title="Muscle length vs time." class="graph" id="chart_11"></div>
+    <div title="Muscle length vs time." class="graph" id="chart_12"></div>
+    <div title="Muscle length vs time." class="graph" id="chart_14"></div>
+    <div title="Muscle length vs time." class="graph" id="chart_15"></div>
   </div>
 
   <div id="footer">Muscle Explorer. 2017. Stephen M. Deban, Department of Integrative Biology, University of South Florida, Tampa. </div>
@@ -298,7 +297,7 @@
         muscleFVForce[0] * muscleLTForce[0] * muscleExcForce[0] : 0; // Final muscle force, calculated from muscle length, velocity and excitation at first time step. Constrained to be positive because a muscle cannot push. Positive when muscle is shortening.
       springForce[0] = (springLength[0] - springL0) * springK > 0 ?
         (springLength[0] - springL0) * springK : 0; // Spring force is calculated from tendon length relative to slack length, and spring constant at current time step, as a Hookean spring: F=kx. F=(current length-slack length)*spring constant. Constrained to be positive or zero because a tendon cannot push. Positive is shortening tendon and projecting tongue mass.
-      musclePower[0] = muscleVel[0] * muscleAcc[0]; // Calculate mass specific muscle power.
+      musclePower[0] = muscleVel[0] * muscleAcc[0]; // Calculate absolute muscle power.
 
 
       // Simulation loop: second time step and onward using Runge-Kutta 4th order integration"
