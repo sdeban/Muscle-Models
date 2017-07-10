@@ -74,9 +74,9 @@
 <body onload="springMass();">
 
   <div id="controlBlock">
-    <h1>Muscle Explorer</h1>
-    Deban Lab @ USF
-    <br/><br/>
+    <h1>Muscle Explorer</h1> Deban Lab @ USF
+    <br/>
+    <br/>
     <b title="General simulation settings.">Settings</b>
     <div title="Duration of simulation in seconds.">Duration (s):
       <input type="number" min="0.01" max="100" step="0.01" id="duration" value="0.08">
@@ -86,7 +86,7 @@
       <output style="color: royalblue" id="stepsOutput">20k</output>
     </div>
     <br/>
-    <b title="Prescribe the range of mechanical advantage or gearing values between the spring and the projectile as well as the duration of the change and the conditions that trigger the change.">Leverage Change</b>
+    <b title="Prescribe the range of mechanical advantage or gearing values between the spring and the projectile as well as the duration of the leverage change and the conditions that trigger the change.">Leverage Change</b>
     <div title="Start changing gearing at this time unless other conditions are met first, such as a muscle force or muscle length threshold.">Latch time (s):
       <input type="number" id="latchTime" value="0.06">
     </div>
@@ -125,7 +125,7 @@
     <div title="Muscle length at start of trial, as fraction of muscle L0.">Muscle init. length (L0):
       <input type="number" id="muscleStartLength" value="1.2">
     </div>
-    <div title="Duration of muscle excitation in seconds.">Excitation (s):
+    <div title="Duration of muscle excitation in seconds.">Excitation duration (s):
       <input type="number" id="excitationTime" value="0.03">
     </div>
     <br/>
@@ -151,7 +151,9 @@
     </div>
     <br />
     <button id="runSim" onclick="springMass()">Apply New Values</button>
-    <br /> <br /> <br />
+    <br />
+    <br />
+    <br />
     <button id="instructions" onclick="instructions()">Instructions</button>
     <br />
     <br />
@@ -169,7 +171,7 @@
     <div title="Mass-specific projectile power vs time. Calculated as projectile velocity x acceleration." class="graph" id="chart_08"></div>
     <div title="Spring length vs time. Constrained to be equal to or longer than initial length." class="graph" id="chart_09"></div>
     <div title="Spring velocity vs time. Positive velocity is spring shortening." class="graph" id="chart_10"></div>
-    <div title="Muscle excitation vs time. Multiplied by the muscle force derived from the length-tension and force-velocity curves to ramp up muscle force over time." class="graph" id="chart_11"></div>
+    <div title="Muscle excitation vs time. Excitation increases sigmoidally from zero to 100% over the specified 'Excitation duration.' The value at each time step is multiplied by the muscle force derived from the length-tension and force-velocity curves to ramp up muscle force over time." class="graph" id="chart_11"></div>
     <div title="Muscle relative tension (force as a fraction of P0) vs length. Both potential (pink) and realized (purple) force-length trajectories are shown for the realized range of lengths." class="graph" id="chart_12"></div>
     <div title="Muscle force vs velocity. Both potential (pink) and realized (purple) force-velocity trajectories are shown for the realized range of velocities." class="graph" id="chart_14"></div>
     <div title="Gear ratio vs time. The profile prescribed for the changing gear ratio between the spring and projectile. The reciprocal of leverage or mechanical advantage." class="graph" id="chart_15"></div>
@@ -441,35 +443,35 @@
 
       // Place chart options into an object
       var options = { // Display options, such as line thickness, color, axis settings.
-        backgroundColor: '#efefef',
-        title: ' ',
-        tooltip: {
-          trigger: 'selection',
-        },
-        legend: 'none',
-        lineWidth: 1.3,
-        //
-        chartArea: {
-          backgroundColor: 'rgb(250, 250, 250)',
-          left: '15%',
-          top: '15%',
-          width: '77%',
-          height: '60%'
-        },
-        fontName: 'Lucida Grande',
-        fontSize: 14,
-        hAxis: {
-          format: '#.####',
-          title: 'Time (s)',
-          minValue: 0,
-          maxValue: duration
-        },
-        vAxis: {
-          format: '#.####'
-        },
-        colors: ['royalblue', 'royalblue'],
+          backgroundColor: '#efefef',
+          title: ' ',
+          tooltip: {
+            trigger: 'selection',
+          },
+          legend: 'none',
+          lineWidth: 1.3,
+          //
+          chartArea: {
+            backgroundColor: 'rgb(250, 250, 250)',
+            left: '15%',
+            top: '15%',
+            width: '77%',
+            height: '60%'
+          },
+          fontName: 'Lucida Grande',
+          fontSize: 14,
+          hAxis: {
+            format: '#.####',
+            title: 'Time (s)',
+            minValue: 0,
+            maxValue: duration
+          },
+          vAxis: {
+            format: '#.####'
+          },
+          colors: ['royalblue', 'royalblue'],
 
-      } // End of chart options
+        } // End of chart options
 
       var shortTime = downSample(time); // downSample the time array for faster graphing.
 
