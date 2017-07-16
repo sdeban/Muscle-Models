@@ -453,7 +453,7 @@
           trigger: 'selection',
         },
         legend: 'none',
-        lineWidth: 1.3,
+        lineWidth: 1.8,
         //
         chartArea: {
           backgroundColor: 'rgb(250, 250, 250)',
@@ -641,7 +641,7 @@
 
     // Downsample array for much, much faster graphing. More than about 500 points isn't necessary.
     function downSample(longArray) {
-      var shortLength = 500;
+      var shortLength = 800;
       var shortArray = new Array(shortLength);
       var scaleFactor = Math.round(longArray.length / shortLength); // Create factor by which to skip values in long array.
       for (var i = 0; i < shortLength; ++i) { // Could probably do this with a .map function.
