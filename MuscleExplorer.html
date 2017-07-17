@@ -253,7 +253,9 @@
       var muscleForce = [];
       var muscleRelForce = [];
       var musclePower = [];
+      var musclePowermW = [];
       var muscleWork = [];
+      var muscleWorkmJ = [];
       var springLength = [];
       var springForce = [];
       var springVel = [];
@@ -400,8 +402,10 @@
         projectileAcc[i] = springForce[i] / projectileMass / gearRatio[gearRatioIndex]; // Definitive projectile acceleration for this time step.
 
         // Calculate power and work
-        muscleWork[i] = muscleForce[i] * (muscleLength[1] - muscleLength[i]);
+        muscleWork[i] = muscleForce[i] * (muscleLength[1] - muscleLength[i]); // Calculate work in joules.
+        muscleWorkmJ[i] = muscleWork[i] * 1000; // Convert work to mJ for graphing.
         musclePower[i] = muscleVel[i] * muscleForce[i]; // Calculate absolute muscle power in W.
+        musclePowermW[i] = musclePower[i] * 1000;
         muscleRelForce[i] = muscleForce[i] / muscleP0;
         projectilePower[i] = projectileVel[i] * projectileAcc[i];
         springVel[i] = projectileVel[i] - muscleVel[i];
@@ -500,7 +504,7 @@
       var data04 = new google.visualization.DataTable();
       data04.addColumn('number', '');
       data04.addColumn('number', '');
-      data04.addRows(transpose([shortTime, downSample(musclePower)]));
+      data04.addRows(transpose([shortTime, downSample(musclePowermW)]));
 
       var data05 = new google.visualization.DataTable();
       data05.addColumn('number', '');
@@ -540,7 +544,7 @@
       var data13 = new google.visualization.DataTable();
       data13.addColumn('number', '');
       data13.addColumn('number', '');
-      data13.addRows(transpose([shortTime, downSample(muscleWork)]));
+      data13.addRows(transpose([shortTime, downSample(muscleWorkmJ)]));
 
       var data12 = new google.visualization.DataTable();
       data12.addColumn('number', '');
@@ -572,7 +576,7 @@
       options.colors = ['#c91700'];
       chart03.draw(data03, options);
 
-      options.title = 'Muscle Power (W)';
+      options.title = 'Muscle Power (mW)';
       options.colors = ['#c91700'];
       chart04.draw(data04, options);
 
@@ -604,7 +608,7 @@
       options.colors = ['#c91700'];
       chart11.draw(data11, options);
 
-      options.title = 'Muscle Work (J)';
+      options.title = 'Muscle Work (mJ)';
       options.colors = ['#c91700'];
       chart13.draw(data13, options);
 
