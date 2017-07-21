@@ -247,6 +247,8 @@
       var maxGearRatio = +document.getElementById("initGearRatio").value; // Gear ratio at start of trial.
       var minGearRatio = +document.getElementById("finalGearRatio").value; // Final gear ratio value during launch.
       var durationGearChange = +document.getElementById("durGearChange").value; // Duration of latch release. Value near time step is effectively instantaneous.
+      var totalWork = 0; // Place to store the cumulative work done by the muscle.
+
 
       // Define arrays of proper length to fill with values later.
       var muscleLTForce = [];
@@ -402,8 +404,9 @@
         projectileAcc[i] = springForce[i] / projectileMass / gearRatio[gearRatioIndex]; // Definitive projectile acceleration for this time step.
 
         // Calculate power and work
-        muscleWork[i] = muscleForce[i] * (muscleLength[1] - muscleLength[i]); // Calculate work in joules.
-        muscleWorkmJ[i] = muscleWork[i] * 1000; // Convert work to mJ for graphing.
+        muscleWork[i] = muscleForce[i] * (muscleLength[i - 1] - muscleLength[i]); // Calculate work in joules for this time step.
+        totalWork = totalWork + muscleWork[i]; // Add the current work to the total muscle work.
+        muscleWorkmJ[i] = 1000 * totalWork; // Convert work to mJ and add to history for graphing.
         musclePower[i] = muscleVel[i] * muscleForce[i]; // Calculate absolute muscle power in W.
         musclePowermW[i] = musclePower[i] * 1000;
         muscleRelForce[i] = muscleForce[i] / muscleP0;
