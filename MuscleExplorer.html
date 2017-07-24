@@ -2,13 +2,6 @@
 <html>
 <!-- Muscle-Spring-Damper-Projectile simulation, called "Muscle Explorer" for now. 2017. Stephen M. Deban, Department of Integrative Biology, University of South Florida, Tampa. -->
 
-<!-- TODO: Make layout responsive to device with different CSS sections for different screens. -->
-<!-- TODO: Do something with muscle mass, for calculation of mass specific values. -->
-<!-- TODO: Write complete and pretty instruction webpage, linked to simulation. -->
-<!-- TODO: Look into storage and loading of parameter sets in local storage. -->
-<!-- TODO: Change spring constant to elastic modulus? -->
-<!-- TODO: Add saving of all data to csv file. -->
-<!-- TODO: [x] Add muscle FV shape control. -->
 
 
 <head>
@@ -127,7 +120,7 @@
       <input type="number" id="muscleVmax" value="0.3">
     </div>
     <div class="variable" title="Curvature of force-velocity relation. Higher is more curved. Value of 3 is about right for frog limb muscle with a power ratio of 1.1.">Muscle F-V Curvature:
-      <input type="number" id="shapeFV" value="3">
+      <input type="number" id="curveFV" value="3">
     </div>
     <div class="variable" title="Muscle length at start of trial, as fraction of muscle L0.">Muscle init. length (L0):
       <input type="number" id="muscleStartLength" value="1.2">
@@ -150,11 +143,11 @@
     </div>
     <br/>
     <b title="Inertial and viscous damping of the muscle mass. Higher values reduce vibrations that can occur with a small muscle mass and stiff spring.">Damping of Muscle</b>
-    <div class="variable" title="Viscous damping of the inertial muscle mass.">Damping coef. (N s/m):
-      <input type="number" id="damper" value="0.01">
-    </div>
     <div class="variable" title="Muscle mass that is accelerated when the muscle shortens, as a fraction of muscle mass.">Inertial mass (muscle mass):
       <input type="number" step="0.01" min="0.01" max="1.0" id="muscleFraction" value="0.3">
+    </div>
+    <div class="variable" title="Viscous damping of the inertial muscle mass, with damping force proportional to velocity.">Damping coef. (N s/m):
+      <input type="number" id="damper" value="0.01">
     </div>
     <br />
     <button id="runSim" onclick="springMass()">Apply New Values</button>
@@ -228,8 +221,8 @@
       var muscleP0 = +document.getElementById("muscleP0").value; // Muscle isometric tension in newtons.
       var muscleVmax = +document.getElementById("muscleVmax").value; // Muscle Vmax in m/s.
       var muscleStartLength = muscleL0 * +document.getElementById("muscleStartLength").value; // Starting length of muscle. Greater than 1.0 will make it start on  descending limb of length-tension curve.
-      var shapeFV = +document.getElementById("shapeFV").value; // Curvature of force-velocity relation. Larger values are more curved, with 0 a straight line. Value of 3 is about what frog limb muscle shows. To convert to and from Marsh and Bennett's power ratio use powerRatio=1/(shapeFV+2*sqrt(shapeFV+1)+2) and shapeFV=(1-2*sqrt(powerRatio))/powerRatio
-      var powerRatio = 1 / (shapeFV + 2 * Math.sqrt(shapeFV + 1) + 2); // Convert shapeFV to power ratio.
+      var curveFV = +document.getElementById("curveFV").value; // Curvature of force-velocity relation. Larger values are more curved, with 0 a straight line. Value of 3 is about what frog limb muscle shows. To convert to and from Marsh and Bennett's power ratio use powerRatio=1/(curveFV+2*sqrt(curveFV+1)+2) and curveFV=(1-2*sqrt(powerRatio))/powerRatio
+      var powerRatio = 1 / (curveFV + 2 * Math.sqrt(curveFV + 1) + 2); // Convert curveFV to power ratio.
       var muscleMass = +document.getElementById("muscleMass").value; // Combined mass of projector muscles in kg. 8e-06 is realistic.
       var muscleFraction = +document.getElementById("muscleFraction").value; // Fraction of muscle mass that is modeled as accelerated muscle mass.
       var excitationTime = +document.getElementById("excitationTime").value; // Time for muscle excitation in seconds.
@@ -305,7 +298,7 @@
       }); // Defines entire muscle excitation profile array, ramping up from zero to max defined as exciteMax in a sigmoidal fashion by excitationTime.
       muscleLTForce[0] = muscleLTCurve(muscleLength[0] / muscleL0); // Call function muscleLTCurve to return tension from length. See notes below for an explanation.
       var muscleFVForce = [];
-      muscleFVForce[0] = (muscleP0 * (muscleVmax - muscleVel[0])) / (shapeFV * muscleVel[0] + muscleVmax); // Equation specifying muscle force given muscleVmax, muscleVel, muscleP0 and a shape. Symmetric around force=velocity.
+      muscleFVForce[0] = (muscleP0 * (muscleVmax - muscleVel[0])) / (curveFV * muscleVel[0] + muscleVmax); // Equation specifying muscle force given muscleVmax, muscleVel, muscleP0 and a F-V curvature. Symmetric around force=velocity.
       muscleForce[0] = muscleFVForce[0] * muscleLTForce[0] * muscleExcForce[0] > 0 ?
         muscleFVForce[0] * muscleLTForce[0] * muscleExcForce[0] : 0; // Final muscle force, calculated from muscle length, velocity and excitation at first time step. Constrained to be positive because a muscle cannot push. Positive when muscle is shortening.
       springForce[0] = (springLength[0] - springL0) * springK > 0 ?
@@ -338,7 +331,7 @@
         var projectileVel2 = projectileVel1 + projectileAcc1 * timeStep / 2; // Intermediate projectile velocity estimate.
         var muscleLTForce2 = muscleLTCurve(muscleLength2 / muscleL0); // Intermediate muscle tension multiplier based on length.
         var muscleFVForce2 = (muscleP0 * (muscleVmax - muscleVel2)) /
-          (shapeFV * muscleVel2 + muscleVmax); // Intermediate muscle force based on FV curve. Equation specifying muscle force given muscleVmax, muscleVel, muscleP0 and a shape. Symmetric around force=velocity.
+          (curveFV * muscleVel2 + muscleVmax); // Intermediate muscle force based on FV curve. Equation specifying muscle force given muscleVmax, muscleVel, muscleP0 and a F-V curvature. Symmetric around force=velocity.
         var muscleForce2 = muscleFVForce2 * muscleLTForce2 * muscleExcForce[i] > 0 ?
           muscleFVForce2 * muscleLTForce2 * muscleExcForce[i] : 0; // Total intermediate muscle force, calculated from muscle length, velocity and excitation at first time step. Constrain muscleForce to be positive because a muscle cannot push. Postitive when muscle is shortening.
         var springLength2 = projectilePos2 - muscleLength2; // Spring length is calculated from muscle length and projectile mass position, as projectile mass position - muscle length.
@@ -354,7 +347,7 @@
         var projectilePos3 = projectilePos1 + projectileVel2 * timeStep / 2;
         var projectileVel3 = projectileVel1 + projectileAcc2 * timeStep / 2;
         var muscleLTForce3 = muscleLTCurve(muscleLength3 / muscleL0);
-        var muscleFVForce3 = (muscleP0 * (muscleVmax - muscleVel3)) / (shapeFV * muscleVel3 + muscleVmax);
+        var muscleFVForce3 = (muscleP0 * (muscleVmax - muscleVel3)) / (curveFV * muscleVel3 + muscleVmax);
         var muscleForce3 = muscleFVForce3 * muscleLTForce3 * muscleExcForce[i] > 0 ?
           muscleFVForce3 * muscleLTForce3 * muscleExcForce[i] : 0;
         var springLength3 = projectilePos3 - muscleLength3;
@@ -371,7 +364,7 @@
         var projectileVel4 = projectileVel1 + projectileAcc3 * timeStep;
         var muscleLTForce4 = muscleLTCurve(muscleLength4 / muscleL0);
         var muscleFVForce4 = (muscleP0 * (muscleVmax - muscleVel4)) /
-          (shapeFV * muscleVel4 + muscleVmax);
+          (curveFV * muscleVel4 + muscleVmax);
         var muscleForce4 = muscleFVForce4 * muscleLTForce4 * muscleExcForce[i] > 0 ?
           muscleFVForce4 * muscleLTForce4 * muscleExcForce[i] : 0;
         var springLength4 = projectilePos4 - muscleLength4;
@@ -391,7 +384,7 @@
 
         // Calculate definitive muscle force acceleration, spring length and force, and projectile acceleration for this time step.
         muscleLTForce[i] = muscleLTCurve(muscleLength[i] / muscleL0);
-        muscleFVForce[i] = (muscleP0 * (muscleVmax - muscleVel[i])) / (shapeFV * muscleVel[i] + muscleVmax);
+        muscleFVForce[i] = (muscleP0 * (muscleVmax - muscleVel[i])) / (curveFV * muscleVel[i] + muscleVmax);
         muscleForce[i] = muscleFVForce[i] * muscleLTForce[i] * muscleExcForce[i] > 0 ?
           muscleFVForce[i] * muscleLTForce[i] * muscleExcForce[i] : 0;
         springLength[i] = (projectilePos[i] - muscleLength[i]) > springL0 ?
