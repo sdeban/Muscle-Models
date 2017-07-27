@@ -2,32 +2,37 @@
 <html>
 
 <head>
-
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-
-  <meta charset="utf-8">
-
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-
   <style>
+    body {
+      font-family: Verdana, Arial, sans-serif;
+      text-align: center;
+      align-content: center;
+      margin: 0px;
+      padding: 0px;
+    }
+
     h1 {
+      font-family: fantasy;
       border-style: solid;
-      border-width: 2px;
-      border-radius: 2px;
-      background-color: #fffce8;
-      font-size: 250%;
-      color: royalblue;
+      border-width: 1px;
+      background: linear-gradient(0deg, #fffbe4, #fffcea);
+      border-left-width: 0px;
+      border-top-width: 0px;
+      border-right-width: 0px;
+      font-size: 300%;
+      color: firebrick;
       text-align: center;
       margin: auto;
-      padding: 10px;
-      margin-bottom: 20px;
-      width: auto;
+      padding-top: 20px;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
     }
 
     h2 {
       color: royalblue;
       margin-bottom: 5px;
-      margin-top: auto;
+      margin-top: 5px;
     }
 
     h3 {
@@ -37,19 +42,16 @@
       font-style: italic;
     }
 
-    body {
-      font-family: "Lucida Grande", Verdana, Arial, sans-serif;
-      text-align: center;
-      align-content: center;
-      max-width: 900px;
-      margin: auto;
-      padding: 40px;
+    p {
+      font-size: 100%;
+      margin-top: 0px;
     }
 
-    p {
-      font-family: serif;
-      font-size: 130%;
-      margin-top: 0px;
+    #main {
+      max-width: 900px;
+      margin: auto;
+      padding-left: 40px;
+      padding-right: 40px;
     }
 
     #footer {
@@ -59,59 +61,47 @@
       color: #cccccc;
     }
 
+    #legend {
+      font-size: 80%;
+      font-style: italic;
+    }
+
   </style>
-
-  <title></title>
-
+  <title>Muscle Explorer Instructions</title>
+  <h1>Muscle Explorer</h1>
 </head>
 
-<body style="  color: rgb(0, 0, 0);" vlink="#551A8B" link="#0000EE" alink="#EE0000">
-
-  <h1>Muscle Explorer</h1>
-
-  <h2>Overview</h2>
-
-  <p>
-    <b>Muscle Explorer</b> simulates the interaction of several elements: a muscle-like actuator, an inertial muscle mass, a damper, a hookean spring, a massless lever with adjustable mechanical advantange, and an inertial projectile mass. Physiological and biomechanical parameters (listed below) can be set and when the simulation is run, activation of the muscle actuator begins. The muscle actuator builds force and moves the inertial muscle mass, stretching the spring, which is attached by the massless lever to a projectile mass.
+<body>
+  <div id="main">
+    <h2>Overview</h2>
+    <p>
+      <b>Muscle Explorer</b> simulates the interaction of several elements: a muscle-like actuator, an inertial muscle mass, a damper, a hookean spring, a massless lever with adjustable mechanical advantange, and an inertial projectile mass. Physiological and biomechanical parameters (listed below) can be set and when the simulation is run, activation of the muscle actuator begins. The muscle actuator builds force and moves the inertial muscle mass, stretching the spring, which is attached by the massless lever to a projectile mass.
+      <br>
+    </p>
+    <img src="MuscleSpring.svg" alt="" style=" width: 100%;" vspace="10" align="top">
     <br>
-  </p>
-
-  <img src="MuscleSpring.svg" alt="" style=" width: 100%;" vspace="10" align="top">
-  <br>
-  <em><b>Figure 1.</b> A pseudoanatomical schematic of the model showing the relationships of the functional components.</em>
-  <br>
-  <br>
-
-  <h2>Purpose</h2>
-
-  <p>
-    The purpose of this model is to simulate the performance of musculoskeletal systems in which a single muscle shortens against a series elastic element and an inertial "projectile" mass. The model can be used to simulate muscle-tendon unit behavior, after-loaded in-vitro muscle protocols, or the performance of a jumping animal.
-  </p>
-
-  <h2>Simulation method</h2>
-
-  <p>
-    Forward dynamics using a classical fourth-order Runge-Kutta method.
-  </p>
-
-  <h2>Components</h2>
-
-  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
-  <h3>Muscle</h3>
-
-  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
-  <h3>Muscle</h3>
-
-  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
-  <h3>Muscle</h3>
-
-  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
+    <div id="legend">
+      <em><b>Figure 1.</b> A pseudo-anatomical schematic of the model showing the relationships of the functional components.</em></div>
+    <br>
+    <br>
+    <h2>Purpose</h2>
+    <p>
+      The purpose of this model is to simulate the performance of musculoskeletal systems in which a single muscle shortens against a series elastic element and an inertial "projectile" mass. The model can be used to simulate muscle-tendon unit behavior, after-loaded in-vitro muscle protocols, or the performance of a jumping animal.
+    </p>
+    <h2>Simulation method</h2>
+    <p>
+      Forward dynamics using a classical fourth-order Runge-Kutta method.
+    </p>
+    <h2>Components</h2>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <h3>Muscle</h3>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <h3>Muscle</h3>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <h3>Muscle</h3>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+  </div>
   <div id="footer">Muscle Explorer. 2017. Stephen M. Deban, Department of Integrative Biology, University of South Florida, Tampa. </div>
-
 </body>
 
 </html>
