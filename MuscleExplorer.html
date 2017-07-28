@@ -166,8 +166,8 @@
     <div title="Mass-specific projectile power vs time. Calculated as projectile velocity x acceleration." class="graph" id="chart_08"></div>
     <div title="Spring length vs time. Constrained to be equal to or longer than initial length." class="graph" id="chart_09"></div>
     <div title="Spring velocity vs time. Positive velocity is spring shortening." class="graph" id="chart_10"></div>
-    <div title="Muscle excitation vs time. Multiplied by the muscle force derived from the length-tension and force-velocity curves to ramp up muscle force over time." class="graph" id="chart_11"></div>
-    <div title="Muscle relative tension (force as a fraction of P0) vs length. Both potential (pink) and realized (purple) force-length trajectories are shown for the realized range of lengths." class="graph" id="chart_12"></div>
+    <div title="Muscle excitation vs time. Multiplied by the muscle force derived from the length-force and force-velocity curves to ramp up muscle force over time." class="graph" id="chart_11"></div>
+    <div title="Muscle relative force (as a fraction of P0) vs length. Both potential (pink) and realized (purple) force-length trajectories are shown for the realized range of lengths." class="graph" id="chart_12"></div>
     <div title="Muscle force vs velocity. Both potential (pink) and realized (purple) force-velocity trajectories are shown for the realized range of velocities." class="graph" id="chart_14"></div>
     <div title="Gear ratio vs time. The profile prescribed for the changing gear ratio between the spring and projectile. The reciprocal of leverage or mechanical advantage." class="graph" id="chart_15"></div>
   </div>
@@ -179,11 +179,11 @@
     /*   Spring-Mass model looping example. Example of Runge-Kutta 4th Order (RK4) integration. At large time steps, RK4 performs well because it is refining the estimate in each time step by taking a weighted average of four estimates. Other integrators like Euler and Verlet need absurdly small time steps for the same accuracy, which on balance is not as efficient. RK4 is the gold standard. Author: Stephen M. Deban, University of South Florida. */
     // If enter key is pressed, then run the simulation with the entered values.
     document.onkeypress = function(e) {
-        var e = e || window.event; // Assing window event to e, if there is an event.
-        var charCode = (typeof e.which == "number") ? e.which : e.keyCode;
-        if (charCode == 13) springMass(); // Run simulation if the key pressed is the enter key
-      }
-      // Load google chart API for graphing.
+      var e = e || window.event; // Assing window event to e, if there is an event.
+      var charCode = (typeof e.which == "number") ? e.which : e.keyCode;
+      if (charCode == 13) springMass(); // Run simulation if the key pressed is the enter key
+    }
+    // Load google chart API for graphing.
     google.charts.load('current', {
       'packages': ['corechart']
     }); // Load the corechart package which has line charts and others.
@@ -206,11 +206,11 @@
       var timeStep = duration / steps; // Size in seconds of time step.
       var time = [];
       for (var i = 0; i != steps + 1; ++i) time[i] = i * timeStep // Loop to fill time vector with timesteps to be used in graphing. Numbers will not be precise at 14 decimal places, but it doesn't matter.
-        // Morphological and physiological parameters
+      // Morphological and physiological parameters
       var muscleL0 = +document.getElementById("muscleL0").value; // Muscle resting length in meters.
-      var muscleP0 = +document.getElementById("muscleP0").value; // Muscle isometric tension in newtons.
+      var muscleP0 = +document.getElementById("muscleP0").value; // Muscle isometric force in newtons.
       var muscleVmax = +document.getElementById("muscleVmax").value; // Muscle Vmax in m/s.
-      var muscleStartLength = muscleL0 * +document.getElementById("muscleStartLength").value; // Starting length of muscle. Greater than 1.0 will make it start on  descending limb of length-tension curve.
+      var muscleStartLength = muscleL0 * +document.getElementById("muscleStartLength").value; // Starting length of muscle. Greater than 1.0 will make it start on  descending limb of force-length curve.
       var curveFV = +document.getElementById("curveFV").value; // Curvature of force-velocity relation. Larger values are more curved, with 0 a straight line. Value of 3 is about what frog limb muscle shows. To convert to and from Marsh and Bennett's power ratio use powerRatio=1/(curveFV+2*sqrt(curveFV+1)+2) and curveFV=(1-2*sqrt(powerRatio))/powerRatio
       var powerRatio = 1 / (curveFV + 2 * Math.sqrt(curveFV + 1) + 2); // Convert curveFV to power ratio.
       var muscleMass = +document.getElementById("muscleMass").value; // Combined mass of projector muscles in kg. 8e-06 is realistic.
@@ -231,7 +231,7 @@
       var durationGearChange = +document.getElementById("durGearChange").value; // Duration of latch release. Value near time step is effectively instantaneous.
       var cumulativeWork = 0; // Place to store the cumulative work done by the muscle.
       // Define arrays of proper length to fill with values later.
-      var muscleLTForce = [];
+      var muscleFLForce = [];
       var muscleForce = [];
       var muscleRelForce = [];
       var musclePower = [];
@@ -247,23 +247,23 @@
       var projectilePower = [];
       var gearRatio = [];
       var latchCondition = [];
-      // Define function to generate muscle tension given length.
-      function muscleLTCurve(length) {
+      // Define function to generate muscle force given length.
+      function muscleFLCurve(length) {
         if (length >= 0.6244 && length <= 1.6) {
-          var tension = -34.045 * Math.pow(length, 5) + 204.74 * Math.pow(length, 4) - 470.16 * Math.pow(length, 3) + 512.43 * Math.pow(length, 2) - 262.9 * length + 50.936; // Takes muscle length relative to L0 from 0 to 1.6 with 1.0 as L0. Up to 1.4 is reliable and based on research values, but up to 1.6 is extrapolated to yield high force values if muscle is stretched. Beyond 1.6 is unreliable, so force at 1.6 is returned.
+          var force = -34.045 * Math.pow(length, 5) + 204.74 * Math.pow(length, 4) - 470.16 * Math.pow(length, 3) + 512.43 * Math.pow(length, 2) - 262.9 * length + 50.936; // Takes muscle length relative to L0 from 0 to 1.6 with 1.0 as L0. Up to 1.4 is reliable and based on research values, but up to 1.6 is extrapolated to yield high force values if muscle is stretched. Beyond 1.6 is unreliable, so force at 1.6 is returned.
         } else if (length > 1.6) {
-          tension = 1.137805;
+          force = 1.137805;
         } else if (length < 0.6244) {
-          tension = 0;
+          force = 0;
         }
-        return (tension);
-      } // Muscle LT function
+        return (force);
+      } // Muscle force-length function
       // Create gear ratio profile
       gearRatio = time.map(function(i) { // Create a sigmoidal gear ratio profile, starting to change from max to min at time zero over the specified duration.
-          return (1.0009765 * maxGearRatio - minGearRatio) / (1 + Math.pow(2, 10 * -(2 * i - durationGearChange) / -durationGearChange)) + minGearRatio;
-        })
-        // First time step in simulation.
-        // Muscle, spring, projectile and gearing starting conditions.
+        return (1.0009765 * maxGearRatio - minGearRatio) / (1 + Math.pow(2, 10 * -(2 * i - durationGearChange) / -durationGearChange)) + minGearRatio;
+      })
+      // First time step in simulation.
+      // Muscle, spring, projectile and gearing starting conditions.
       var exciteMax = 1; // Maximum excitation level of muscle, with 1 being full excitation.
       var muscleAcc = [];
       muscleAcc[0] = 0; // Starting acceleration of muscle mass in m/s/s.
@@ -278,11 +278,11 @@
       var muscleExcForce = time.map(function(i) {
         return exciteMax / (1 + Math.pow(excitationRate, 10 * (-2 * i + excitationTime) / excitationTime));
       }); // Defines entire muscle excitation profile array, ramping up from zero to max defined as exciteMax in a sigmoidal fashion by excitationTime.
-      muscleLTForce[0] = muscleLTCurve(muscleLength[0] / muscleL0); // Call function muscleLTCurve to return tension from length. See notes below for an explanation.
+      muscleFLForce[0] = muscleFLCurve(muscleLength[0] / muscleL0); // Call function muscleFLCurve to return force from length. See notes below for an explanation.
       var muscleFVForce = [];
       muscleFVForce[0] = (muscleP0 * (muscleVmax - muscleVel[0])) / (curveFV * muscleVel[0] + muscleVmax); // Equation specifying muscle force given muscleVmax, muscleVel, muscleP0 and a F-V curvature. Symmetric around force=velocity.
-      muscleForce[0] = muscleFVForce[0] * muscleLTForce[0] * muscleExcForce[0] > 0 ?
-        muscleFVForce[0] * muscleLTForce[0] * muscleExcForce[0] : 0; // Final muscle force, calculated from muscle length, velocity and excitation at first time step. Constrained to be positive because a muscle cannot push. Positive when muscle is shortening.
+      muscleForce[0] = muscleFVForce[0] * muscleFLForce[0] * muscleExcForce[0] > 0 ?
+        muscleFVForce[0] * muscleFLForce[0] * muscleExcForce[0] : 0; // Final muscle force, calculated from muscle length, velocity and excitation at first time step. Constrained to be positive because a muscle cannot push. Positive when muscle is shortening.
       springForce[0] = (springLength[0] - springL0) * springK > 0 ?
         (springLength[0] - springL0) * springK : 0; // Spring force is calculated from tendon length relative to slack length, and spring constant at current time step, as a Hookean spring: F=kx. F=(current length-slack length)*spring constant. Constrained to be positive or zero because a tendon cannot push. Positive is shortening tendon and projecting tongue mass.
       musclePower[0] = muscleVel[0] * muscleAcc[0]; // Calculate absolute muscle power.
@@ -306,11 +306,11 @@
         var muscleVel2 = muscleVel1 + muscleAcc1 * timeStep / 2; // Intermediate muscle velocity estimate.
         var projectilePos2 = projectilePos1 + projectileVel1 * timeStep / 2; // Intermediate projectile position estimate to be averaged into final estimate using Runge-Kutta integration.
         var projectileVel2 = projectileVel1 + projectileAcc1 * timeStep / 2; // Intermediate projectile velocity estimate.
-        var muscleLTForce2 = muscleLTCurve(muscleLength2 / muscleL0); // Intermediate muscle tension multiplier based on length.
+        var muscleFLForce2 = muscleFLCurve(muscleLength2 / muscleL0); // Intermediate muscle force multiplier based on length.
         var muscleFVForce2 = (muscleP0 * (muscleVmax - muscleVel2)) /
           (curveFV * muscleVel2 + muscleVmax); // Intermediate muscle force based on FV curve. Equation specifying muscle force given muscleVmax, muscleVel, muscleP0 and a F-V curvature. Symmetric around force=velocity.
-        var muscleForce2 = muscleFVForce2 * muscleLTForce2 * muscleExcForce[i] > 0 ?
-          muscleFVForce2 * muscleLTForce2 * muscleExcForce[i] : 0; // Total intermediate muscle force, calculated from muscle length, velocity and excitation at first time step. Constrain muscleForce to be positive because a muscle cannot push. Postitive when muscle is shortening.
+        var muscleForce2 = muscleFVForce2 * muscleFLForce2 * muscleExcForce[i] > 0 ?
+          muscleFVForce2 * muscleFLForce2 * muscleExcForce[i] : 0; // Total intermediate muscle force, calculated from muscle length, velocity and excitation at first time step. Constrain muscleForce to be positive because a muscle cannot push. Postitive when muscle is shortening.
         var springLength2 = projectilePos2 - muscleLength2; // Spring length is calculated from muscle length and projectile mass position, as projectile mass position - muscle length.
         var springForce2 = (springLength2 - springL0) * springK > 0 ?
           (springLength2 - springL0) * springK : 0;
@@ -322,10 +322,10 @@
         var muscleVel3 = muscleVel1 + muscleAcc2 * timeStep / 2;
         var projectilePos3 = projectilePos1 + projectileVel2 * timeStep / 2;
         var projectileVel3 = projectileVel1 + projectileAcc2 * timeStep / 2;
-        var muscleLTForce3 = muscleLTCurve(muscleLength3 / muscleL0);
+        var muscleFLForce3 = muscleFLCurve(muscleLength3 / muscleL0);
         var muscleFVForce3 = (muscleP0 * (muscleVmax - muscleVel3)) / (curveFV * muscleVel3 + muscleVmax);
-        var muscleForce3 = muscleFVForce3 * muscleLTForce3 * muscleExcForce[i] > 0 ?
-          muscleFVForce3 * muscleLTForce3 * muscleExcForce[i] : 0;
+        var muscleForce3 = muscleFVForce3 * muscleFLForce3 * muscleExcForce[i] > 0 ?
+          muscleFVForce3 * muscleFLForce3 * muscleExcForce[i] : 0;
         var springLength3 = projectilePos3 - muscleLength3;
         var springForce3 = (springLength3 - springL0) * springK > 0 ?
           (springLength3 - springL0) * springK : 0;
@@ -337,11 +337,11 @@
         var muscleVel4 = muscleVel1 + muscleAcc3 * timeStep;
         var projectilePos4 = projectilePos1 + projectileVel3 * timeStep;
         var projectileVel4 = projectileVel1 + projectileAcc3 * timeStep;
-        var muscleLTForce4 = muscleLTCurve(muscleLength4 / muscleL0);
+        var muscleFLForce4 = muscleFLCurve(muscleLength4 / muscleL0);
         var muscleFVForce4 = (muscleP0 * (muscleVmax - muscleVel4)) /
           (curveFV * muscleVel4 + muscleVmax);
-        var muscleForce4 = muscleFVForce4 * muscleLTForce4 * muscleExcForce[i] > 0 ?
-          muscleFVForce4 * muscleLTForce4 * muscleExcForce[i] : 0;
+        var muscleForce4 = muscleFVForce4 * muscleFLForce4 * muscleExcForce[i] > 0 ?
+          muscleFVForce4 * muscleFLForce4 * muscleExcForce[i] : 0;
         var springLength4 = projectilePos4 - muscleLength4;
         var springForce4 = (springLength4 - springL0) * springK > 0 ?
           (springLength4 - springL0) * springK : 0;
@@ -356,10 +356,10 @@
         projectilePos[i] = projectilePos[i - 1] - (projectileVel1 + projectileVel2 * 2 + projectileVel3 * 2 + projectileVel4) * timeStep / 6; // Weighted average of four estimates of projectile position, put into vector as definitive position at this time step. Position change is subtracted from old position because spring is shortening.
         projectileVel[i] = projectileVel[i - 1] + (projectileAcc1 + projectileAcc2 * 2 + projectileAcc3 * 2 + projectileAcc4) * timeStep / 6; // Weighted average of four estimates of projectile velocity, put into vector as definitive velocity at this time step.
         // Calculate definitive muscle force acceleration, spring length and force, and projectile acceleration for this time step.
-        muscleLTForce[i] = muscleLTCurve(muscleLength[i] / muscleL0);
+        muscleFLForce[i] = muscleFLCurve(muscleLength[i] / muscleL0);
         muscleFVForce[i] = (muscleP0 * (muscleVmax - muscleVel[i])) / (curveFV * muscleVel[i] + muscleVmax);
-        muscleForce[i] = muscleFVForce[i] * muscleLTForce[i] * muscleExcForce[i] > 0 ?
-          muscleFVForce[i] * muscleLTForce[i] * muscleExcForce[i] : 0;
+        muscleForce[i] = muscleFVForce[i] * muscleFLForce[i] * muscleExcForce[i] > 0 ?
+          muscleFVForce[i] * muscleFLForce[i] * muscleExcForce[i] : 0;
         springLength[i] = (projectilePos[i] - muscleLength[i]) > springL0 ?
           (projectilePos[i] - muscleLength[i]) : springL0; // Calculate definitive spring length for this time step, never shorter than springL0.
         springForce[i] = (springLength[i] - springL0) * springK > 0 ?
@@ -413,34 +413,34 @@
       }
       // Place chart options into an object
       var options = { // Display options, such as line thickness, color, axis settings.
-          backgroundColor: '#efefef',
-          title: ' ',
-          tooltip: {
-            trigger: 'selection',
-          },
-          legend: 'none',
-          lineWidth: 1.8,
-          //
-          chartArea: {
-            backgroundColor: 'rgb(250, 250, 250)',
-            left: '15%',
-            top: '15%',
-            width: '77%',
-            height: '60%'
-          },
-          fontName: 'Lucida Grande',
-          fontSize: 14,
-          hAxis: {
-            format: '#.####',
-            title: 'Time (s)',
-            minValue: 0,
-            maxValue: duration
-          },
-          vAxis: {
-            format: '#.####'
-          },
-          colors: ['royalblue', 'royalblue'],
-        } // End of chart options
+        backgroundColor: '#efefef',
+        title: ' ',
+        tooltip: {
+          trigger: 'selection',
+        },
+        legend: 'none',
+        lineWidth: 1.8,
+        //
+        chartArea: {
+          backgroundColor: 'rgb(250, 250, 250)',
+          left: '15%',
+          top: '15%',
+          width: '77%',
+          height: '60%'
+        },
+        fontName: 'Lucida Grande',
+        fontSize: 14,
+        hAxis: {
+          format: '#.####',
+          title: 'Time (s)',
+          minValue: 0,
+          maxValue: duration
+        },
+        vAxis: {
+          format: '#.####'
+        },
+        colors: ['royalblue', 'royalblue'],
+      } // End of chart options
       var shortTime = downSample(time); // downSample the time array for faster graphing.
       // Create data arrays for graphs, using transpose fn.
       var data01 = new google.visualization.DataTable(); // Create the chart data table
@@ -496,7 +496,7 @@
       data12.addColumn('number', '');
       data12.addColumn('number', '');
       data12.addColumn('number', '');
-      data12.addRows(transpose([downSample(muscleLength), downSample(muscleLTForce), downSample(muscleRelForce)]));
+      data12.addRows(transpose([downSample(muscleLength), downSample(muscleFLForce), downSample(muscleRelForce)]));
       var data14 = new google.visualization.DataTable();
       data14.addColumn('number', '');
       data14.addColumn('number', '');
@@ -543,7 +543,7 @@
       options.title = 'Muscle Work (mJ)';
       options.colors = ['#c91700'];
       chart13.draw(data13, options);
-      options.title = 'Muscle Rel. Tension vs Length';
+      options.title = 'Muscle Rel. Force vs Length';
       options.colors = ['#e5a8a1', '#5d39d3'];
       options.hAxis.title = 'Muscle length (m)';
       options.hAxis.minValue = muscleL0 * 0.5;
