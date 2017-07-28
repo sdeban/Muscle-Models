@@ -55,10 +55,10 @@
     }
 
     h1 {
-      font-family: fantasy, "Lucida Grande", Verdana, Arial, sans-serif;
-      font-size: 200%;
+      font-family: "Lucida Grande", Verdana, Arial, sans-serif;
+      font-size: 180%;
       color: firebrick;
-      margin: 0em;
+      margin: 0.3em;
       margin-left: 0;
     }
 
@@ -72,7 +72,7 @@
 <body onload="springMass();">
 
   <div id="controlBlock">
-    <h1><img src="TitlePapyrus.svg" style="width: 90%;" align="top"></h1> Deban Lab @ USF
+    <h1><em>Muscle Explorer</em></h1> Deban Lab @ USF
     <br/>
     <br/>
     <b title="General simulation settings.">Settings</b>
@@ -179,11 +179,11 @@
     /*   Spring-Mass model looping example. Example of Runge-Kutta 4th Order (RK4) integration. At large time steps, RK4 performs well because it is refining the estimate in each time step by taking a weighted average of four estimates. Other integrators like Euler and Verlet need absurdly small time steps for the same accuracy, which on balance is not as efficient. RK4 is the gold standard. Author: Stephen M. Deban, University of South Florida. */
     // If enter key is pressed, then run the simulation with the entered values.
     document.onkeypress = function(e) {
-      var e = e || window.event; // Assing window event to e, if there is an event.
-      var charCode = (typeof e.which == "number") ? e.which : e.keyCode;
-      if (charCode == 13) springMass(); // Run simulation if the key pressed is the enter key
-    }
-    // Load google chart API for graphing.
+        var e = e || window.event; // Assing window event to e, if there is an event.
+        var charCode = (typeof e.which == "number") ? e.which : e.keyCode;
+        if (charCode == 13) springMass(); // Run simulation if the key pressed is the enter key
+      }
+      // Load google chart API for graphing.
     google.charts.load('current', {
       'packages': ['corechart']
     }); // Load the corechart package which has line charts and others.
@@ -206,7 +206,7 @@
       var timeStep = duration / steps; // Size in seconds of time step.
       var time = [];
       for (var i = 0; i != steps + 1; ++i) time[i] = i * timeStep // Loop to fill time vector with timesteps to be used in graphing. Numbers will not be precise at 14 decimal places, but it doesn't matter.
-      // Morphological and physiological parameters
+        // Morphological and physiological parameters
       var muscleL0 = +document.getElementById("muscleL0").value; // Muscle resting length in meters.
       var muscleP0 = +document.getElementById("muscleP0").value; // Muscle isometric tension in newtons.
       var muscleVmax = +document.getElementById("muscleVmax").value; // Muscle Vmax in m/s.
@@ -260,10 +260,10 @@
       } // Muscle LT function
       // Create gear ratio profile
       gearRatio = time.map(function(i) { // Create a sigmoidal gear ratio profile, starting to change from max to min at time zero over the specified duration.
-        return (1.0009765 * maxGearRatio - minGearRatio) / (1 + Math.pow(2, 10 * -(2 * i - durationGearChange) / -durationGearChange)) + minGearRatio;
-      })
-      // First time step in simulation.
-      // Muscle, spring, projectile and gearing starting conditions.
+          return (1.0009765 * maxGearRatio - minGearRatio) / (1 + Math.pow(2, 10 * -(2 * i - durationGearChange) / -durationGearChange)) + minGearRatio;
+        })
+        // First time step in simulation.
+        // Muscle, spring, projectile and gearing starting conditions.
       var exciteMax = 1; // Maximum excitation level of muscle, with 1 being full excitation.
       var muscleAcc = [];
       muscleAcc[0] = 0; // Starting acceleration of muscle mass in m/s/s.
@@ -413,34 +413,34 @@
       }
       // Place chart options into an object
       var options = { // Display options, such as line thickness, color, axis settings.
-        backgroundColor: '#efefef',
-        title: ' ',
-        tooltip: {
-          trigger: 'selection',
-        },
-        legend: 'none',
-        lineWidth: 1.8,
-        //
-        chartArea: {
-          backgroundColor: 'rgb(250, 250, 250)',
-          left: '15%',
-          top: '15%',
-          width: '77%',
-          height: '60%'
-        },
-        fontName: 'Lucida Grande',
-        fontSize: 14,
-        hAxis: {
-          format: '#.####',
-          title: 'Time (s)',
-          minValue: 0,
-          maxValue: duration
-        },
-        vAxis: {
-          format: '#.####'
-        },
-        colors: ['royalblue', 'royalblue'],
-      } // End of chart options
+          backgroundColor: '#efefef',
+          title: ' ',
+          tooltip: {
+            trigger: 'selection',
+          },
+          legend: 'none',
+          lineWidth: 1.8,
+          //
+          chartArea: {
+            backgroundColor: 'rgb(250, 250, 250)',
+            left: '15%',
+            top: '15%',
+            width: '77%',
+            height: '60%'
+          },
+          fontName: 'Lucida Grande',
+          fontSize: 14,
+          hAxis: {
+            format: '#.####',
+            title: 'Time (s)',
+            minValue: 0,
+            maxValue: duration
+          },
+          vAxis: {
+            format: '#.####'
+          },
+          colors: ['royalblue', 'royalblue'],
+        } // End of chart options
       var shortTime = downSample(time); // downSample the time array for faster graphing.
       // Create data arrays for graphs, using transpose fn.
       var data01 = new google.visualization.DataTable(); // Create the chart data table
