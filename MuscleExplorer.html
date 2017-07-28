@@ -2,8 +2,6 @@
 <html>
 <!-- Muscle-Spring-Damper-Projectile simulation, called "Muscle Explorer" for now. 2017. Stephen M. Deban, Department of Integrative Biology, University of South Florida, Tampa. -->
 
-
-
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
@@ -60,7 +58,7 @@
       font-family: fantasy, "Lucida Grande", Verdana, Arial, sans-serif;
       font-size: 200%;
       color: firebrick;
-      margin: 0.4em;
+      margin: 0em;
       margin-left: 0;
     }
 
@@ -74,7 +72,7 @@
 <body onload="springMass();">
 
   <div id="controlBlock">
-    <h1>Muscle Explorer</h1> Deban Lab @ USF
+    <h1><img src="TitlePapyrus.svg" style="width: 90%;" align="top"></h1> Deban Lab @ USF
     <br/>
     <br/>
     <b title="General simulation settings.">Settings</b>
@@ -179,19 +177,16 @@
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script type="text/javascript">
     /*   Spring-Mass model looping example. Example of Runge-Kutta 4th Order (RK4) integration. At large time steps, RK4 performs well because it is refining the estimate in each time step by taking a weighted average of four estimates. Other integrators like Euler and Verlet need absurdly small time steps for the same accuracy, which on balance is not as efficient. RK4 is the gold standard. Author: Stephen M. Deban, University of South Florida. */
-
     // If enter key is pressed, then run the simulation with the entered values.
     document.onkeypress = function(e) {
       var e = e || window.event; // Assing window event to e, if there is an event.
       var charCode = (typeof e.which == "number") ? e.which : e.keyCode;
       if (charCode == 13) springMass(); // Run simulation if the key pressed is the enter key
     }
-
     // Load google chart API for graphing.
     google.charts.load('current', {
       'packages': ['corechart']
     }); // Load the corechart package which has line charts and others.
-
     // Check if local web storage is supported by browser.
     // TODO: Use this in the future for saving and loading data.
     if (typeof(Storage) != "undefined") {
@@ -199,11 +194,8 @@
     } else {
       alert("No Local Web Storage support!")
     }
-
     // Simulation settings
-
     function springMass() { // Start of main simulation function
-
       // Get values from form in webpage. NOTE: '+' coerces the strings retrieved to numbers. Default values are stored in the form elements in the html.
       var duration = +document.getElementById("duration").value; // Duration in seconds.
       var steps = +document.getElementById("steps").value * 1000; // Steps in simulation. Value from form times 1000.
@@ -211,11 +203,9 @@
       var springK = +document.getElementById("spring").value; // Tendon spring constant in N/m. Realistic values not known.
       var dampingConstant = +document.getElementById("damper").value; // Damping constant in Ns/m of damper on muscle mass. Damping may reduce fast oscillation of muscle mass.
       var springL0 = +document.getElementById("springL0").value; // Tendon slack length in m.
-
       var timeStep = duration / steps; // Size in seconds of time step.
       var time = [];
       for (var i = 0; i != steps + 1; ++i) time[i] = i * timeStep // Loop to fill time vector with timesteps to be used in graphing. Numbers will not be precise at 14 decimal places, but it doesn't matter.
-
       // Morphological and physiological parameters
       var muscleL0 = +document.getElementById("muscleL0").value; // Muscle resting length in meters.
       var muscleP0 = +document.getElementById("muscleP0").value; // Muscle isometric tension in newtons.
@@ -227,7 +217,6 @@
       var muscleFraction = +document.getElementById("muscleFraction").value; // Fraction of muscle mass that is modeled as accelerated muscle mass.
       var excitationTime = +document.getElementById("excitationTime").value; // Time for muscle excitation in seconds.
       var excitationRate = 2; // Higher numbers have higher peak rate of excitation. Must be greater than 1.
-
       // Trial parameters that can change between trials.
       // One or more of these conditions can be used to release latch, depending on which if statements in loop are active. The first condition reached will release latch.
       var latchTime = +document.getElementById("latchTime").value; // Timing of latch release in seconds from start of simulation, if used in loop.
@@ -241,8 +230,6 @@
       var minGearRatio = +document.getElementById("finalGearRatio").value; // Final gear ratio value during launch.
       var durationGearChange = +document.getElementById("durGearChange").value; // Duration of latch release. Value near time step is effectively instantaneous.
       var cumulativeWork = 0; // Place to store the cumulative work done by the muscle.
-
-
       // Define arrays of proper length to fill with values later.
       var muscleLTForce = [];
       var muscleForce = [];
@@ -260,7 +247,6 @@
       var projectilePower = [];
       var gearRatio = [];
       var latchCondition = [];
-
       // Define function to generate muscle tension given length.
       function muscleLTCurve(length) {
         if (length >= 0.6244 && length <= 1.6) {
@@ -272,14 +258,10 @@
         }
         return (tension);
       } // Muscle LT function
-
-
       // Create gear ratio profile
       gearRatio = time.map(function(i) { // Create a sigmoidal gear ratio profile, starting to change from max to min at time zero over the specified duration.
         return (1.0009765 * maxGearRatio - minGearRatio) / (1 + Math.pow(2, 10 * -(2 * i - durationGearChange) / -durationGearChange)) + minGearRatio;
       })
-
-
       // First time step in simulation.
       // Muscle, spring, projectile and gearing starting conditions.
       var exciteMax = 1; // Maximum excitation level of muscle, with 1 being full excitation.
@@ -304,14 +286,10 @@
       springForce[0] = (springLength[0] - springL0) * springK > 0 ?
         (springLength[0] - springL0) * springK : 0; // Spring force is calculated from tendon length relative to slack length, and spring constant at current time step, as a Hookean spring: F=kx. F=(current length-slack length)*spring constant. Constrained to be positive or zero because a tendon cannot push. Positive is shortening tendon and projecting tongue mass.
       musclePower[0] = muscleVel[0] * muscleAcc[0]; // Calculate absolute muscle power.
-
-
       // Simulation loop: second time step and onward using Runge-Kutta 4th order integration"
       var i = 0; // Set index to 0 so that loop starts with array value 1 (i.e., step 2)
-
       while (i != steps) { // Loop from 1 (the second step) to number of steps in simulation because arrays start at zero.
         i = i + 1; // Increment index.
-
         // Calculate first of four parts of Runge-Kutta weighted average. Muscle and projectile mass acceleration, velocity, and position are calculated from muscle and tendon (spring) forces.
         var muscleLength1 = muscleLength[i - 1]; // Last position of muscle mass, to be used in Runge-Kutta integration.
         var muscleVel1 = muscleVel[i - 1]; // Last velocity of muscle shortening, to be used in Runge-Kutta integration
@@ -323,7 +301,6 @@
         var muscleAcc1 = (muscleForce1 - springForce1 - dampingConstant * muscleVel1) /
           (muscleMass * muscleFraction); // Muscle mass acceleration is calculated by balance of forces from tendon and muscle in previous time step, using a=F/m: a=(previous muscle force-previous tendon force)/(muscle mass*fraction of muscle mass accelerated). Positive is increasing muscle shortening velocity. Acceleration corresponding to last length and velocity, to be used in Runge-Kutta integration.
         var projectileAcc1 = springForce1 / projectileMass / gearRatio[gearRatioIndex]; // Projectile mass acceleration is calculated using tendon force divided by gear ratio, as a=F/m: a=previous tendon force/projectile mass/gear ratio. Positive or zero. Positive is increasing projection velocity of projectile.
-
         // Calculate second of four parts of Runge-Kutta weighted average.
         var muscleLength2 = muscleLength1 + muscleVel1 * timeStep / 2; // Intermediate muscle length estimate to be averaged into final estimate using Runge-Kutta integration.
         var muscleVel2 = muscleVel1 + muscleAcc1 * timeStep / 2; // Intermediate muscle velocity estimate.
@@ -340,7 +317,6 @@
         var muscleAcc2 = (muscleForce2 - springForce2 - dampingConstant * muscleVel2) /
           (muscleMass * muscleFraction); // Muscle mass acceleration is calculated by balance of forces from tendon and muscle
         var projectileAcc2 = springForce2 / projectileMass / gearRatio[gearRatioIndex];
-
         // Calculate third of four parts of Runge-Kutta weighted average.
         var muscleLength3 = muscleLength1 + muscleVel2 * timeStep / 2;
         var muscleVel3 = muscleVel1 + muscleAcc2 * timeStep / 2;
@@ -356,7 +332,6 @@
         var muscleAcc3 = (muscleForce3 - springForce3 - dampingConstant * muscleVel3) /
           (muscleMass * muscleFraction);
         var projectileAcc3 = springForce3 / projectileMass / gearRatio[gearRatioIndex];
-
         // Calculate fourth of four parts of Runge-Kutta weighted average. Note timestep is not divided by two.
         var muscleLength4 = muscleLength1 + muscleVel3 * timeStep;
         var muscleVel4 = muscleVel1 + muscleAcc3 * timeStep;
@@ -372,7 +347,6 @@
           (springLength4 - springL0) * springK : 0;
         var muscleAcc4 = (muscleForce4 - springForce4 - dampingConstant * muscleVel4) / (muscleMass * muscleFraction);
         var projectileAcc4 = springForce4 / projectileMass / gearRatio[gearRatioIndex];
-
         // Calculate new positions and velocities by weighted average.
         muscleLength[i] = muscleLength[i - 1] - (muscleVel1 + muscleVel2 * 2 + muscleVel3 * 2 + muscleVel4) *
           timeStep / 6; // Weighted average of four estimates of muscle length, put into vector as definitive muscle length at this time step. Length change is subtracted from old length because muscle is shortening.
@@ -381,7 +355,6 @@
           timeStep / 6; // Weighted average of four estimates of muscle velocity, put into vector as definitive muscle velocity at this time step.
         projectilePos[i] = projectilePos[i - 1] - (projectileVel1 + projectileVel2 * 2 + projectileVel3 * 2 + projectileVel4) * timeStep / 6; // Weighted average of four estimates of projectile position, put into vector as definitive position at this time step. Position change is subtracted from old position because spring is shortening.
         projectileVel[i] = projectileVel[i - 1] + (projectileAcc1 + projectileAcc2 * 2 + projectileAcc3 * 2 + projectileAcc4) * timeStep / 6; // Weighted average of four estimates of projectile velocity, put into vector as definitive velocity at this time step.
-
         // Calculate definitive muscle force acceleration, spring length and force, and projectile acceleration for this time step.
         muscleLTForce[i] = muscleLTCurve(muscleLength[i] / muscleL0);
         muscleFVForce[i] = (muscleP0 * (muscleVmax - muscleVel[i])) / (curveFV * muscleVel[i] + muscleVmax);
@@ -394,7 +367,6 @@
         muscleAcc[i] = (muscleForce[i] - springForce[i] - dampingConstant *
           muscleVel[i]) / (muscleMass * muscleFraction); // Definitive muscle mass acceleration for this time step.
         projectileAcc[i] = springForce[i] / projectileMass / gearRatio[gearRatioIndex]; // Definitive projectile acceleration for this time step.
-
         // Calculate power and work
         muscleWork[i] = muscleForce[i] * (muscleLength[i - 1] - muscleLength[i]); // Calculate muscle work in joules for this time step.
         cumulativeWork += muscleWork[i]; // Add the current muscle work to the cumulative muscle work.
@@ -404,7 +376,6 @@
         muscleRelForce[i] = muscleForce[i] / muscleP0;
         projectilePower[i] = projectileVel[i] * projectileAcc[i];
         springVel[i] = projectileVel[i] - muscleVel[i];
-
         // Test for various conditions to determine when latch releases.
         if ((muscleLength[i] < lengthThreshold * muscleL0) || (muscleForce[i] > forceThreshold) || (time[i] > latchTime)) {
           // Asks if muscle length is below threshold value specified, force is above threshold, or time is at preset latch time, and if so, it makes gear ratio from this point onward transition to final value.
@@ -415,16 +386,13 @@
             latchTripped = 1; // switch latchTripped from 0 to 1.
           }
         }
-
       } // End of main simulation loop.
-
       // Create final gear ratio vs time for graphing.
       var latchPadding = []; // Create array to fill with the first value of the gear ratio.
       var padding = indexLatchTripped; // Number of values to add to padding array.
       while (padding--) latchPadding[padding] = gearRatio[1]; // Fill padding array with first value of gear ratio.
       var finalGearRatio = latchPadding.concat(gearRatio); // Add padding array to gear ratio array and put in new array.
       finalGearRatio.length = gearRatio.length; // Trim new array to the length of the original gear ratio array.
-
       // Create the chart objects and link them to HTML elements
       {
         var chart01 = new google.visualization.LineChart(document.getElementById('chart_01'));
@@ -443,7 +411,6 @@
         var chart14 = new google.visualization.LineChart(document.getElementById('chart_14'));
         var chart15 = new google.visualization.LineChart(document.getElementById('chart_15'));
       }
-
       // Place chart options into an object
       var options = { // Display options, such as line thickness, color, axis settings.
         backgroundColor: '#efefef',
@@ -473,154 +440,121 @@
           format: '#.####'
         },
         colors: ['royalblue', 'royalblue'],
-
       } // End of chart options
-
       var shortTime = downSample(time); // downSample the time array for faster graphing.
-
       // Create data arrays for graphs, using transpose fn.
       var data01 = new google.visualization.DataTable(); // Create the chart data table
       data01.addColumn('number', ''); // Add a column for one variable
       data01.addColumn('number', ''); // Add a column for a sceond variable
       data01.addRows(transpose([shortTime, downSample(muscleLength)])); // Add the data as rows, using the transpose function defined below to rotate a 2D array consisting of two vectors, x and y.
-
       var data02 = new google.visualization.DataTable();
       data02.addColumn('number', '');
       data02.addColumn('number', '');
       data02.addRows(transpose([shortTime, downSample(muscleVel)]));
-
       // NOTE: removeColumns(columnIndex, numberOfColumns) can be used to remove data which can then be updated.
-
       var data03 = new google.visualization.DataTable();
       data03.addColumn('number', '');
       data03.addColumn('number', '');
       data03.addRows(transpose([shortTime, downSample(muscleForce)]));
-
       var data04 = new google.visualization.DataTable();
       data04.addColumn('number', '');
       data04.addColumn('number', '');
       data04.addRows(transpose([shortTime, downSample(musclePowermW)]));
-
       var data05 = new google.visualization.DataTable();
       data05.addColumn('number', '');
       data05.addColumn('number', '');
       data05.addRows(transpose([shortTime, downSample(projectilePos)]));
-
       var data06 = new google.visualization.DataTable();
       data06.addColumn('number', '');
       data06.addColumn('number', '');
       data06.addRows(transpose([shortTime, downSample(projectileVel)]));
-
       var data07 = new google.visualization.DataTable();
       data07.addColumn('number', '');
       data07.addColumn('number', '');
       data07.addRows(transpose([shortTime, downSample(projectileAcc)]));
-
       var data08 = new google.visualization.DataTable();
       data08.addColumn('number', '');
       data08.addColumn('number', '');
       data08.addRows(transpose([shortTime, downSample(projectilePower)]));
-
       var data09 = new google.visualization.DataTable();
       data09.addColumn('number', '');
       data09.addColumn('number', '');
       data09.addRows(transpose([shortTime, downSample(springLength)]));
-
       var data10 = new google.visualization.DataTable();
       data10.addColumn('number', '');
       data10.addColumn('number', '');
       data10.addRows(transpose([shortTime, downSample(springVel)]));
-
       var data11 = new google.visualization.DataTable();
       data11.addColumn('number', '');
       data11.addColumn('number', '');
       data11.addRows(transpose([shortTime, downSample(muscleExcForce)]));
-
       var data13 = new google.visualization.DataTable();
       data13.addColumn('number', '');
       data13.addColumn('number', '');
       data13.addRows(transpose([shortTime, downSample(muscleWorkmJ)]));
-
       var data12 = new google.visualization.DataTable();
       data12.addColumn('number', '');
       data12.addColumn('number', '');
       data12.addColumn('number', '');
       data12.addRows(transpose([downSample(muscleLength), downSample(muscleLTForce), downSample(muscleRelForce)]));
-
       var data14 = new google.visualization.DataTable();
       data14.addColumn('number', '');
       data14.addColumn('number', '');
       data14.addColumn('number', '');
       data14.addRows(transpose([downSample(muscleVel), downSample(muscleFVForce), downSample(muscleForce)]));
-
       var data15 = new google.visualization.DataTable();
       data15.addColumn('number', '');
       data15.addColumn('number', '');
       data15.addRows(transpose([shortTime, downSample(finalGearRatio)]));
-
       // Call the draw function on the charts.
       options.title = 'Muscle Length (m)'; // Replace options for any subsequent graphs created.
       options.colors = ['#c91700'];
       chart01.draw(data01, options);
-
       options.title = 'Muscle Velocity (m/s)'; // Remember, these options are inherited by the graphs below.
       options.colors = ['#c91700'];
       chart02.draw(data02, options);
-
       options.title = 'Muscle Force (N)';
       options.colors = ['#c91700'];
       chart03.draw(data03, options);
-
       options.title = 'Muscle Power (mW)';
       options.colors = ['#c91700'];
       chart04.draw(data04, options);
-
       options.title = 'Projectile Position (m)';
       options.colors = ['royalblue'];
       chart05.draw(data05, options);
-
       options.title = 'Projectile Velocity (m/s)';
       options.colors = ['royalblue'];
       chart06.draw(data06, options);
-
       options.title = 'Projectile Acceleration (m/s/s)'; // Remember, these options are inherited by the graphs below.
       options.colors = ['royalblue'];
       chart07.draw(data07, options);
-
       options.title = 'Projectile Power (W/kg)';
       options.colors = ['royalblue'];
       chart08.draw(data08, options);
-
       options.title = 'Spring Length (m)';
       options.colors = ['#158032'];
       chart09.draw(data09, options);
-
       options.title = 'Spring Shortening Velocity (m/s)';
       options.colors = ['#158032'];
       chart10.draw(data10, options);
-
       options.title = 'Muscle Excitation'; // Remember, these options are inherited by the graphs below.
       options.colors = ['#c91700'];
       chart11.draw(data11, options);
-
       options.title = 'Muscle Work (mJ)';
       options.colors = ['#c91700'];
       chart13.draw(data13, options);
-
       options.title = 'Muscle Rel. Tension vs Length';
       options.colors = ['#e5a8a1', '#5d39d3'];
       options.hAxis.title = 'Muscle length (m)';
       options.hAxis.minValue = muscleL0 * 0.5;
       options.hAxis.maxValue = muscleL0 * 1.5;
       chart12.draw(data12, options);
-
       options.title = 'Muscle Force vs Velocity'; // Remember, these options are inherited by the graphs below.
       options.colors = ['#e5a8a1', '#5d39d3'];
       options.hAxis.title = 'Muscle velocity (m/s)';
       options.hAxis.minValue = 0;
       options.hAxis.maxValue = muscleVmax;
       chart14.draw(data14, options);
-
       options.title = 'Gear Ratio Profile';
       options.colors = ['#000000'];
       options.hAxis.title = 'Time (s)';
@@ -629,15 +563,10 @@
       options.vAxis.minValue = 0;
       options.vAxis.maxValue = maxGearRatio;
       chart15.draw(data15, options);
-
-
     } // End of muscleSim function.
-
     function instructions() {
       alert("Adjust the settings of the model, which simulates the interaction of these elements: muscle-damper-spring-lever-projectile. The muscle begins activation at time zero, builds force and shortens, stretching the spring. The spring is attached by a massless lever to a projectile. \n\nYou can specify many properties such as the Vmax and P0 of the muscle, the mass of the projectile, the length of the lever (i.e., the mechanical advantage or gear ratio), and the conditions under which the lever is allowed to move. \n\nHover over the parameters for these explanations:\n\nDuration: Duration of simulation in seconds. \n\nSteps: Number of time steps in integration. Increase if traces are jittery.\n\nLatch Time: Start changing the mechanical advantage or gearing between the spring and the projectile at this time--the 'latch'--unless other conditions are met first. \n\nLength threshold: Start leverage change when this muscle length is reached, as fraction of muscle L0. \n\nForce threshold: Start leverage change at this muscle force, as fraction of muscle P0. \n\nLatch duration: Duration of the change in leverage in seconds. \n\nInitial gear ratio: Starting gear ratio of leverage change, the reciprocal of mechanical advantage. \n\nFinal gear ratio. Ending gear ratio. A value of 1 would be no mechanical advantage.\n\nMuscle L0: Muscle length in meters at which isometric force peaks. Not the same as resting or initial length, below. \n\nMuscle P0: Maximum isometric muscle force in newtons.\n\nMuscle Vmax (m/s): Maximum velocity of unloaded muscle shortening in meters per second.\n\nMuscle F-V Curvature: Curvature of force-velocity relation. Higher is more curved. Value of 3 is about right for frog limb muscle with a power ratio of 1.1.\n\nMuscle init. length: Muscle length at start of trial, as fraction of muscle L0.\n\nExcitation: Duration of muscle excitation in seconds.\n\nProjectile mass: Mass of the projectile in kg.\n\nSpring constant: Stiffness of spring between muscle and projectile, in newtons per meter.\n\nSpring slack length: Length in meters at which spring exerts no force.\n\nDamping coef: Viscous damping of the inertial muscle mass. Higher values reduce vibrations that can occur with small muscle mass and stiff spring.\n\nInertial mass: Muscle mass that is accelerated when the muscle shortens, as a fraction of muscle mass. Higher values reduce vibration.\n\nIf the simulation gets sluggish, as it may on some browsers, reload the page.")
     }
-
-
     // Downsample array for much, much faster graphing. More than about 500 points isn't necessary.
     function downSample(longArray) {
       var shortLength = 800;
@@ -649,7 +578,6 @@
       }
       return shortArray;
     } // End of downSample function
-
     // Transpose 2D Array
     function transpose(original) { // Transpose 2D Array
       var copy = [];
@@ -665,7 +593,6 @@
       }
       return copy;
     } // End of transpose function.
-
     // NOTE: To find the maximum value of array: Math.max.apply(Math, arrayName); [Math.max(arrayName); will not work].
 
   </script>
