@@ -13,6 +13,11 @@
       line-height: 1.3em;
     }
 
+    a {
+      color: royalblue;
+      text-decoration: none;
+    }
+
     h1 {
       font-family: "Lucida Grande", Verdana, Arial, sans-serif;
       border-style: solid;
@@ -78,14 +83,11 @@
 <body>
   <div id="main">
     <h2>Overview</h2>
-    <p>
-      <b>Muscle Explorer</b> simulates the performance of musculoskeletal systems in which a single muscle shortens against an elastic element in series with a mass. The model can be used to explore muscle-tendon behavior to predict results of in-vitro muscle experiments or the performance of an animal's explosive movement such as jumping or striking. The model simulates the interaction of several elements: a muscle-like actuator, a viscous damper, an inertial muscle mass, a hookean spring, a massless lever with a changing mechanical advantage, and an inertial projectile mass (see figure).
-      <br>
+    <p><b><a href="MuscleExplorer.html" target="_blank" title="Open simulation in a new window.">Muscle Explorer</a></b> simulates the performance of musculoskeletal systems in which a single muscle shortens against an elastic element in series with a mass. The model can be used to explore muscle-tendon behavior to predict results of in-vitro muscle experiments or the performance of an animal's explosive movement such as jumping or striking. The model simulates the interaction of several elements: a muscle-like actuator, a viscous damper, an inertial muscle mass, a hookean spring, a massless lever with a variable mechanical advantage, and an inertial projectile mass (see figure).<br>
     </p>
     <p>Physiological and biomechanical parameters can be set and when the muscle actuator is activated it builds force and moves the inertial muscle mass, stretching the spring. Recoil of the spring rotates the lever and accelerates the projectile mass. The muscle actuator generates force using realistic force-velocity and force-length properties for vertebrate skeletal muscle, and the physics are modeled in a forward dynamics fashion using a classical fourth-order Runge-Kutta integrator.</p>
-    <img src="MuscleSpring.svg" alt="" style=" width: 100%;" vspace="10" align="top">
-    <div id="legend"><em><b>Figure.</b> A pseudo-anatomical schematic of the model showing the relationships of the components.</em></div>
-    <br>
+    <img src="MuscleSpring.svg" alt="" style="width: 100%;" vspace="10" align="top">
+    <div id="legend"><em><b>Figure.</b> A pseudo-anatomical schematic of the model showing the relationships of the components.</em></div><br>
 
     <h2>Components</h2>
     <h3>Muscle</h3>
@@ -125,7 +127,7 @@
       <b>Initial gear ratio</b>: Starting gear ratio of leverage change, the reciprocal of mechanical advantage. <br>
       <b>Final gear ratio</b>. Ending gear ratio. A value of 1 would be no mechanical advantage.<br><br>
 
-      <b>Projectile mass</b>: Mass of the projectile in kg.<br><br></p>
+      <b>Projectile mass</b>: Mass of the projectile in kg.<br></p>
     <h2>Scenarios</h2>
     <p>The model can simulate a number of scenarios, such as a salamander shooting out its tongue, a frog launching its whole body into the air, or a reduced system of just a muscle and mass.</p>
 
@@ -136,7 +138,7 @@
     <p> <b>Muscle moving a mass:</b> Same initial and final gear ratio or very early latch coupled with a high spring constant (i.e., no elasticity).</p>
 
     <h2>Challenges</h2>
-    <p>The model can be extended with some knowledge of JavaScript. In addition to this documentation, the code is thoroughly commented with the goal that the function of every line is clear, as well as the overall structure of the program. I am far from a professional programmer and I am sure I have committed a number of coding crimes, e.g. putting everything in one file, but hopefully the code is at least logical and understandable. Some ideas for extension are (1) saving and loading settings and results (would be awesome for teaching); (2) wrapping the code in a set of loops to systematically change parameters and save the results; (3) adding more or different output graphs or files, or the production of nice figures; and (4) allowing parameters to be specified in different ways, for example elastic modulus instead of spring constant. The model and this documentation are on <a href="https://github.com/sdeban/Muscle-models" target="_blank">GitHub</a>.</p>
+    <p>The model can be extended with some knowledge of JavaScript. In addition to this documentation, the code is thoroughly commented with the goal that the function of every line is clear, as well as the overall structure of the program. I am far from a professional programmer and I am sure I have committed a number of coding crimes, e.g. putting everything in one file, but hopefully the code is at least logical and understandable. Some ideas for extension are (1) saving and loading settings and results (would be awesome for teaching); (2) wrapping the code in a set of loops to systematically change parameters and save the results; (3) adding more or different output graphs or files, or the production of nice figures; (4) allowing parameters to be specified in different ways, e.g., elastic modulus instead of spring constant; and (5) adding drag or gravity to the projectile mass. The model and this documentation are on <a href="https://github.com/sdeban/Muscle-models" target="_blank">GitHub</a>.</p>
 
     <h2>Dependencies</h2>
     <p>The model is implemented in JavaScript, CSS and HTML and should run in most modern browsers. I know that it runs well on Chrome and on Safari mobile. On Safari desktop, however, it gets sluggish after applying settings several times and has to be reloaded to recover good performance. The only dependency is <a href="https://developers.google.com/chart/" target="_blank">Google Charts</a>.</p>
