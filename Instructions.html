@@ -127,29 +127,29 @@
       <br>
       <br>
 
-      <b>Inertial mass</b>: Muscle mass that is accelerated when the muscle shortens, as a fraction of muscle mass. Higher values reduce vibrations that can occur with small muscle mass and stiff spring.
+      <b>Inertial mass</b>: Muscle mass that is accelerated when the muscle shortens, as a fraction of muscle mass. Higher values reduce vibrations that can occur with a small muscle mass, a stiff spring and little damping.
       <br>
-      <b>Damping constant</b>: Viscous damping of the inertial muscle mass, in newton-seconds per meter. Higher values reduce vibrations.
-      <br>
-      <br>
-
-      <b>Spring constant</b>: Stiffness of spring between muscle and projectile, in newtons per meter.
-      <br>
-      <b>Spring slack length</b>: Length in meters at which spring exerts no force.
+      <b>Damping constant</b>: Viscous damping of the inertial muscle mass, in newton-seconds per meter. Higher values reduce vibrations. A value of zero is no damping.
       <br>
       <br>
 
-      <b>Latch Time</b>: Start changing gearing at this time unless other conditions are met first, such as a muscle force or muscle length threshold.
+      <b>Spring constant</b>: Stiffness of the spring between the muscle and projectile, in newtons per meter.
       <br>
-      <b>Length threshold</b>: Start leverage change when this muscle length is reached, as fraction of muscle L0.
+      <b>Spring slack length</b>: Length in meters at which the spring exerts no force.
       <br>
-      <b>Force threshold</b>: Start leverage change at this muscle force, as fraction of muscle P0.
+      <br>
+
+      <b>Latch Time</b>: Start changing leverage at this time unless other conditions are met first, such as a muscle force or muscle length threshold.
+      <br>
+      <b>Length threshold</b>: Start leverage change when this muscle length is reached, as fraction of muscle L0, unless force or timing threshold is reached first.
+      <br>
+      <b>Force threshold</b>: Start leverage change at this muscle force, as fraction of muscle P0, unless length or timing threshold is reached first.
       <br>
       <b>Latch duration</b>: Duration of the change in leverage in seconds.
       <br>
-      <b>Initial gear ratio</b>: Starting gear ratio of leverage change, the reciprocal of mechanical advantage.
+      <b>Initial gear ratio</b>: Starting gear ratio of leverage change (the reciprocal of mechanical advantage).
       <br>
-      <b>Final gear ratio</b>. Ending gear ratio. A value of 1 would be no mechanical advantage.
+      <b>Final gear ratio</b>: Ending gear ratio. A value of 1 would be no mechanical advantage.
       <br>
       <br>
 
@@ -159,11 +159,11 @@
     <h2>Scenarios</h2>
     <p>The model can simulate a number of scenarios, such as a salamander shooting out its tongue, a frog launching its whole body into the air, or a reduced system of just a muscle and mass.</p>
 
-    <p><b>Salamander tongue projection:</b> Large muscle, small projectile mass, late latch, and rapid change of mechanical advantage.</p>
+    <p><b>Salamander tongue projection</b>: Large muscle, small projectile mass, late latch, and rapid change of mechanical advantage.</p>
 
-    <p> <b>Jumping frog:</b> Small muscle, large projectile mass, early latch, and slow change of mechanical advantage.</p>
+    <p> <b>Jumping frog</b>: Small muscle, large projectile mass, early latch, and slow change of mechanical advantage.</p>
 
-    <p> <b>Muscle moving a mass:</b> Same initial and final gear ratio or very early latch coupled with a high spring constant (i.e., no elasticity).</p>
+    <p> <b>Muscle moving a mass</b>: Same initial and final gear ratio or very early latch coupled with a high spring constant (i.e., no elasticity).</p>
 
     <h2>Challenges</h2>
     <p>The model can be extended with some knowledge of JavaScript. In addition to this documentation, the code is thoroughly commented with the goal that the function of every line is clear, as well as the overall structure of the program. I am far from a professional programmer and I am sure I have committed a number of coding crimes, e.g. putting everything in one file, but hopefully the code is at least logical and understandable. Some ideas for extension are (1) saving and loading settings and results (would be awesome for teaching); (2) wrapping the code in a set of loops to systematically change parameters and save the results; (3) adding more or different output graphs or files, or the production of nice figures; (4) allowing parameters to be specified in different ways, e.g., elastic modulus instead of spring constant; and (5) adding drag or gravity to the projectile mass. The model and this documentation are on <a href="https://github.com/sdeban/Muscle-models" target="_blank">GitHub</a>.</p>
