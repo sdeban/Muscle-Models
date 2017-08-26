@@ -156,6 +156,8 @@
 
     <br />
     <button id="runSim" onclick="springMass()">Apply new values</button>
+    <button onclick="exportToCsv()">Export to CSV</button>
+
     <br />
     <br />
     <a href="Instructions.html" target="_blank" title="Open documentation in a new window.">Documentation page</a>
@@ -186,7 +188,6 @@
   <script type="text/javascript">
     //
     /*   Simulation uses a Runge-Kutta 4th Order (RK4) integration. At large time steps, RK4 performs well because it is refining the estimate in each time step by taking a weighted average of four estimates. Other integrators like Euler and Verlet need absurdly small time steps for the same accuracy, which on balance is not as efficient. RK4 is the gold standard for the balance of performance and accuracy. It is not symplectic, which means that energy is not strictly conserved, but the losses for our purposes are tiny and can be minimized with a small time step. Author: Stephen M. Deban, University of South Florida. */
-
     // If enter key is pressed, then run the simulation with the entered values.
     document.onkeypress = function(e) {
       var e = e || window.event; // Assing window event to e, if there is an event.
@@ -201,7 +202,6 @@
 
     // TODO: Check if local web storage is supported by browser.
     // TODO: Use this in the future for saving and loading data.
-
     if (typeof(Storage) != "undefined") {
       // Code for localStorage/sessionStorage.
       // NOTE: Not currently used.
@@ -211,6 +211,7 @@
 
     // Simulation settings
     function springMass() { // Start of main simulation function
+
       // Get values from form in webpage. NOTE: '+' coerces the strings retrieved to numbers. Default values are stored in the form elements in the html.
       var duration = +document.getElementById("duration").value; // Duration in seconds.
       var steps = +document.getElementById("steps").value * 1000; // Steps in simulation. Value from form times 1000.
@@ -220,8 +221,9 @@
       var springL0 = +document.getElementById("springL0").value; // Tendon slack length in m.
       var timeStep = duration / steps; // Size in seconds of time step.
       var time = [];
-      for (var i = 0; i != steps + 1; ++i) time[i] = i * timeStep // Loop to fill time vector with timesteps to be used in graphing. Numbers will not be precise at 14 decimal places, but it doesn't matter.
-        // Morphological and physiological parameters
+      for (var i = 0; i != steps + 1; ++i) time[i] = i * timeStep; // Loop to fill time vector with timesteps to be used in graphing. Numbers will not be precise at 14 decimal places, but it doesn't matter.
+
+      // Morphological and physiological parameters
       var muscleL0 = +document.getElementById("muscleL0").value; // Muscle resting length in meters.
       var muscleP0 = +document.getElementById("muscleP0").value; // Muscle isometric force in newtons.
       var muscleVmax = +document.getElementById("muscleVmax").value; // Muscle Vmax in m/s.
@@ -232,7 +234,9 @@
       var muscleFraction = +document.getElementById("muscleFraction").value; // Fraction of muscle mass that is modeled as accelerated muscle mass.
       var excitationTime = +document.getElementById("excitationTime").value; // Time for muscle excitation in seconds.
       var excitationRate = 2; // Higher numbers have higher peak rate of excitation. Must be greater than 1.
+
       // Trial parameters that can change between trials.
+
       // One or more of these conditions can be used to release latch, depending on which if statements in loop are active. The first condition reached will release latch.
       var latchTime = +document.getElementById("latchTime").value; // Timing of latch release in seconds from start of simulation, if used in loop.
       var forceThreshold = +document.getElementById("forceThreshold").value * muscleP0; // Muscle force at which gear ratio drops to 1.
@@ -245,6 +249,7 @@
       var minGearRatio = +document.getElementById("finalGearRatio").value; // Final gear ratio value during launch.
       var durationGearChange = +document.getElementById("durGearChange").value; // Duration of latch release. Value near time step is effectively instantaneous.
       var cumulativeWork = 0; // Place to store the cumulative work done by the muscle.
+
       // Define arrays of proper length to fill with values later.
       var muscleFLForce = [];
       var muscleForce = [];
@@ -277,10 +282,12 @@
 
       // Create gear ratio profile
       gearRatio = time.map(function(i) { // Create a sigmoidal gear ratio profile, starting to change from max to min at time zero over the specified duration.
-          return (1.0009765 * maxGearRatio - minGearRatio) / (1 + Math.pow(2, 10 * -(2 * i - durationGearChange) / -durationGearChange)) + minGearRatio;
-        })
-        // First time step in simulation.
-        // Muscle, spring, projectile and gearing starting conditions.
+        return (1.0009765 * maxGearRatio - minGearRatio) / (1 + Math.pow(2, 10 * -(2 * i - durationGearChange) / -durationGearChange)) + minGearRatio;
+      })
+
+      // First time step in simulation.
+
+      // Muscle, spring, projectile and gearing starting conditions.
       var exciteMax = 1; // Maximum excitation level of muscle, with 1 being full excitation.
       var muscleAcc = [];
       muscleAcc[0] = 0; // Starting acceleration of muscle mass in m/s/s.
@@ -442,34 +449,34 @@
 
       // Place chart options into an object
       var options = { // Display options, such as line thickness, color, axis settings.
-          backgroundColor: '#efefef',
-          title: ' ',
-          tooltip: {
-            trigger: 'selection',
-          },
-          legend: 'none',
-          lineWidth: 1.8,
-          //
-          chartArea: {
-            backgroundColor: '#fdfdfd',
-            left: '15%',
-            top: '15%',
-            width: '77%',
-            height: '60%'
-          },
-          fontName: 'Lucida Grande',
-          fontSize: 14,
-          hAxis: {
-            format: '#.####',
-            title: 'Time (s)',
-            minValue: 0,
-            maxValue: duration
-          },
-          vAxis: {
-            format: '#.####'
-          },
-          colors: ['royalblue', 'royalblue'],
-        } // End of chart options
+        backgroundColor: '#efefef',
+        title: ' ',
+        tooltip: {
+          trigger: 'selection',
+        },
+        legend: 'none',
+        lineWidth: 1.8,
+        //
+        chartArea: {
+          backgroundColor: '#fdfdfd',
+          left: '15%',
+          top: '15%',
+          width: '77%',
+          height: '60%'
+        },
+        fontName: 'Lucida Grande',
+        fontSize: 14,
+        hAxis: {
+          format: '#.####',
+          title: 'Time (s)',
+          minValue: 0,
+          maxValue: duration
+        },
+        vAxis: {
+          format: '#.####'
+        },
+        colors: ['royalblue', 'royalblue'],
+      } // End of chart options
       var shortTime = downSample(time); // downSample the time array for faster graphing.
 
       // Create data arrays for graphs, using transpose fn.
@@ -481,6 +488,7 @@
       data02.addColumn('number', '');
       data02.addColumn('number', '');
       data02.addRows(transpose([shortTime, downSample(muscleVel)]));
+
       // NOTE: removeColumns(columnIndex, numberOfColumns) can be used to remove data which can then be updated.
       var data03 = new google.visualization.DataTable();
       data03.addColumn('number', '');
@@ -594,9 +602,16 @@
       options.vAxis.minValue = 0;
       options.vAxis.maxValue = maxGearRatio;
       chart15.draw(data15, options);
+
+      allLabels = []; // TODO: Collect all variable names to place in header column of data file.
+      allSettings = []; // TODO: Collect all the settings to save to the file with the data.
+      allData = transpose([time, muscleLength, muscleForce, muscleVel, musclePower, muscleWork, projectilePos, projectileVel, projectileAcc, projectilePower, springLength, springVel, muscleExcForce, finalGearRatio]);
+
+      // TODO: Create an array with variable names, and then add that and all the data to allData.
+      // TODO: Figure out how to save piecemeal to a csv file, because the current exportToCsv does not work for more than about 40,000 items.
     } // End of muscleSim function.
 
-    // Downsample array for much, much faster graphing. More than about 500 points isn't necessary because you can't see them.
+    // Downsample array for much, much faster graphing. More than about 500-800 points isn't necessary because you can't see them.
     function downSample(longArray) {
       var shortLength = 800;
       var shortArray = new Array(shortLength);
@@ -625,6 +640,24 @@
     } // End of transpose function.
 
     // NOTE: To find the maximum value of array: Math.max.apply(Math, arrayName); [Math.max(arrayName); will not work!].
+
+    // Export 2D array of all data to csv file, with a unique name based on the time and date.
+    // NOTE: This doesn't work with more than about 40,000 items. Ugh.
+    function exportToCsv() {
+      var csvString = "";
+      allData.forEach(function(rowItem, rowIndex) {
+        rowItem.forEach(function(colItem, colIndex) {
+          csvString += colItem + ',';
+        });
+        csvString += "\r\n";
+      });
+      csvString = "data:application/csv," + encodeURIComponent(csvString);
+      var x = document.createElement("A");
+      x.setAttribute("href", csvString);
+      x.setAttribute("download", "MuscleData" + Date.now() + ".csv");
+      document.body.appendChild(x);
+      x.click();
+    } // End of export function
 
   </script>
 
