@@ -156,7 +156,6 @@
 
     <br />
     <button id="runSim" onclick="springMass()">Apply new values</button>
-    <button onclick="exportToCsv()">Export to CSV</button>
 
     <br />
     <br />
@@ -606,7 +605,6 @@
       allLabels = []; // TODO: Collect all variable names to place in header column of data file.
       allSettings = []; // TODO: Collect all the settings to save to the file with the data.
       allData = transpose([time, muscleLength, muscleForce, muscleVel, musclePower, muscleWork, projectilePos, projectileVel, projectileAcc, projectilePower, springLength, springVel, muscleExcForce, finalGearRatio]);
-
       // TODO: Create an array with variable names, and then add that and all the data to allData.
       // TODO: Figure out how to save piecemeal to a csv file, because the current exportToCsv does not work for more than about 40,000 items.
     } // End of muscleSim function.
@@ -640,24 +638,6 @@
     } // End of transpose function.
 
     // NOTE: To find the maximum value of array: Math.max.apply(Math, arrayName); [Math.max(arrayName); will not work!].
-
-    // Export 2D array of all data to csv file, with a unique name based on the time and date.
-    // NOTE: This doesn't work with more than about 40,000 items. Ugh.
-    function exportToCsv() {
-      var csvString = "";
-      allData.forEach(function(rowItem, rowIndex) {
-        rowItem.forEach(function(colItem, colIndex) {
-          csvString += colItem + ',';
-        });
-        csvString += "\r\n";
-      });
-      csvString = "data:application/csv," + encodeURIComponent(csvString);
-      var x = document.createElement("A");
-      x.setAttribute("href", csvString);
-      x.setAttribute("download", "MuscleData" + Date.now() + ".csv");
-      document.body.appendChild(x);
-      x.click();
-    } // End of export function
 
   </script>
 
