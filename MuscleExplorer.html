@@ -155,8 +155,8 @@
     </div>
 
     <br />
-    <button id="runSim" onclick="springMass()">Apply new values</button>
-
+    <button title="Apply the settings" onclick="springMass()">Apply new values</button>
+    <button title="Download the displayed data as csv file." onclick="downloadFile(allData, 'MusExpData' + (1503000000000 - Date.now()) + '.csv');">Download data</button>
     <br />
     <br />
     <a href="Instructions.html" target="_blank" title="Open documentation in a new window.">Documentation page</a>
@@ -301,6 +301,9 @@
       var muscleExcForce = time.map(function(i) {
         return exciteMax / (1 + Math.pow(excitationRate, 10 * (-2 * i + excitationTime) / excitationTime));
       }); // Defines entire muscle excitation profile array, ramping up from zero to max defined as exciteMax in a sigmoidal fashion by excitationTime.
+      var endOfRow = time.map(function(i) {
+        return "\n";
+      }); // Defines array with EOL to be used in file output array.
       muscleFLForce[0] = muscleFLCurve(muscleLength[0] / muscleL0); // Call function muscleFLCurve to return force from length. See notes below for an explanation.
       var muscleFVForce = [];
       muscleFVForce[0] = (muscleP0 * (muscleVmax - muscleVel[0])) / (curveFV * muscleVel[0] + muscleVmax); // Equation specifying muscle force given muscleVmax, muscleVel, muscleP0 and a F-V curvature. Symmetric around force=velocity.
@@ -602,11 +605,15 @@
       options.vAxis.maxValue = maxGearRatio;
       chart15.draw(data15, options);
 
-      allLabels = []; // TODO: Collect all variable names to place in header column of data file.
-      allSettings = []; // TODO: Collect all the settings to save to the file with the data.
-      allData = transpose([time, muscleLength, muscleForce, muscleVel, musclePower, muscleWork, projectilePos, projectileVel, projectileAcc, projectilePower, springLength, springVel, muscleExcForce, finalGearRatio]);
+      allLabels = ["", "Time (s)", "Muscle Length (m)", "Muscle Force (N)", "Muscle Velocity (m/s)", "Muscle Power (W)", "Muscle Work (mJ)", "Projectile Position (m)", "Projectile Velocity (m/s)", "Projectile Acceleration (m/s/s)", "Projectile Power (W/kg)", "Spring Length (m)", "Spring Velocity (m/s)", "Muscle Excitation (%)", "Gear Ratio", "\n"]; // Collects all variable names to place in header column of data file.
+      allSettings = []; // TODO: Collect all the settings to save to the data file.
+      allData = [
+        [allLabels],
+        [transpose([time, muscleLength, muscleForce, muscleVel, musclePower, muscleWorkmJ, projectilePos, projectileVel, projectileAcc, projectilePower, springLength, springVel, muscleExcForce, finalGearRatio, endOfRow])]
+      ];
       // TODO: Create an array with variable names, and then add that and all the data to allData.
       // TODO: Figure out how to save piecemeal to a csv file, because the current exportToCsv does not work for more than about 40,000 items.
+      // downloadFile(allData, "MusExpData" + (1503700000000 - Date.now()) + ".csv");
     } // End of muscleSim function.
 
     // Downsample array for much, much faster graphing. More than about 500-800 points isn't necessary because you can't see them.
@@ -636,6 +643,28 @@
       }
       return copy;
     } // End of transpose function.
+
+    function downloadFile(data, fileName) {
+      var csvData = data;
+      var blob = new Blob([csvData], {
+        type: "application/csv;charset=utf-8;"
+      });
+
+      if (window.navigator.msSaveBlob) {
+        // FOR IE BROWSER
+        navigator.msSaveBlob(blob, fileName);
+      } else {
+        // FOR OTHER BROWSERS
+        var link = document.createElement("a");
+        var csvUrl = URL.createObjectURL(blob);
+        link.href = csvUrl;
+        link.style = "visibility:hidden";
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    }
 
     // NOTE: To find the maximum value of array: Math.max.apply(Math, arrayName); [Math.max(arrayName); will not work!].
 
