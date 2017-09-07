@@ -7,10 +7,10 @@
 <script type="text/javascript">
   /*   Spring-Mass model looping example.  
 
-        NOTE: This does not work in this javascript implementation. Why?
+          NOTE: This does not work in this javascript implementation. Why?
 
 
-      Author: Stephen M. Deban, University of South Florida. */
+        Author: Stephen M. Deban, University of South Florida. */
 
   // Load google chart API for graphing.
   google.charts.load('current', {
@@ -62,15 +62,11 @@
       velocityVV[i] = velocityVV[i - 1] + (accelerationVV[i] + accelerationVV[i - 1]) / 2 * timeStep; // Velocity verlet method, in which vel is the previous velocity + the average acceleration from this and the previous time step times the time step.
       positionVV[i] = positionVV[i - 1] + velocityVV[i] * timeStep + 0.5 * accelerationVV[i] * timeStep ^ 2; // Velocity verlet method, in which position is calculated from the previous position, current velocity and current acceleration.
 
-
     } // End of simulation loop. 
-
 
     console.log('Pos=', positionVV.slice(0, 5));
     console.log('Vel=', velocityVV.slice(0, 5));
     console.log('Accel=', accelerationVV.slice(0, 5));
-
-
 
     // Create data arrays for graph, using transpose fn.
     var timeVel = transpose([downSample(time), downSample(velocityVV)]);
@@ -144,9 +140,6 @@
     return copy;
   } // End of transpose function.
 
-
-
-
   // Downsample array for faster graphing
   function downSample(longArray) {
     var shortLength = 1000;
@@ -159,9 +152,6 @@
     }
     return shortArray;
   } // End of downSample function
-
-
-
 
   // TODO: Example format for To Do.
 
