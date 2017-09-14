@@ -1,0 +1,155 @@
+<!doctype html>
+<html>
+
+<head>
+  <style>
+    svg {
+      left: 0;
+      top: 0;
+      width: 100%;
+    }
+
+  </style>
+</head>
+
+<script type="text/javascript">
+  /*   Spring-Mass model looping example. Example of Runge-Kutta 4th Order (RK4) integration. Author: Stephen M. Deban, University of South Florida. */
+
+  // Execute the simulation and graphing upon page load.
+  window.onload = function() {
+    runSim.click(); // 'runSim' is the id for the 'apply' button.
+  }
+
+  //Simulation settings
+
+  function springMass() {
+
+    // Get values from form in webpage. NOTE: '+' coerces the strings retrieved to numbers. Default values are stored in the form elements in the html.
+    var duration = +document.getElementById("duration-input").value; // Duration in seconds.
+    var steps = +document.getElementById("steps-input").value; // Steps in simulation.
+    var mass = +document.getElementById("mass-input").value; // Mass in kg.
+    var springConstant = +document.getElementById("spring-input").value; // Spring constant in N/m.
+    var dampingConstant = +document.getElementById("damping-input").value; // Damping constant in N m/s.
+    var startPosition = +document.getElementById("startPos-input").value; // Starting displacement of spring in m.
+    var timeStep = duration / steps; // Size in seconds of time step.
+    var time = [];
+    for (var i = 0; i != steps + 1; ++i) time[i] = i * timeStep // Loop to fill time vector with timesteps to be used in graphing. Numbers will not be precise at 14 decimal places, but it doesn't matter.
+
+    // Initialize arrays to fill.
+
+    var positionRK = [];
+    var velocityRK = [];
+    var accelerationRK = [];
+
+    // Starting conditions: first time step.
+    positionRK[0] = startPosition; // Set the first value in the position array to the starting position defined earlier.
+    accelerationRK[0] = (-springConstant * startPosition) / mass; // F = ma, essentially.
+    velocityRK[0] = 0; // No velocity at start.
+
+    // Simulation loop: time step 2 onward
+    for (var i = 1; i != steps + 1; ++i) { // Loop from 2 to the number of steps in the simulation
+
+      // Runge-Kutta 4th order method for calculating velocity, position and acceleration, using four estimates that are then averaged.
+
+      // First estimate
+      var position1 = positionRK[i - 1];
+      var velocity1 = velocityRK[i - 1];
+      var acceleration1 = -(springConstant * position1 + dampingConstant * velocity1) / mass; // Use whatever equations of motion you need to calculate the acceleration given the current position and velocity.
+
+      // Second estimate
+      var position2 = position1 + velocity1 * timeStep / 2;
+      var velocity2 = velocity1 + acceleration1 * timeStep / 2;
+      var acceleration2 = -(springConstant * position2 + dampingConstant * velocity2) / mass;
+
+      // Third estimate
+      var position3 = position1 + velocity2 * timeStep / 2;
+      var velocity3 = velocity1 + acceleration2 * timeStep / 2;
+      var acceleration3 = -(springConstant * position3 + dampingConstant * velocity3) / mass;
+
+      // Fourth estimate
+      var position4 = position1 + velocity3 * timeStep;
+      var velocity4 = velocity1 + acceleration3 * timeStep;
+      var acceleration4 = -(springConstant * position4 + dampingConstant * velocity4) / mass;
+
+      // Weighted average of four estimates
+      positionRK[i] = positionRK[i - 1] + (velocity1 + 2 * velocity2 + 2 * velocity3 + velocity4) * timeStep / 6;
+
+      velocityRK[i] = velocityRK[i - 1] + (acceleration1 + 2 * acceleration2 + 2 * acceleration3 + acceleration4) * timeStep / 6;
+
+      accelerationRK[i] = -(springConstant * positionRK[i] + dampingConstant * velocityRK[i]) / mass; // Now that we have the refined estimates for positon and velocity in this time step, we can calculate acceleration from them.
+
+    } // End of simulation loop.
+
+    var svg = document.getElementById('svg01'); // Create a variable/object to refer to the svg viewBox.
+
+    // Create and draw x,y values
+    for (i = 0; i < 500; i++) {
+      var point = svg.createSVGPoint(); // Create a point in svg format using the object that refers to the viewBox and place it in an object.
+      point.x = i; // Add x value to x attribute of the point object
+      point.y = velocityRK[i]; // Add y value to the y attribute of the point object.
+      document.getElementById('linegraph').points.appendItem(point); // Append the points to the HTML SVG polyline element.
+    }
+
+  } // End of springMass function.
+
+  // Scale the amplitude of an array and invert the y for graphing.
+  function scaleAmp(unscaledArray, newAmplitude) {
+    var ampRange = Math.max.apply(Math, unscaledArray) - Math.min.apply(Math, unscaledArray);
+    var scaledArray = new Array()
+    var yScale = newAmplitude / ampRange; // Scale factor for y data.
+    // TODO: put loop or map function here to scale the data array y values and flip them.
+    return scaledArray;
+  } // End of array amplitude scaling
+
+  // Downsample array for faster graphing. More than about 500-800 points isn't necessary for small graphs because you can't see them.
+  function downSample(longArray) {
+    var shortLength = 800;
+    var shortArray = new Array(shortLength);
+    var scaleFactor = Math.round(longArray.length / shortLength); // Create factor by which to skip values in long array.
+    for (var i = 0; i < shortLength; ++i) { // Could probably do this with a .map function.
+      shortArray[i] = longArray[i * scaleFactor + 1]; // Grab value from long array and add to short array.
+    }
+    return shortArray;
+  } // End of downSample function
+
+</script>
+
+<body>
+
+  <h4 style="font-family:arial;margin: 1%">Velocity (m/s)</h4>
+  <div id="velocity_chart" style="width: 200px; height: 200px">
+    <svg id="svg01" viewBox="0 0 500 400"> <!-- viewBox specifies x origin, y origin, width, height in SVG 'pixels' of the box that the svg is drawn into. The bigger it is, the smaller the resulting drawing, oddly. It must be big enough to contain the image you draw or it will chop it off at the right and bottom. Even so, this svg box can be told by CSS to fill the entire DIV that it is in, or 50% or whatever. -->
+    <polyline id="linegraph" points="" style="fill:none;stroke:#001467;stroke-width:1.0" />
+    </svg>
+  </div>
+  <h4 style="font-family:arial;margin: 1%">Acceleration (m/s/s)</h4>
+  <div id="accel_chart" style="width: 600px; height: 250px"></div>
+  <p style="font-family:arial;margin: 1%">
+    Duration (s):
+    <input type="number" id="duration-input" value="100">
+  </p>
+  <p style="font-family:arial;margin: 1%">
+    Steps:
+    <input type="number" id="steps-input" value="2000">
+  </p>
+  <p style="font-family:arial;margin: 1% ">
+    Mass (kg):
+    <input type="number" id="mass-input" value="10">
+  </p>
+  <p style="font-family:arial;margin: 1% ">
+    Spring Constant (N/m):
+    <input type="number" id="spring-input" value="10">
+  </p>
+  <p style="font-family:arial;margin: 1% ">
+    Damping coefficient (N s/m):
+    <input type="number" id="damping-input" value="1">
+  </p>
+  <p style="font-family:arial;margin: 1% ">
+    Starting position (m):
+    <input type="number" id="startPos-input" value="1">
+  </p>
+  <button id="runSim" style="width: 200px; height: 45px; margin: 1%; font-size: 18px; background-color: #f5f5f5;" onclick="springMass()">Apply</button>
+  <button style="width: 200px; height: 45px; margin: 1%; font-size: 18px; background-color: #f5f5f5;" onclick="location.reload()">Reload</button>
+</body>
+
+</html>
