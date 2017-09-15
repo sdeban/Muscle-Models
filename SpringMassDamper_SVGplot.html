@@ -82,11 +82,16 @@
 
     var svg = document.getElementById('svg01'); // Create a variable/object to refer to the svg viewBox.
 
+    var scaledVel = scaleAmp(velocityRK, 400); // Scale the array to a maximum value of 400.
+    var shortVel = downSample(scaledVel);
+
+    // TODO: The scaled and shortened wave is correct, but it needs to be plotted offset so that it fills the viewBox. Right now, zero is at the top border. You can't know the final min and max of the scaled wave until after you scale it!
+
     // Create and draw x,y values
     for (i = 0; i < 500; i++) {
       var point = svg.createSVGPoint(); // Create a point in svg format using the object that refers to the viewBox and place it in an object.
       point.x = i; // Add x value to x attribute of the point object
-      point.y = velocityRK[i]; // Add y value to the y attribute of the point object.
+      point.y = shortVel[i]; // Add y value to the y attribute of the point object.
       document.getElementById('linegraph').points.appendItem(point); // Append the points to the HTML SVG polyline element.
     }
 
@@ -94,16 +99,18 @@
 
   // Scale the amplitude of an array and invert the y for graphing.
   function scaleAmp(unscaledArray, newAmplitude) {
-    var ampRange = Math.max.apply(Math, unscaledArray) - Math.min.apply(Math, unscaledArray);
-    var scaledArray = new Array()
-    var yScale = newAmplitude / ampRange; // Scale factor for y data.
-    // TODO: put loop or map function here to scale the data array y values and flip them.
+    var oldAmplitude = Math.abs(Math.max.apply(Math, unscaledArray) - Math.min.apply(Math, unscaledArray));
+    var scaledArray = new Array(unscaledArray.length);
+    var yScale = newAmplitude / oldAmplitude; // Scale factor for y data.
+    for (var i = 0; i < unscaledArray.length; ++i) {
+      scaledArray[i] = -(yScale * unscaledArray[i]); // Scale and flip
+    }
     return scaledArray;
   } // End of array amplitude scaling
 
-  // Downsample array for faster graphing. More than about 500-800 points isn't necessary for small graphs because you can't see them.
+  // Downsample array for faster graphing. More than 500-800 points isn't necessary for displaying small graphs.
   function downSample(longArray) {
-    var shortLength = 800;
+    var shortLength = 500;
     var shortArray = new Array(shortLength);
     var scaleFactor = Math.round(longArray.length / shortLength); // Create factor by which to skip values in long array.
     for (var i = 0; i < shortLength; ++i) { // Could probably do this with a .map function.
@@ -117,9 +124,10 @@
 <body>
 
   <h4 style="font-family:arial;margin: 1%">Velocity (m/s)</h4>
-  <div id="velocity_chart" style="width: 200px; height: 200px">
+  <div id="velocity_chart" style="width: 500px; height: 400px">
     <svg id="svg01" viewBox="0 0 500 400"> <!-- viewBox specifies x origin, y origin, width, height in SVG 'pixels' of the box that the svg is drawn into. The bigger it is, the smaller the resulting drawing, oddly. It must be big enough to contain the image you draw or it will chop it off at the right and bottom. Even so, this svg box can be told by CSS to fill the entire DIV that it is in, or 50% or whatever. -->
-    <polyline id="linegraph" points="" style="fill:none;stroke:#001467;stroke-width:1.0" />
+
+    <polyline id="linegraph" points="" style="fill:none;stroke:#001467;stroke-width:1.8" />
     </svg>
   </div>
   <h4 style="font-family:arial;margin: 1%">Acceleration (m/s/s)</h4>
