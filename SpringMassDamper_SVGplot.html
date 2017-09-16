@@ -9,6 +9,15 @@
       width: 100%;
     }
 
+    .graph {
+      float: left;
+      margin: auto;
+      padding: auto;
+      width: 35%;
+      min-width: 400px;
+      height: 200px;
+    }
+
   </style>
 </head>
 
@@ -81,7 +90,6 @@
     } // End of simulation loop.
 
     var svg = document.getElementById('svg01'); // Create a variable/object to refer to the svg viewBox.
-
     var scaledVel = scaleAmp(velocityRK, 200); // Scale the array to a maximum value of 200.
     var shortVel = downSample(scaledVel); // Shorten to 400 points for graphing.
 
@@ -90,7 +98,19 @@
       var point = svg.createSVGPoint(); // Create a point in svg format using the object that refers to the viewBox and place it in an object.
       point.x = i; // Add x value to x attribute of the point object
       point.y = shortVel[i]; // Add y value to the y attribute of the point object.
-      document.getElementById('linegraph').points.appendItem(point); // Append the points to the HTML SVG polyline element.
+      document.getElementById('linegraph01').points.appendItem(point); // Append the points to the HTML SVG polyline element.
+    }
+
+    svg = document.getElementById('svg02'); // Create a variable/object to refer to the svg viewBox.
+    var scaledAccel = scaleAmp(accelerationRK, 200); // Scale the array to a maximum value of 200.
+    var shortAccel = downSample(scaledAccel); // Shorten to 400 points for graphing.
+
+    // Create and draw x,y values
+    for (i = 0; i < 400; i++) {
+      var point = svg.createSVGPoint(); // Create a point in svg format using the object that refers to the viewBox and place it in an object.
+      point.x = i; // Add x value to x attribute of the point object
+      point.y = shortAccel[i]; // Add y value to the y attribute of the point object.
+      document.getElementById('linegraph02').points.appendItem(point); // Append the points to the HTML SVG polyline element.
     }
 
   } // End of springMass function.
@@ -124,15 +144,22 @@
 
 <body>
 
-  <h4 style="font-family:arial;margin: 1%">Velocity (m/s)</h4>
-  <div id="velocity_chart" style="width: 500px; height: 400px">
+  <div class="graph" id="velocity_chart">
+    <h4 style="font-family:arial;margin: 1%">Velocity (m/s)</h4>
     <svg id="svg01" viewBox="0 0 500 400"> <!-- viewBox specifies x origin, y origin, width, height in SVG 'pixels' of the box that the svg is drawn into. The bigger it is, the smaller the resulting drawing, oddly. It must be big enough to contain the image you draw or it will chop it off at the right and bottom. Even so, this svg box can be told by CSS to fill the entire DIV that it is in, or 50% or whatever. -->
 
-    <polyline id="linegraph" points="" style="fill:none;stroke:#001467;stroke-width:1.3" />
+    <polyline id="linegraph01" style="fill:none;stroke:#001467;stroke-width:1.3" />
     </svg>
   </div>
-  <h4 style="font-family:arial;margin: 1%">Acceleration (m/s/s)</h4>
-  <div id="accel_chart" style="width: 600px; height: 250px"></div>
+
+  <div class="graph" id="velocity_chart">
+    <h4 style="font-family:arial;margin: 1%">Acceleration (m/s/s)</h4><svg id="svg02" viewBox="0 0 500 400"> <!-- viewBox specifies x origin, y origin, width, height in SVG 'pixels' of the box that the svg is drawn into. The bigger it is, the smaller the resulting drawing, oddly. It must be big enough to contain the image you draw or it will chop it off at the right and bottom. Even so, this svg box can be told by CSS to fill the entire DIV that it is in, or 50% or whatever. -->
+
+      <polyline id="linegraph02" style="fill:none;stroke:#b11b00;stroke-width:1.3" />
+    </svg>
+  </div>
+
+
   <p style="font-family:arial;margin: 1%">
     Duration (s):
     <input type="number" id="duration-input" value="100">
