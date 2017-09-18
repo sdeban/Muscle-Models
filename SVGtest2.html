@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    <meta charset="utf-8" />
+
+  </style>
+
+</head>
+
+<body>
+  </div>
+  <div id="drawing"></div>
+</body>
+
+</html>
+<script>
+  var ns = 'http://www.w3.org/2000/svg';
+  var div = document.getElementById('drawing');
+  var svg = document.createElementNS(ns, 'svg');
+  svg.setAttributeNS(null, 'width', '100%');
+  svg.setAttributeNS(null, 'height', '100%');
+  div.appendChild(svg);
+  var rect = document.createElementNS(ns, 'rect');
+  rect.setAttributeNS(null, 'width', 100);
+  rect.setAttributeNS(null, 'height', 100);
+  rect.setAttributeNS(null, 'fill', '#4e00ff');
+  svg.appendChild(rect);
+
+</script>
