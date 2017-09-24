@@ -10,7 +10,7 @@
       align-content: center;
       margin: 0px;
       padding: 0px;
-      line-height: 1.3em;
+      line-height: 1.4em;
     }
 
     a {
@@ -39,8 +39,8 @@
     h2 {
       color: royalblue;
       margin-bottom: 5px;
-      margin-top: 5px;
-      line-height: 1.8em;
+      margin-top: 20px;
+      line-height: 1.5em;
     }
 
     h3 {
@@ -86,7 +86,7 @@
     <p><b><a href="MuscleExplorer.html" target="_blank" title="Open simulation in a new window.">Muscle Explorer</a></b> simulates the performance of musculoskeletal systems in which a single muscle shortens against an elastic element in series with a mass. The model can be used to explore muscle-tendon behavior to predict results of in-vitro muscle experiments or the performance of an animal's explosive movement such as jumping or striking. The model simulates the interaction of several elements: a muscle-like actuator, a viscous damper, an inertial muscle mass, a hookean spring, a massless lever with a variable mechanical advantage, and an inertial projectile mass (see figure).
       <br>
     </p>
-    <p>To simulate a movement, the physiological and biomechanical parameters of the model are set and the muscle actuator is activated. The actuator builds force that can move the inertial muscle mass and stretch the spring. Recoil of the spring rotates the lever and accelerates the projectile mass. The muscle actuator generates force using realistic force-velocity and force-length properties for vertebrate skeletal muscle, and the physics are modeled in a forward dynamics fashion using a classical fourth-order Runge-Kutta integrator.</p>
+    <p>To simulate a movement, the physiological and biomechanical parameters of the model are set and the muscle actuator is activated. The actuator builds force that can move the inertial muscle mass and stretch the spring. Recoil of the spring rotates the lever and accelerates the projectile mass. The muscle actuator generates force using realistic force-velocity and force-length properties for vertebrate skeletal muscle, and the physics are modeled in one dimension in a forward dynamics fashion using a classical fourth-order Runge-Kutta integrator.</p>
     <img src="MuscleSpring.svg" alt="" style="width: 100%;" vspace="10" align="top">
     <div id="legend"><em><b>Figure.</b> A pseudo-anatomical schematic of the model showing the relationships of the components.</em></div>
     <br>
@@ -156,7 +156,44 @@
       <b>Projectile mass</b>: Mass of the projectile in kg.
       <br>
     </p>
-    <h2>Saving Results</h2>
+
+    <h2>Simulation Output</h2>
+    <p><b>Muscle length vs time</b>: Length of the muscle component in meters versus time in seconds. Length is calculated as the muscle's initial length minus the distance moved by the muscle mass.<br>
+      <b>Muscle force vs time</b>: Force in newtons is constrained to be positive, i.e., produces shortening.
+      <br>
+      <b>Muscle velocity vs time</b>: Velocity in meters per second, with positive values indicating muscle shortening.
+      <br>
+      <b>Absolute muscle power vs time</b>: Power in milliwatts is calculated as muscle velocity times muscle force times 1000. Not mass-specific power (unless the muscle mass is 1 kg).
+      <br>
+      <b>Absolute muscle work vs time</b>: Work in millijoules is calculated as cumulative muscle force times amount of shortening times 1000. Not mass specific.
+      <br> <br>
+      <b>Projectile position vs time</b>: Position in meters of the projectile mass.
+      <br>
+      <b>Projectile velocity vs time</b>: Velocity in meters per second of the projectile mass.
+      <br>
+      <b>Projectile acceleration vs time</b>: Acceleration in meters per second per second of the projectile mass.
+      <br>
+      <b>Mass-specific projectile power vs time</b>: Power in watts per kilogram of projectile mass, calculated as projectile velocity times acceleration.
+      <br>
+      <br>
+      <b>Spring length vs time</b>: Spring length in meters, calculated as projectile position minus muscle length. This works because the projectile is moving in the same dimension as the muscle, the pseudoanatomical figure above notwithstanding. Spring length is constrained to be equal to or longer than the initial length.
+      <br>
+      <b>Spring velocity vs time</b>: Velocity in meters per second that the spring is shortening. Positive values indicate shortening.
+      <br>
+      <br>
+      <b>Muscle excitation vs time</b>: Proportion of maximum muscle excitation over time that is prescribed. This value is multiplied by the muscle force derived from the length-force and force-velocity curves to ramp up muscle force over time.
+      <br>
+      <b>Muscle relative force vs length</b>: Muscle force as a proportion of P0. Both potential (pink) and realized (purple) force-length trajectories are shown for the realized range of lengths.
+      <br>
+      <b>Muscle force vs velocity</b>: Force in newtons vs velocity in meters per second. Both potential (pink) and realized (purple) force-velocity trajectories are shown for the realized range of velocities
+      <br>
+      <br>
+      <b>Gear ratio vs time</b>: The profile prescribed for the changing gear ratio between the spring and projectile. The reciprocal of leverage or mechanical advantage.
+      <br>
+
+
+    </p>
+    <h2>Saving Output</h2>
     <p>Pressing the "Download data" button will download the displayed data as a csv file to your computer. Currently the settings are not saved, just the data in the graphs. Each output file has a unique name ending in numbers that increase each time you save data.</p>
 
     <h2>Scenarios</h2>
