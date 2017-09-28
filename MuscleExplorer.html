@@ -3,13 +3,13 @@
 <!-- Muscle-Spring-Damper-Projectile simulation, called "Muscle Explorer" for now. 2017. Stephen M. Deban, Department of Integrative Biology, University of South Florida, Tampa. -->
 
 <head>
-  <meta name="viewport" content="width=device-width">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     .graph {
       float: left;
       margin: auto;
       padding: auto;
-      width: 380px;
+      width: 358px;
       height: 190px;
     }
 
@@ -35,13 +35,13 @@
     #controlBlock {
       float: left;
       margin: 4px;
-      margin-top: 2px;
+      margin-top: 1px;
       padding: 0px;
-      width: 380px;
+      width: 358px;
       height: 100%;
       border: 0px solid #aaaaaa;
-      line-height: 150%;
-      font-size: 90%;
+      line-height: 140%;
+      font-size: 100%;
       font-family: "Lucida Grande", Verdana, Arial, sans-serif;
     }
 
@@ -60,7 +60,7 @@
 
     h1 {
       font-family: "Lucida Grande", Verdana, Arial, sans-serif;
-      font-size: 180%;
+      font-size: 170%;
       color: firebrick;
       margin: 0.3em;
       margin-left: 0;
@@ -152,14 +152,14 @@
     <div class="variable" title="Mass of the projectile in kg.">Projectile mass (kg):
       <input type="number" id="mass" value="1e-04">
     </div>
+    <a href="Instructions.html" target="_blank" title="Open documentation in a new window.">Documentation</a>
+
+    <br /><br />
+    <button title="Apply the settings" onclick="springMass()">Apply values</button>
+    <button title="Download the displayed data as csv file." onclick="downloadFile(allData, 'MusExpData' + (1503000000000 - Date.now()) + '.csv');">Download data</button>
 
     <br />
-    <button title="Apply the settings" onclick="springMass()">Apply new values</button>
-    <button title="Download the displayed data as csv file." onclick="downloadFile(allData, 'MusExpData' + (1503000000000 - Date.now()) + '.csv');">Download data</button>
-    <br />
-    <br />
-    <a href="Instructions.html" target="_blank" title="Open documentation in a new window.">Documentation page</a>
-    <br />
+
   </div>
 
   <div id="graphBlock">
@@ -466,7 +466,7 @@
           height: '60%'
         },
         fontName: 'Lucida Grande',
-        fontSize: 12,
+        fontSize: 13,
         hAxis: {
           format: '#.####',
           title: 'Time (s)',
