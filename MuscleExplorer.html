@@ -9,7 +9,7 @@
       float: left;
       margin: auto;
       padding: auto;
-      width: 350px;
+      width: 380px;
       height: 190px;
     }
 
@@ -37,7 +37,7 @@
       margin: 4px;
       margin-top: 2px;
       padding: 0px;
-      width: 350px;
+      width: 380px;
       height: 100%;
       border: 0px solid #aaaaaa;
       line-height: 150%;
@@ -450,34 +450,34 @@
 
       // Place chart options into an object
       var options = { // Display options, such as line thickness, color, axis settings.
-          backgroundColor: '#efefef',
-          title: ' ',
-          tooltip: {
-            trigger: 'selection',
-          },
-          legend: 'none',
-          lineWidth: 1.8,
-          //
-          chartArea: {
-            backgroundColor: '#fdfdfd',
-            left: '15%',
-            top: '15%',
-            width: '80%',
-            height: '60%'
-          },
-          fontName: 'Lucida Grande',
-          fontSize: 12,
-          hAxis: {
-            format: '#.####',
-            title: 'Time (s)',
-            minValue: 0,
-            maxValue: duration
-          },
-          vAxis: {
-            format: '#.####'
-          },
-          colors: ['royalblue', 'royalblue'],
-        } // End of chart options
+        backgroundColor: '#efefef',
+        title: ' ',
+        tooltip: {
+          trigger: 'selection',
+        },
+        legend: 'none',
+        lineWidth: 1.8,
+        //
+        chartArea: {
+          backgroundColor: '#fdfdfd',
+          left: '15%',
+          top: '15%',
+          width: '80%',
+          height: '60%'
+        },
+        fontName: 'Lucida Grande',
+        fontSize: 12,
+        hAxis: {
+          format: '#.####',
+          title: 'Time (s)',
+          minValue: 0,
+          maxValue: duration
+        },
+        vAxis: {
+          format: '#.####'
+        },
+        colors: ['royalblue', 'royalblue'],
+      } // End of chart options
       var shortTime = downSample(time); // downSample the time array for faster graphing.
 
       // Create data arrays for graphs, using transpose fn.
