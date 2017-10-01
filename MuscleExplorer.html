@@ -12,12 +12,10 @@
         width: 24vw;
         height: 190px;
       }
-
       #graphBlock {
         float: left;
         width: 72vw;
       }
-
       #controlBlock {
         float: left;
         margin: 4px;
@@ -38,12 +36,10 @@
         width: 33vw;
         height: 180px;
       }
-
       #graphBlock {
         float: left;
         width: 66vw;
       }
-
       #controlBlock {
         float: left;
         margin: 4px;
@@ -64,12 +60,10 @@
         width: 48vw;
         height: 180px;
       }
-
       #graphBlock {
         float: left;
         width: 96vw;
       }
-
       #controlBlock {
         float: left;
         margin: 4px;
@@ -83,20 +77,17 @@
       }
     }
 
-
     @media only screen and (max-width: 699px) {
       /* One item across, controls or one graph */
       .graph {
         float: left;
         width: 100%;
-        height: 40vw;
+        height: 50vw;
       }
-
       #graphBlock {
         float: left;
         width: 100%;
       }
-
       #controlBlock {
         float: left;
         margin: 4px;
@@ -534,34 +525,34 @@
 
       // Place chart options into an object
       var options = { // Display options, such as line thickness, color, axis settings.
-        //  backgroundColor: '#ffffff',
-        title: ' ',
-        tooltip: {
-          trigger: 'selection',
-        },
-        legend: 'none',
-        lineWidth: 1.8,
-        //
-        chartArea: {
-          backgroundColor: '#fcfcfc',
-          left: '17%',
-          top: '15%',
-          width: '77%',
-          height: '60%'
-        },
-        fontName: 'Lucida Grande',
-        fontSize: 12,
-        hAxis: {
-          format: '#.####',
-          title: 'Time (s)',
-          minValue: 0,
-          maxValue: duration
-        },
-        vAxis: {
-          format: '#.####'
-        },
-        colors: ['royalblue', 'royalblue'],
-      } // End of chart options
+          //  backgroundColor: '#ffffff',
+          title: ' ',
+          tooltip: {
+            trigger: 'selection',
+          },
+          legend: 'none',
+          lineWidth: 1.8,
+          //
+          chartArea: {
+            backgroundColor: '#fcfcfc',
+            left: '17%',
+            top: '15%',
+            width: '77%',
+            height: '60%'
+          },
+          fontName: 'Lucida Grande',
+          fontSize: 12,
+          hAxis: {
+            format: '#.####',
+            title: 'Time (s)',
+            minValue: 0,
+            maxValue: duration
+          },
+          vAxis: {
+            format: '#.####'
+          },
+          colors: ['royalblue', 'royalblue'],
+        } // End of chart options
       var shortTime = downSample(time); // downSample the time array for faster graphing.
 
       // Create data arrays for graphs, using transpose fn.
