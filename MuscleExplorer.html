@@ -1,16 +1,113 @@
 <!doctype html>
 <html>
-<!-- Muscle-Spring-Damper-Projectile simulation, called "Muscle Explorer" for now. 2017. Stephen M. Deban, Department of Integrative Biology, University of South Florida, Tampa. -->
+<!-- Muscle-Spring-Damper-Projectile simulation, called "Muscle Explorer" - 2017 - Stephen M. Deban, Department of Integrative Biology, University of South Florida, Tampa. -->
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    .graph {
-      float: left;
-      margin: auto;
-      padding: auto;
-      width: 358px;
-      height: 190px;
+    @media screen and (min-width: 1300px) {
+      /* Four items across, controls and three graphs */
+      .graph {
+        float: left;
+        width: 24vw;
+        height: 190px;
+      }
+
+      #graphBlock {
+        float: left;
+        width: 72vw;
+      }
+
+      #controlBlock {
+        float: left;
+        margin: 4px;
+        margin-top: 0px;
+        padding: 0px;
+        width: 25vw;
+        border: 0px solid #aaaaaa;
+        line-height: 150%;
+        font-size: 100%;
+        font-family: "Lucida Grande", Verdana, Arial, sans-serif;
+      }
+    }
+
+    @media screen and (max-width: 1299px) and (min-width: 1020px) {
+      /* Three items across, controls and two graphs */
+      .graph {
+        float: left;
+        width: 33vw;
+        height: 180px;
+      }
+
+      #graphBlock {
+        float: left;
+        width: 66vw;
+      }
+
+      #controlBlock {
+        float: left;
+        margin: 4px;
+        margin-top: 0px;
+        padding: 0px;
+        width: 31vw;
+        border: 0px solid #aaaaaa;
+        line-height: 150%;
+        font-size: 100%;
+        font-family: "Lucida Grande", Verdana, Arial, sans-serif;
+      }
+    }
+
+    @media screen and (max-width: 1019px) and (min-width: 700px) {
+      /* Two items across, controls and one graph */
+      .graph {
+        float: left;
+        width: 48vw;
+        height: 180px;
+      }
+
+      #graphBlock {
+        float: left;
+        width: 96vw;
+      }
+
+      #controlBlock {
+        float: left;
+        margin: 4px;
+        margin-top: 0px;
+        padding: 0px;
+        width: 50vw;
+        border: 0px solid #aaaaaa;
+        line-height: 150%;
+        font-size: 100%;
+        font-family: "Lucida Grande", Verdana, Arial, sans-serif;
+      }
+    }
+
+
+    @media only screen and (max-width: 699px) {
+      /* One item across, controls or one graph */
+      .graph {
+        float: left;
+        width: 100%;
+        height: 40vw;
+      }
+
+      #graphBlock {
+        float: left;
+        width: 100%;
+      }
+
+      #controlBlock {
+        float: left;
+        margin: 4px;
+        margin-top: 0px;
+        padding: 0px;
+        width: 100%;
+        border: 0px solid #aaaaaa;
+        line-height: 150%;
+        font-size: 100%;
+        font-family: "Lucida Grande", Verdana, Arial, sans-serif;
+      }
     }
 
     .variable {
@@ -30,23 +127,6 @@
     .section {
       font-size: 80%;
       color: royalblue;
-    }
-
-    #graphBlock {
-      float: left;
-      max-width: 75%;
-    }
-
-    #controlBlock {
-      float: left;
-      margin: 4px;
-      margin-top: 0px;
-      padding: 0px;
-      width: 358px;
-      border: 0px solid #aaaaaa;
-      line-height: 150%;
-      font-size: 100%;
-      font-family: "Lucida Grande", Verdana, Arial, sans-serif;
     }
 
     #footer {
@@ -192,7 +272,7 @@
     /*   Simulation uses a Runge-Kutta 4th Order (RK4) integration. At large time steps, RK4 performs well because it is refining the estimate in each time step by taking a weighted average of four estimates. Other integrators like Euler and Verlet need absurdly small time steps for the same accuracy, which on balance is not as efficient. RK4 is the gold standard for the balance of performance and accuracy. It is not symplectic, which means that energy is not strictly conserved, but the losses for our purposes are tiny and can be minimized with a small time step. Author: Stephen M. Deban, University of South Florida. */
     // If enter key is pressed, then run the simulation with the entered values.
     document.onkeypress = function(e) {
-      var e = e || window.event; // Assing window event to e, if there is an event.
+      var e = e || window.event; // Adding window event to e, if there is an event.
       var charCode = (typeof e.which == "number") ? e.which : e.keyCode;
       if (charCode == 13) springMass(); // Run simulation if the key pressed is the enter key
     }
@@ -454,7 +534,7 @@
 
       // Place chart options into an object
       var options = { // Display options, such as line thickness, color, axis settings.
-        backgroundColor: '#efefef',
+        //  backgroundColor: '#ffffff',
         title: ' ',
         tooltip: {
           trigger: 'selection',
@@ -463,14 +543,14 @@
         lineWidth: 1.8,
         //
         chartArea: {
-          backgroundColor: '#fdfdfd',
-          left: '15%',
+          backgroundColor: '#fcfcfc',
+          left: '17%',
           top: '15%',
-          width: '80%',
+          width: '77%',
           height: '60%'
         },
         fontName: 'Lucida Grande',
-        fontSize: 13,
+        fontSize: 12,
         hAxis: {
           format: '#.####',
           title: 'Time (s)',
@@ -621,7 +701,7 @@
 
     // Downsample array for much, much faster graphing. More than about 500-800 points isn't necessary because you can't see them.
     function downSample(longArray) {
-      var shortLength = 800;
+      var shortLength = 600;
       var shortArray = new Array(shortLength);
       var scaleFactor = Math.round(longArray.length / shortLength); // Create factor by which to skip values in long array.
       for (var i = 0; i < shortLength; ++i) { // Could probably do this with a .map function.
