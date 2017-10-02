@@ -143,6 +143,8 @@
 
     body {
       font-family: sans-serif;
+      background-color: #f7f7f7;
+
     }
 
   </style>
@@ -525,34 +527,34 @@
 
       // Place chart options into an object
       var options = { // Display options, such as line thickness, color, axis settings.
-          //  backgroundColor: '#ffffff',
-          title: ' ',
-          tooltip: {
-            trigger: 'selection',
-          },
-          legend: 'none',
-          lineWidth: 1.8,
-          //
-          chartArea: {
-            backgroundColor: '#fcfcfc',
-            left: '17%',
-            top: '15%',
-            width: '77%',
-            height: '60%'
-          },
-          fontName: 'Lucida Grande',
-          fontSize: 12,
-          hAxis: {
-            format: '#.####',
-            title: 'Time (s)',
-            minValue: 0,
-            maxValue: duration
-          },
-          vAxis: {
-            format: '#.####'
-          },
-          colors: ['royalblue', 'royalblue'],
-        } // End of chart options
+        backgroundColor: '#f7f7f7',
+        title: ' ',
+        tooltip: {
+          trigger: 'selection',
+        },
+        legend: 'none',
+        lineWidth: 1.8,
+        //
+        chartArea: {
+          backgroundColor: '#ffffff',
+          left: '17%',
+          top: '15%',
+          width: '77%',
+          height: '60%'
+        },
+        fontName: 'Lucida Grande',
+        fontSize: 12,
+        hAxis: {
+          format: '#.####',
+          title: 'Time (s)',
+          minValue: 0,
+          maxValue: duration
+        },
+        vAxis: {
+          format: '#.####'
+        },
+        colors: ['royalblue', 'royalblue'],
+      } // End of chart options
       var shortTime = downSample(time); // downSample the time array for faster graphing.
 
       // Create data arrays for graphs, using transpose fn.
