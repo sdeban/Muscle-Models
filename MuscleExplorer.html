@@ -54,7 +54,7 @@
     }
 
     @media screen and (max-width: 1019px) and (min-width: 700px) {
-      /* Two items across, controls and one graph */
+      /* Two items across, controls or two graphs */
       .graph {
         float: left;
         width: 48vw;
@@ -69,11 +69,17 @@
         margin: 4px;
         margin-top: 0px;
         padding: 0px;
-        width: 50vw;
+        width: 98vw;
         border: 0px solid #aaaaaa;
         line-height: 150%;
         font-size: 100%;
         font-family: "Lucida Grande", Verdana, Arial, sans-serif;
+      }
+
+      #controlSubBlock {
+        margin: 10px;
+        float: left;
+        width: 46vw;
       }
     }
 
@@ -152,89 +158,94 @@
 
 <body onload="springMass();">
 
+
   <div id="controlBlock">
-    <h1><em>Muscle Explorer</em></h1>
-    <a href="https://sites.google.com/site/debanlab/" target="_blank" title="Visit the Deban Lab website.">Deban Lab @ USF</a>
-    <p></p>
+    <div id="controlSubBlock">
+      <h1><em>Muscle Explorer</em></h1>
+      <a href="https://sites.google.com/site/debanlab/" target="_blank" title="Visit the Deban Lab website.">Deban Lab @ USF</a>
+      <p></p>
 
-    <b class="section" title="General simulation settings.">Simulation Settings</b>
-    <div class="variable" title="Duration of simulation in seconds.">Duration (s):
-      <input type="number" min="0.01" max="100" step="0.01" id="duration" value="0.08">
+      <b class="section" title="General simulation settings.">Simulation Settings</b>
+      <div class="variable" title="Duration of simulation in seconds.">Duration (s):
+        <input type="number" min="0.01" max="100" step="0.01" id="duration" value="0.08">
+      </div>
+      <div class="variable" title="Number of time steps in integration. Increase if traces are jittery.">Steps:
+        <input type="range" id="steps" value="20" min="5" max="300" step="5" oninput="stepsOutput.value = steps.value+'k'">
+        <output style="color: royalblue" id="stepsOutput">20k</output>
+      </div>
+      <p></p>
+      <b class="section" title="Physiological muscle parameters.">Muscle</b>
+      <div class="variable" title="Muscle length in meters at which isometric force peaks. Not the same as resting or initial length, below.">Muscle L0 (m):
+        <input type="number" id="muscleL0" value="0.02">
+      </div>
+      <div class="variable" title="Muscle mass in kg. Can be set independently of length and P0, therefore can be unrealistic. Used to determine the inertial muscle mass, below.">Muscle mass (kg):
+        <input type="number" id="muscleMass" value="1e-5">
+      </div>
+      <div class="variable" title="Maximum isometric muscle force in newtons.">Muscle P0 (N):
+        <input type="number" id="muscleP0" value="0.2">
+      </div>
+      <div class="variable" title="Maximum velocity of unloaded muscle shortening in meters per second.">Muscle Vmax (m/s):
+        <input type="number" id="muscleVmax" value="0.3">
+      </div>
+      <div class="variable" title="Curvature of force-velocity relation. Higher is more curved. Value of 3 is about right for frog limb muscle with a power ratio of 1.1.">Muscle F-V Curvature:
+        <input type="number" id="curveFV" value="3">
+      </div>
+      <div class="variable" title="Muscle length at start of trial, as fraction of muscle L0.">Muscle init. length (L0):
+        <input type="number" id="muscleStartLength" value="1.2">
+      </div>
+      <div class="variable" title="Duration of muscle excitation in seconds.">Excitation (s):
+        <input type="number" id="excitationTime" value="0.03">
+      </div>
+      <p></p>
+      <b class="section" title="Inertial and viscous damping of the muscle mass. Higher values reduce vibrations that can occur with a small muscle mass and stiff spring.">Damping of Muscle Mass</b>
+      <div class="variable" title="Muscle mass that is accelerated when the muscle shortens, as a fraction of muscle mass.">Inertial mass (muscle mass):
+        <input type="number" step="0.01" min="0.01" max="1.0" id="muscleFraction" value="0.3">
+      </div>
+      <div class="variable" title="Viscous damping of the inertial muscle mass, with damping force proportional to velocity.">Damping constant (N s/m):
+        <input type="number" id="damper" value="0.01">
+      </div>
     </div>
-    <div class="variable" title="Number of time steps in integration. Increase if traces are jittery.">Steps:
-      <input type="range" id="steps" value="20" min="5" max="300" step="5" oninput="stepsOutput.value = steps.value+'k'">
-      <output style="color: royalblue" id="stepsOutput">20k</output>
-    </div>
-    <p></p>
-    <b class="section" title="Physiological muscle parameters.">Muscle</b>
-    <div class="variable" title="Muscle length in meters at which isometric force peaks. Not the same as resting or initial length, below.">Muscle L0 (m):
-      <input type="number" id="muscleL0" value="0.02">
-    </div>
-    <div class="variable" title="Muscle mass in kg. Can be set independently of length and P0, therefore can be unrealistic. Used to determine the inertial muscle mass, below.">Muscle mass (kg):
-      <input type="number" id="muscleMass" value="1e-5">
-    </div>
-    <div class="variable" title="Maximum isometric muscle force in newtons.">Muscle P0 (N):
-      <input type="number" id="muscleP0" value="0.2">
-    </div>
-    <div class="variable" title="Maximum velocity of unloaded muscle shortening in meters per second.">Muscle Vmax (m/s):
-      <input type="number" id="muscleVmax" value="0.3">
-    </div>
-    <div class="variable" title="Curvature of force-velocity relation. Higher is more curved. Value of 3 is about right for frog limb muscle with a power ratio of 1.1.">Muscle F-V Curvature:
-      <input type="number" id="curveFV" value="3">
-    </div>
-    <div class="variable" title="Muscle length at start of trial, as fraction of muscle L0.">Muscle init. length (L0):
-      <input type="number" id="muscleStartLength" value="1.2">
-    </div>
-    <div class="variable" title="Duration of muscle excitation in seconds.">Excitation (s):
-      <input type="number" id="excitationTime" value="0.03">
-    </div>
-    <p></p>
-    <b class="section" title="Inertial and viscous damping of the muscle mass. Higher values reduce vibrations that can occur with a small muscle mass and stiff spring.">Damping of Muscle Mass</b>
-    <div class="variable" title="Muscle mass that is accelerated when the muscle shortens, as a fraction of muscle mass.">Inertial mass (muscle mass):
-      <input type="number" step="0.01" min="0.01" max="1.0" id="muscleFraction" value="0.3">
-    </div>
-    <div class="variable" title="Viscous damping of the inertial muscle mass, with damping force proportional to velocity.">Damping constant (N s/m):
-      <input type="number" id="damper" value="0.01">
-    </div>
-    <p></p>
-    <b class="section" title="The tendon, aponeurosis or cuticular elastic element between the muscle and projectile.">Tendon / Spring</b>
-    <div class="variable" title="Stiffness of spring between muscle and projectile, in newtons per meter. Spring is Hookean (F=kx), with a single k. ">Spring constant (N/m):
-      <input type="number" id="spring" value="40">
-    </div>
-    <div class="variable" title="Length in meters at which spring exerts no force. Has no effect on projectile movement, just starting position.">Spring slack length (m):
-      <input type="number" id="springL0" value="0.02">
-    </div>
+    <div id="controlSubBlock">
 
-    <p></p>
-    <b class="section" title="Prescribe the range of mechanical advantage or gearing values between the spring and the projectile as well as the duration of the change and the conditions that trigger the change.">Appendage Leverage Change</b>
-    <div class="variable" title="Start changing gearing at this time unless other conditions are met first, such as a muscle force or muscle length threshold.">Latch time (s):
-      <input type="number" id="latchTime" value="0.06">
-    </div>
-    <div class="variable" title="Start leverage change when this muscle length is reached, as fraction of muscle L0.">Length threshold (L0):
-      <input type="number" id="lengthThreshold" value="0.3">
-    </div>
-    <div class="variable" title="Start leverage change at this muscle force, as fraction of muscle P0.">Force threshold (P0):
-      <input type="number" id="forceThreshold" value="0.7">
-    </div>
-    <div class="variable" title="Duration of the change in leverage in seconds.">Latch duration (s):
-      <input type="number" id="durGearChange" value="0.002">
-    </div>
-    <div class="variable" title="Starting gear ratio of leverage change, the reciprocal of mechanical advantage.">Initial gear ratio:
-      <input type="number" id="initGearRatio" value="10000">
-    </div>
-    <div class="variable" title="Ending gear ratio. A value of 1 would be no mechanical advantage.">Final gear ratio:
-      <input type="number" id="finalGearRatio" value="1">
-    </div>
-    <p></p>
-    <b class="section" title="The mass being accelerated by the muscle-spring.">Projectile</b>
-    <div class="variable" title="Mass of the projectile in kg.">Projectile mass (kg):
-      <input type="number" id="mass" value="1e-04">
-    </div>
-    <a href="Instructions.html" target="_blank" title="Open documentation in a new window.">Documentation</a>
-    <p></p>
-    <button title="Apply the settings" onclick="springMass()">Apply values</button>
-    <button title="Download the displayed data as csv file." onclick="downloadFile(allData, 'MusExpData' + (1503000000000 - Date.now()) + '.csv');">Download data</button>
+      <p></p>
+      <b class="section" title="The tendon, aponeurosis or cuticular elastic element between the muscle and projectile.">Tendon / Spring</b>
+      <div class="variable" title="Stiffness of spring between muscle and projectile, in newtons per meter. Spring is Hookean (F=kx), with a single k. ">Spring constant (N/m):
+        <input type="number" id="spring" value="40">
+      </div>
+      <div class="variable" title="Length in meters at which spring exerts no force. Has no effect on projectile movement, just starting position.">Spring slack length (m):
+        <input type="number" id="springL0" value="0.02">
+      </div>
 
+      <p></p>
+      <b class="section" title="Prescribe the range of mechanical advantage or gearing values between the spring and the projectile as well as the duration of the change and the conditions that trigger the change.">Appendage Leverage Change</b>
+      <div class="variable" title="Start changing gearing at this time unless other conditions are met first, such as a muscle force or muscle length threshold.">Latch time (s):
+        <input type="number" id="latchTime" value="0.06">
+      </div>
+      <div class="variable" title="Start leverage change when this muscle length is reached, as fraction of muscle L0.">Length threshold (L0):
+        <input type="number" id="lengthThreshold" value="0.3">
+      </div>
+      <div class="variable" title="Start leverage change at this muscle force, as fraction of muscle P0.">Force threshold (P0):
+        <input type="number" id="forceThreshold" value="0.7">
+      </div>
+      <div class="variable" title="Duration of the change in leverage in seconds.">Latch duration (s):
+        <input type="number" id="durGearChange" value="0.002">
+      </div>
+      <div class="variable" title="Starting gear ratio of leverage change, the reciprocal of mechanical advantage.">Initial gear ratio:
+        <input type="number" id="initGearRatio" value="10000">
+      </div>
+      <div class="variable" title="Ending gear ratio. A value of 1 would be no mechanical advantage.">Final gear ratio:
+        <input type="number" id="finalGearRatio" value="1">
+      </div>
+      <p></p>
+      <b class="section" title="The mass being accelerated by the muscle-spring.">Projectile</b>
+      <div class="variable" title="Mass of the projectile in kg.">Projectile mass (kg):
+        <input type="number" id="mass" value="1e-04">
+      </div>
+      <a href="Instructions.html" target="_blank" title="Open documentation in a new window.">Documentation</a>
+      <p></p>
+      <button title="Apply the settings" onclick="springMass()">Apply values</button>
+      <button title="Download the displayed data as csv file." onclick="downloadFile(allData, 'MusExpData' + (1503000000000 - Date.now()) + '.csv');">Download data</button>
+    </div>
     <p></p>
 
   </div>
