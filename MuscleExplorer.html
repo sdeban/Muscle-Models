@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     @media screen and (min-width: 1300px) {
-      /* Four items across, controls and three graphs */
+      /* If the screen is at least 1300 pixels wide, display four items across, ie the controls and three graphs */
       .graph {
         float: left;
         width: 24vw;
@@ -75,7 +75,6 @@
         font-size: 100%;
         font-family: "Lucida Grande", Verdana, Arial, sans-serif;
       }
-
       #controlSubBlock {
         margin: 10px;
         float: left;
@@ -150,7 +149,6 @@
     body {
       font-family: sans-serif;
       background-color: #f7f7f7;
-
     }
 
   </style>
@@ -189,7 +187,7 @@
       <div class="variable" title="Maximum velocity of unloaded muscle shortening in meters per second.">Muscle Vmax (m/s):
         <input type="number" id="muscleVmax" value="0.3">
       </div>
-      <div class="variable" title="Curvature of force-velocity relation. Higher is more curved. Value of 3 is about right for frog limb muscle with a power ratio of 1.1.">Muscle F-V Curvature:
+      <div class="variable" title="Curvature of force-velocity relation. Higher is more curved. Value of 3 is about right for frog limb muscle with a power ratio of 1.1.">Muscle F-V curvature:
         <input type="number" id="curveFV" value="3">
       </div>
       <div class="variable" title="Muscle length at start of trial, as fraction of muscle L0.">Muscle init. length (L0):
@@ -540,34 +538,34 @@
 
       // Place chart options into an object
       var options = { // Display options, such as line thickness, color, axis settings.
-        backgroundColor: '#f7f7f7',
-        title: ' ',
-        tooltip: {
-          trigger: 'selection',
-        },
-        legend: 'none',
-        lineWidth: 1.8,
-        //
-        chartArea: {
-          backgroundColor: '#ffffff',
-          left: '17%',
-          top: '15%',
-          width: '77%',
-          height: '60%'
-        },
-        fontName: 'Lucida Grande',
-        fontSize: 12,
-        hAxis: {
-          format: '#.####',
-          title: 'Time (s)',
-          minValue: 0,
-          maxValue: duration
-        },
-        vAxis: {
-          format: '#.####'
-        },
-        colors: ['royalblue', 'royalblue'],
-      } // End of chart options
+          backgroundColor: '#f7f7f7',
+          title: ' ',
+          tooltip: {
+            trigger: 'selection',
+          },
+          legend: 'none',
+          lineWidth: 1.8,
+          //
+          chartArea: {
+            backgroundColor: '#ffffff',
+            left: '17%',
+            top: '15%',
+            width: '77%',
+            height: '60%'
+          },
+          fontName: 'Lucida Grande',
+          fontSize: 12,
+          hAxis: {
+            format: '#.####',
+            title: 'Time (s)',
+            minValue: 0,
+            maxValue: duration
+          },
+          vAxis: {
+            format: '#.####'
+          },
+          colors: ['royalblue', 'royalblue'],
+        } // End of chart options
       var shortTime = downSample(time); // downSample the time array for faster graphing.
 
       // Create data arrays for graphs, using transpose fn.
