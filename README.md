@@ -7,9 +7,6 @@ Overview
 Muscle Explorer simulates the performance of musculoskeletal systems in which a single muscle shortens against an elastic element in series with a mass. The model can be used to explore muscle-tendon behavior to predict results of in-vitro muscle experiments or the performance of an animal's explosive movement such as jumping or striking. The model simulates the interaction of several elements: a muscle-like actuator, a viscous damper, an inertial muscle mass, a hookean spring, a massless lever with a variable mechanical advantage, and an inertial projectile mass (see figure). 
 To simulate a movement, the physiological and biomechanical parameters of the model are set and the muscle actuator is activated. The actuator builds force that can move the inertial muscle mass and stretch the spring. Recoil of the spring rotates the lever and accelerates the projectile mass. The muscle actuator generates force using realistic force-velocity and force-length properties for vertebrate skeletal muscle, and the physics are modeled in one dimension in a forward dynamics fashion using a classical fourth-order Runge-Kutta integrator.
 
-
-Figure. A pseudo-anatomical schematic of the model showing the relationships of the components.
-
 Components
 
 Muscle
