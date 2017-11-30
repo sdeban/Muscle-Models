@@ -698,9 +698,7 @@
         [allLabels],
         [transpose([time, muscleLength, muscleForce, muscleVel, musclePower, muscleWorkmJ, projectilePos, projectileVel, projectileAcc, projectilePower, springLength, springVel, muscleExcForce, finalGearRatio, endOfRow])]
       ];
-      // TODO: Create an array with variable names, and then add that and all the data to allData.
-      // TODO: Figure out how to save piecemeal to a csv file, because the current exportToCsv does not work for more than about 40,000 items.
-      // downloadFile(allData, "MusExpData" + (1503700000000 - Date.now()) + ".csv");
+      // TODO: Simply add the setting parameters to the list of variable names and their values to the allData array. This should save the settings in the last columns of the spreadsheet file.
     } // End of muscleSim function.
 
     // Downsample array for much, much faster graphing. More than about 500-800 points isn't necessary because you can't see them.
