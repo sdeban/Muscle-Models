@@ -692,12 +692,15 @@
       options.vAxis.maxValue = maxGearRatio;
       chart15.draw(data15, options);
 
-      allLabels = ["", "Time (s)", "Muscle Length (m)", "Muscle Force (N)", "Muscle Velocity (m/s)", "Muscle Power (W)", "Muscle Work (mJ)", "Projectile Position (m)", "Projectile Velocity (m/s)", "Projectile Acceleration (m/s/s)", "Projectile Power (W/kg)", "Spring Length (m)", "Spring Velocity (m/s)", "Muscle Excitation (%)", "Gear Ratio", "\n"]; // Collects all variable names to place in header column of data file.
-      allSettings = []; // TODO: Collect all the settings to save to the data file.
+      allLabels = ["Time (s)", "Muscle Length (m)", "Muscle Force (N)", "Muscle Velocity (m/s)", "Muscle Power (W)", "Muscle Work (mJ)", "Projectile Position (m)", "Projectile Velocity (m/s)", "Projectile Acceleration (m/s/s)", "Projectile Power (W/kg)", "Spring Length (m)", "Spring Velocity (m/s)", "Muscle Excitation (%)", "Gear Ratio"]; // Collects all variable names to place in header column of data file.
+
+      settingLabels = ["Blank", "Duration (s)", "Steps", "Muscle L0 (m)", "Muscle Mass (kg)", "Muscle P0 (N)", "Muscle Vmax (m/s)", "Muscle F-V curvature", "Muscle Initial Length (L0)", "Excitation Duration (s)", "Inertial Mass (muscle mass)", "Damping Constant (N s/m)", "Spring Constant (N/m)", "Spring Slack Length (m)", "Latch Time (s)", "Length Threshold (L0)", "Force Threshold (P0)", "Latch Duration (s)", "Initial Gear Ratio", "Final Gear Ratio", "Projectile Mass (kg)", "Timestep (s)", "Power Ratio", "Excitation Rate", "Time Latch Tripped (s)"];
+
+      allSettings = [duration, steps, muscleL0, muscleMass, muscleP0, muscleVmax, curveFV, muscleStartLength, excitationTime, muscleFraction, dampingConstant, springK, springL0, latchTime, lengthThreshold, forceThreshold, durationGearChange, maxGearRatio, minGearRatio, projectileMass, timeStep, powerRatio, excitationRate, timeLatchTripped]; // Collects all the settings to save to the data file.
       allData = [
-        [allLabels],
-        [transpose([time, muscleLength, muscleForce, muscleVel, musclePower, muscleWorkmJ, projectilePos, projectileVel, projectileAcc, projectilePower, springLength, springVel, muscleExcForce, finalGearRatio, endOfRow])]
+        [settingLabels], "\n", [allSettings], "\n", "\n", "\n", [allLabels], "\n", [transpose([time, muscleLength, muscleForce, muscleVel, musclePower, muscleWorkmJ, projectilePos, projectileVel, projectileAcc, projectilePower, springLength, springVel, muscleExcForce, finalGearRatio, endOfRow])]
       ];
+
       // TODO: Simply add the setting parameters to the list of variable names and their values to the allData array. This should save the settings in the last columns of the spreadsheet file.
     } // End of muscleSim function.
 
