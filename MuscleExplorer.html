@@ -268,7 +268,7 @@
     <div title="Gear ratio vs time. The profile prescribed for the changing gear ratio between the spring and projectile. The reciprocal of leverage or mechanical advantage." class="graph" id="chart_15"></div>
   </div>
 
-  <div id="footer">Muscle Explorer. 2017. Stephen M. Deban, Department of Integrative Biology, University of South Florida, Tampa. </div>
+  <div id="footer">Muscle Explorer v0.1, 2018. Stephen M. Deban, Department of Integrative Biology, University of South Florida, Tampa. </div>
 
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script type="text/javascript">
@@ -538,34 +538,34 @@
 
       // Place chart options into an object
       var options = { // Display options, such as line thickness, color, axis settings.
-          backgroundColor: '#f7f7f7',
-          title: ' ',
-          tooltip: {
-            trigger: 'selection',
-          },
-          legend: 'none',
-          lineWidth: 1.8,
-          //
-          chartArea: {
-            backgroundColor: '#ffffff',
-            left: '17%',
-            top: '15%',
-            width: '77%',
-            height: '60%'
-          },
-          fontName: 'Lucida Grande',
-          fontSize: 12,
-          hAxis: {
-            format: '#.####',
-            title: 'Time (s)',
-            minValue: 0,
-            maxValue: duration
-          },
-          vAxis: {
-            format: '#.####'
-          },
-          colors: ['royalblue', 'royalblue'],
-        } // End of chart options
+        backgroundColor: '#f7f7f7',
+        title: ' ',
+        tooltip: {
+          trigger: 'selection',
+        },
+        legend: 'none',
+        lineWidth: 1.8,
+        //
+        chartArea: {
+          backgroundColor: '#ffffff',
+          left: '17%',
+          top: '15%',
+          width: '77%',
+          height: '60%'
+        },
+        fontName: 'Lucida Grande',
+        fontSize: 12,
+        hAxis: {
+          format: '#.####',
+          title: 'Time (s)',
+          minValue: 0,
+          maxValue: duration
+        },
+        vAxis: {
+          format: '#.####'
+        },
+        colors: ['royalblue', 'royalblue'],
+      } // End of chart options
       var shortTime = downSample(time); // downSample the time array for faster graphing.
 
       // Create data arrays for graphs, using transpose fn.
