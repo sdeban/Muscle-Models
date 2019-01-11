@@ -95,7 +95,10 @@
     <p>The tendon component consists of a tension spring that links the muscle to the appendage and projectile. Movement of the muscle mass is coupled to length changes in the <b>spring</b>, which lies between the muscle mass and the lever that is attached to the projectile. The spring is hookean and exerts force that is proportional to its length, and the spring constant can be specified. Like the muscle, the tendon is constrained to exert force only in tension.</p>
 
     <h3>Appendage</h3>
-    <p>The appendage component consists of a <b>lever</b> that links the tendon to the projectile. The lever is massless and has a variable mechanical advantage as it rotates. The range of mechanical advantage can be specified (as gear ratio) as can the duration over which it changes. A <b>latch</b> prevents the lever from rotating as the spring exerts force on the lever; it can be released at a specified time, after which the change in mechanical advantage occurs smoothly.</p>
+    <p>The appendage component consists of a <b>lever</b> that links the tendon to the projectile. The lever is massless and has a variable mechanical advantage as it rotates. The range of mechanical advantage can be specified (as gear ratio) as can the duration over which it changes.</p>
+
+    <h3>Latch</h3>
+    <p> A <b>latch</b> prevents the lever from rotating as the spring exerts force on the lever; it can be released at a specified time, after which the change in mechanical advantage occurs smoothly. A latch that is tripped at time zero, combined with an increasing mechanical advantage can be used to mimic a 'latchless' system.</p>
 
     <h3>Projectile</h3>
     <p>The projectile component consists of an inertial <b>mass</b> that is accelerated by the lever. No other forces are acting on the projectile, such as gravitational or damping forces, although these could be added to the code.</p>
