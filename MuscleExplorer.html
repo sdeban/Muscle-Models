@@ -325,8 +325,8 @@
 
       // One or more of these conditions can be used to release latch, depending on which if statements in loop are active. The first condition reached will release latch.
       var latchTime = +document.getElementById("latchTime").value; // Timing of latch release in seconds from start of simulation, if used in loop.
-      var forceThreshold = +document.getElementById("forceThreshold").value * muscleP0; // Muscle force at which gear ratio drops to 1.
-      var lengthThreshold = +document.getElementById("lengthThreshold").value; // Muscle length as percent of starting length at which gear ratio drops to 1.
+      var forceThreshold = +document.getElementById("forceThreshold").value * muscleP0; // Muscle force at which gear ratio starts changing.
+      var lengthThreshold = +document.getElementById("lengthThreshold").value; // Muscle length as percent of starting length at which gear ratio starts changing.
       var latchTripped = 0; // Sets latch sensor to 0, to allow time of latch release to be captured regardless of condition that triggered it.
       var indexLatchTripped = 0; // Index latch tripped, to be filled later.
       var timeLatchTripped = 0; // Time latch tripped, to be filled later.
@@ -368,7 +368,7 @@
 
       // Create gear ratio profile
       gearRatio = time.map(function(i) { // Create a sigmoidal gear ratio profile, starting to change from max to min at time zero over the specified duration.
-        return (1.0009765 * maxGearRatio - minGearRatio) / (1 + Math.pow(2, 10 * -(2 * i - durationGearChange) / -durationGearChange)) + minGearRatio;
+        return (1.0009765 * maxGearRatio - minGearRatio) / (1 + Math.pow(1.5, 10 * -(2 * i - durationGearChange) / -durationGearChange)) + minGearRatio;
       })
 
       // First time step in simulation.
@@ -701,7 +701,6 @@
         [settingLabels], "\n", [allSettings], "\n", "\n", "\n", [allLabels], "\n", [transpose([time, muscleLength, muscleForce, muscleVel, musclePower, muscleWorkmJ, projectilePos, projectileVel, projectileAcc, projectilePower, springLength, springVel, muscleExcForce, finalGearRatio, endOfRow])]
       ];
 
-      // TODO: Simply add the setting parameters to the list of variable names and their values to the allData array. This should save the settings in the last columns of the spreadsheet file.
     } // End of muscleSim function.
 
     // Downsample array for much, much faster graphing. More than about 500-800 points isn't necessary because you can't see them.
