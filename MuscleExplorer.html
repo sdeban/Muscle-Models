@@ -367,8 +367,8 @@
       } // Muscle force-length function
 
       // Create gear ratio profile
-      gearRatio = time.map(function(i) { // Create a sigmoidal gear ratio profile, starting to change from max to min at time zero over the specified duration.
-        return (1.0009765 * maxGearRatio - minGearRatio) / (1 + Math.pow(1.5, 10 * -(2 * i - durationGearChange) / -durationGearChange)) + minGearRatio;
+      gearRatio = time.map(function(i) { // Create a sigmoidal gear ratio profile, starting to change from max to min at time zero over the specified duration. The first value in the Math.pow function determines the steepness of the curve.
+        return (maxGearRatio - minGearRatio) / (1 + Math.pow(2, 10 * -(2 * i - durationGearChange) / -durationGearChange)) + minGearRatio;
       })
 
       // First time step in simulation.
