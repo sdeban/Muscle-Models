@@ -140,7 +140,7 @@
 
       h1 {
         font-family: "Lucida Grande", Verdana, Arial, sans-serif;
-        font-size: 150%;
+        font-size: 190%;
         color: firebrick;
         margin: 0.3em;
         margin-left: 0;
@@ -152,7 +152,7 @@
       }
 
     </style>
-  <title>Muscle Explorer</title>
+  <title>Muscle Explorer - Deban Lab at USF</title>
 
 </head>
 
@@ -162,9 +162,7 @@
   <div id="controlBlock">
     <div id="controlSubBlock">
       <h1><em>Muscle Explorer</em></h1>
-      <a href="https://sites.google.com/view/debanlab/" target="_blank" title="Visit the Deban Lab website.">Deban Lab @ USF</a>
       <p></p>
-
       <b class="section" title="General simulation settings.">Simulation Settings</b>
       <div class="variable" title="Duration of simulation in seconds.">Duration (s):
         <input type="number" min="0.01" max="100" step="0.01" id="duration" value="0.08">
@@ -236,7 +234,7 @@
       <div class="variable" title="Second gear ratio. A value of 1 would be no mechanical advantage.">Second gear ratio:
         <input type="number" id="secondGearRatio" value="1">
       </div>
-      <div class="variable" title="Position multiplier to calculate gear ratio from projectile position. Positive values produce an increasing gear ratio, and negative values a decreasing gear ratio. Set to 0 to use only timed gearing, above.">Position multiplier:
+      <div class="variable" title="Position multiplier to calculate gear ratio from projectile position. Positive values produce an increasing gear ratio, and negative values a decreasing gear ratio. The resulting gear ratio is added to the timed gearing profile defined above. Set to 0 to use only timed gearing.">Position multiplier:
         <input type="number" id="posMult" value="0">
       </div>
       <p></p>
@@ -271,7 +269,7 @@
     <div title="Gear ratio vs time. The changing gear ratio between the spring and projectile. The reciprocal of leverage or mechanical advantage." class="graph" id="chart_15"></div>
   </div>
 
-  <div id="footer">Muscle Explorer v0.2, 2019. Stephen M. Deban, Department of Integrative Biology, University of South Florida, Tampa. </div>
+  <div id="footer"><a href="https://sites.google.com/view/debanlab/" target="_blank" title="Visit the Deban Lab website.">Muscle Explorer v0.2, 2019. Stephen M. Deban, Department of Integrative Biology, University of South Florida, Tampa. </a></div>
 
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script type="text/javascript">
