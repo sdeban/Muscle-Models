@@ -216,7 +216,7 @@
 
       <p></p>
       <b class="section" title="Prescribe the range of mechanical advantage or gearing values between the spring and the projectile as well as the duration of the change and the conditions that trigger the change.">Appendage Leverage Change</b>
-      <div class="variable" title="Start changing gearing at this time unless other conditions are met first, such as a muscle force or muscle length threshold.">Latch time (s):
+      <div class="variable" title="Start changing gearing at this time unless other conditions are met first, such as a muscle force or muscle length threshold. Will be set to zero if position multiplier is used, below.">Latch time (s):
         <input type="number" id="latchTime" value="0.06">
       </div>
       <div class="variable" title="Start leverage change when this muscle length is reached, as fraction of muscle L0.">Length threshold (L0):
@@ -228,13 +228,13 @@
       <div class="variable" title="Duration of the change in leverage in seconds.">Latch duration (s):
         <input type="number" id="latchDur" value="0.002">
       </div>
-      <div class="variable" title="Starting gear ratio of leverage change, the reciprocal of mechanical advantage.">First gear ratio:
+      <div class="variable" title="Starting gear ratio of leverage change, the reciprocal of mechanical advantage. Will be set to zero if position multiplier is used, below.">First gear ratio:
         <input type="number" id="firstGearRatio" value="10000">
       </div>
       <div class="variable" title="Second gear ratio. A value of 1 would be no mechanical advantage.">Second gear ratio:
         <input type="number" id="secondGearRatio" value="1">
       </div>
-      <div class="variable" title="Position multiplier to calculate gear ratio from projectile position. Positive values produce an increasing gear ratio, and negative values a decreasing gear ratio. The resulting gear ratio is added to the timed gearing profile defined above. Set to 0 to use only timed gearing.">Position multiplier:
+      <div class="variable" title="Position multiplier to calculate gear ratio from projectile position. Positive values produce an increasing gear ratio, and negative values a decreasing gear ratio. If used, latch time and first gear ratio will not be used, and latch duration will be tiny. Set to 0 to use only timed gearing.">Position multiplier:
         <input type="number" id="posMult" value="0">
       </div>
       <p></p>
@@ -367,7 +367,18 @@
         return (force);
       } // Muscle force-length function ends
 
-      // Create gear ratio timed profile array
+
+      // If using a position multiplier instead of a timed latch, set latch time of zero, tiny latch duration, and no starting gear ratio, otherwise the simulation becomes unstable.
+      if (positionMultiplier != 0) {
+        firstGearRatio = 0;
+        document.getElementById('firstGearRatio').value = '0'; // Set input value to 0 on form so it's obvious that it is not being used.
+        latchTime = 0;
+        document.getElementById('latchTime').value = '0';
+        latchDuration = 0.0001;
+        document.getElementById('latchDur').value = '0.0001'; // Set input value to 0.0001 so it is clear what is being used.
+      }
+
+      // Create gear ratio timed profile array, which is not used if using a position-based gear ratio.
       gearRatio = time.map(function(i) { // Create a sigmoidal gear ratio profile to be used with timed gearing (not with position-derived gearing), starting to change from max to min at time zero over the specified duration. The first value in the Math.pow function determines the steepness of the curve.
         return (1.0009765 * firstGearRatio - secondGearRatio) / (1 + Math.pow(gearChangeRate, 10 * -(2 * i - latchDuration) / -latchDuration)) + secondGearRatio; // Contains a fudge factor of 1.0009765 to bring the initial gear ratio closer to that specified.
       })

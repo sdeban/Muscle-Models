@@ -95,7 +95,7 @@
     <p>The tendon component consists of a tension spring that links the muscle to the appendage and projectile. Movement of the muscle mass is coupled to length changes in the <b>spring</b>, which lies between the muscle mass and the lever that is attached to the projectile. The spring is hookean and exerts force that is proportional to its length, and the spring constant can be specified. Like the muscle, the tendon is constrained to exert force only in tension.</p>
 
     <h3>Appendage</h3>
-    <p>The appendage component consists of a <b>lever</b> that links the tendon to the projectile. The lever is massless and has a variable mechanical advantage as it rotates. The range of mechanical advantage can be specified (as gear ratio) as can the duration over which it changes. Optionally, a gear ratio that is proportional to the position of the projectile can be used, by itself or in combination with the timed change in gearing.</p>
+    <p>The appendage component consists of a <b>lever</b> that links the tendon to the projectile. The lever is massless and has a variable mechanical advantage as it rotates. The range of mechanical advantage can be specified (as gear ratio) as can the duration over which it changes. Optionally, a gear ratio that is proportional to the position of the projectile can be used.</p>
 
     <h3>Latch</h3>
     <p>A <b>latch</b> prevents the lever from rotating as the spring exerts force on the lever; it can be released at a specified time, a specified muscle length, or a specified muscle force, after which the change in mechanical advantage occurs smoothly. A latch that is tripped at time zero, combined with an increasing mechanical advantage can be used to mimic a 'latchless' system.</p>
@@ -138,7 +138,7 @@
       <br>
       <br>
 
-      <b>Latch Time</b>: Start changing leverage at this time unless other conditions are met first, such as a muscle force or muscle length threshold.
+      <b>Latch Time</b>: Start changing leverage at this time unless other conditions are met first, such as a muscle force or muscle length threshold. Will be set to zero if position multiplier is used, below.
       <br>
       <b>Length threshold</b>: Start leverage change when this muscle length is reached, as fraction of muscle L0, unless force or timing threshold is reached first.
       <br>
@@ -146,11 +146,11 @@
       <br>
       <b>Latch duration</b>: Duration of the change in leverage in seconds.
       <br>
-      <b>First gear ratio</b>: Starting gear ratio of leverage change (the reciprocal of mechanical advantage).
+      <b>First gear ratio</b>: Starting gear ratio of leverage change (the reciprocal of mechanical advantage). Will be set to zero if position multiplier is used, below.
       <br>
       <b>Second gear ratio</b>: Ending gear ratio. A value of 1 would be no mechanical advantage.
       <br>
-      <b>Position multiplier</b>: Position multiplier to calculate gear ratio from projectile position. Positive values produce an increasing gear ratio, and negative values a decreasing gear ratio. The resulting gear ratio is added to the timed gearing profile defined above. Set to 0 to use only timed gearing.
+      <b>Position multiplier</b>: Position multiplier to calculate gear ratio from projectile position. Positive values produce an increasing gear ratio, and negative values a decreasing gear ratio. If used, latch time and first gear ratio will not be used, and latch duration will be tiny. Set to 0 to use only timed gearing.
       <br>
       <b>Projectile mass</b>: Mass of the projectile in kg.
       <br>
