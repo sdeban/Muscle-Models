@@ -1,157 +1,157 @@
 <!doctype html>
 <html>
-<!-- Muscle-Spring-Damper-Projectile simulation, called "Muscle Explorer" - 2018 - Stephen M. Deban, Department of Integrative Biology, University of South Florida, Tampa. -->
+<!-- Muscle-Spring-Damper-Projectile simulation, called "Muscle Explorer" - 2019 - Stephen M. Deban, Department of Integrative Biology, University of South Florida, Tampa. -->
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     @media screen and (min-width: 1300px) {
-      /* If the screen is at least 1300 pixels wide, display four items across, ie the controls and three graphs */
-      .graph {
-        float: left;
-        width: 24vw;
-        height: 190px;
+        /* If the screen is at least 1300 pixels wide, display four items across, ie the controls and three graphs */
+        .graph {
+          float: left;
+          width: 24vw;
+          height: 190px;
+        }
+        #graphBlock {
+          float: left;
+          width: 72vw;
+        }
+        #controlBlock {
+          float: left;
+          margin: 4px;
+          margin-top: 0px;
+          padding: 0px;
+          width: 25vw;
+          border: 0px solid #aaaaaa;
+          line-height: 150%;
+          font-size: 100%;
+          font-family: "Lucida Grande", Verdana, Arial, sans-serif;
+        }
       }
-      #graphBlock {
-        float: left;
-        width: 72vw;
+
+      @media screen and (max-width: 1299px) and (min-width: 1020px) {
+        /* Three items across, controls and two graphs */
+        .graph {
+          float: left;
+          width: 33vw;
+          height: 180px;
+        }
+        #graphBlock {
+          float: left;
+          width: 66vw;
+        }
+        #controlBlock {
+          float: left;
+          margin: 4px;
+          margin-top: 0px;
+          padding: 0px;
+          width: 31vw;
+          border: 0px solid #aaaaaa;
+          line-height: 150%;
+          font-size: 100%;
+          font-family: "Lucida Grande", Verdana, Arial, sans-serif;
+        }
       }
-      #controlBlock {
-        float: left;
-        margin: 4px;
-        margin-top: 0px;
-        padding: 0px;
-        width: 25vw;
-        border: 0px solid #aaaaaa;
-        line-height: 150%;
-        font-size: 100%;
+
+      @media screen and (max-width: 1019px) and (min-width: 700px) {
+        /* Two items across, controls or two graphs */
+        .graph {
+          float: left;
+          width: 48vw;
+          height: 180px;
+        }
+        #graphBlock {
+          float: left;
+          width: 96vw;
+        }
+        #controlBlock {
+          float: left;
+          margin: 4px;
+          margin-top: 0px;
+          padding: 0px;
+          width: 98vw;
+          border: 0px solid #aaaaaa;
+          line-height: 150%;
+          font-size: 100%;
+          font-family: "Lucida Grande", Verdana, Arial, sans-serif;
+        }
+        #controlSubBlock {
+          margin: 10px;
+          float: left;
+          width: 46vw;
+        }
+      }
+
+      @media only screen and (max-width: 699px) {
+        /* One item across, controls or one graph */
+        .graph {
+          float: left;
+          width: 100%;
+          height: 50vw;
+        }
+        #graphBlock {
+          float: left;
+          width: 100%;
+        }
+        #controlBlock {
+          float: left;
+          margin: 4px;
+          margin-top: 0px;
+          padding: 0px;
+          width: 100%;
+          border: 0px solid #aaaaaa;
+          line-height: 150%;
+          font-size: 100%;
+          font-family: "Lucida Grande", Verdana, Arial, sans-serif;
+        }
+      }
+
+      .variable {
+        margin-right: 4px;
+        padding: 1px;
+        display: flex;
+      }
+
+      .variable input {
+        flex: 1;
+        margin-left: 5px;
+        color: royalblue;
+        font-size: 1em;
+        width: 4em;
+      }
+
+      .section {
+        font-size: 80%;
+        color: royalblue;
+      }
+
+      #footer {
+        clear: both;
+        padding: 10px;
+        text-align: center;
+        color: #cccccc;
+      }
+
+      a {
+        color: #808080;
+        text-decoration: none;
+        font-style: italic;
+      }
+
+      h1 {
         font-family: "Lucida Grande", Verdana, Arial, sans-serif;
+        font-size: 150%;
+        color: firebrick;
+        margin: 0.3em;
+        margin-left: 0;
       }
-    }
 
-    @media screen and (max-width: 1299px) and (min-width: 1020px) {
-      /* Three items across, controls and two graphs */
-      .graph {
-        float: left;
-        width: 33vw;
-        height: 180px;
+      body {
+        font-family: sans-serif;
+        background-color: #f7f7f7;
       }
-      #graphBlock {
-        float: left;
-        width: 66vw;
-      }
-      #controlBlock {
-        float: left;
-        margin: 4px;
-        margin-top: 0px;
-        padding: 0px;
-        width: 31vw;
-        border: 0px solid #aaaaaa;
-        line-height: 150%;
-        font-size: 100%;
-        font-family: "Lucida Grande", Verdana, Arial, sans-serif;
-      }
-    }
 
-    @media screen and (max-width: 1019px) and (min-width: 700px) {
-      /* Two items across, controls or two graphs */
-      .graph {
-        float: left;
-        width: 48vw;
-        height: 180px;
-      }
-      #graphBlock {
-        float: left;
-        width: 96vw;
-      }
-      #controlBlock {
-        float: left;
-        margin: 4px;
-        margin-top: 0px;
-        padding: 0px;
-        width: 98vw;
-        border: 0px solid #aaaaaa;
-        line-height: 150%;
-        font-size: 100%;
-        font-family: "Lucida Grande", Verdana, Arial, sans-serif;
-      }
-      #controlSubBlock {
-        margin: 10px;
-        float: left;
-        width: 46vw;
-      }
-    }
-
-    @media only screen and (max-width: 699px) {
-      /* One item across, controls or one graph */
-      .graph {
-        float: left;
-        width: 100%;
-        height: 50vw;
-      }
-      #graphBlock {
-        float: left;
-        width: 100%;
-      }
-      #controlBlock {
-        float: left;
-        margin: 4px;
-        margin-top: 0px;
-        padding: 0px;
-        width: 100%;
-        border: 0px solid #aaaaaa;
-        line-height: 150%;
-        font-size: 100%;
-        font-family: "Lucida Grande", Verdana, Arial, sans-serif;
-      }
-    }
-
-    .variable {
-      margin-right: 4px;
-      padding: 1px;
-      display: flex;
-    }
-
-    .variable input {
-      flex: 1;
-      margin-left: 5px;
-      color: royalblue;
-      font-size: 1em;
-      width: 4em;
-    }
-
-    .section {
-      font-size: 80%;
-      color: royalblue;
-    }
-
-    #footer {
-      clear: both;
-      padding: 10px;
-      text-align: center;
-      color: #cccccc;
-    }
-
-    a {
-      color: #808080;
-      text-decoration: none;
-      font-style: italic;
-    }
-
-    h1 {
-      font-family: "Lucida Grande", Verdana, Arial, sans-serif;
-      font-size: 170%;
-      color: firebrick;
-      margin: 0.3em;
-      margin-left: 0;
-    }
-
-    body {
-      font-family: sans-serif;
-      background-color: #f7f7f7;
-    }
-
-  </style>
+    </style>
   <title>Muscle Explorer</title>
 
 </head>
@@ -228,25 +228,28 @@
         <input type="number" id="forceThreshold" value="0.7">
       </div>
       <div class="variable" title="Duration of the change in leverage in seconds.">Latch duration (s):
-        <input type="number" id="durGearChange" value="0.002">
+        <input type="number" id="latchDur" value="0.002">
       </div>
-      <div class="variable" title="Starting gear ratio of leverage change, the reciprocal of mechanical advantage.">Initial gear ratio:
-        <input type="number" id="initGearRatio" value="10000">
+      <div class="variable" title="Starting gear ratio of leverage change, the reciprocal of mechanical advantage.">First gear ratio:
+        <input type="number" id="firstGearRatio" value="10000">
       </div>
-      <div class="variable" title="Ending gear ratio. A value of 1 would be no mechanical advantage.">Final gear ratio:
-        <input type="number" id="finalGearRatio" value="1">
+      <div class="variable" title="Second gear ratio. A value of 1 would be no mechanical advantage.">Second gear ratio:
+        <input type="number" id="secondGearRatio" value="1">
+      </div>
+      <div class="variable" title="Position multiplier to calculate gear ratio from projectile position. Positive values produce an increasing gear ratio, and negative values a decreasing gear ratio. Set to 0 to use only timed gearing, above.">Position multiplier:
+        <input type="number" id="posMult" value="0">
       </div>
       <p></p>
       <b class="section" title="The mass being accelerated by the muscle-spring.">Projectile</b>
       <div class="variable" title="Mass of the projectile in kg.">Projectile mass (kg):
         <input type="number" id="mass" value="1e-04">
       </div>
-      <a href="Instructions.html" target="_blank" title="Open documentation in a new window.">Documentation</a>
-      <p></p>
-      <button title="Apply the settings" onclick="springMass()">Apply values</button>
+      <button title="Apply the settings <enter>" onclick="springMass()">Apply values</button>
       <button title="Download the displayed data as csv file." onclick="downloadFile(allData, 'MusExpData' + (1503000000000 - Date.now()) + '.csv');">Download data</button>
+      <p></p>
+      <a href="Instructions.html" target="_blank" title="Open documentation in a new window.">Documentation</a>
+
     </div>
-    <p></p>
 
   </div>
 
@@ -265,10 +268,10 @@
     <div title="Muscle excitation vs time. Multiplied by the muscle force derived from the length-force and force-velocity curves to ramp up muscle force over time." class="graph" id="chart_11"></div>
     <div title="Muscle relative force (as a fraction of P0) vs length. Both potential (pink) and realized (purple) force-length trajectories are shown for the realized range of lengths." class="graph" id="chart_12"></div>
     <div title="Muscle force vs velocity. Both potential (pink) and realized (purple) force-velocity trajectories are shown for the realized range of velocities." class="graph" id="chart_14"></div>
-    <div title="Gear ratio vs time. The profile prescribed for the changing gear ratio between the spring and projectile. The reciprocal of leverage or mechanical advantage." class="graph" id="chart_15"></div>
+    <div title="Gear ratio vs time. The changing gear ratio between the spring and projectile. The reciprocal of leverage or mechanical advantage." class="graph" id="chart_15"></div>
   </div>
 
-  <div id="footer">Muscle Explorer v0.1, 2018. Stephen M. Deban, Department of Integrative Biology, University of South Florida, Tampa. </div>
+  <div id="footer">Muscle Explorer v0.2, 2019. Stephen M. Deban, Department of Integrative Biology, University of South Florida, Tampa. </div>
 
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script type="text/javascript">
@@ -286,11 +289,9 @@
       'packages': ['corechart']
     }); // Load the corechart package which has line charts and others.
 
-    // TODO: Check if local web storage is supported by browser.
-    // TODO: Use this in the future for saving and loading data.
+    // NOTE: This can check if local web storage is supported by browser. Use this in the future for saving and loading data. Not currently used.
     if (typeof(Storage) != "undefined") {
       // Code for localStorage/sessionStorage.
-      // NOTE: Not currently used.
     } else {
       alert("No Local Web Storage support!")
     }
@@ -302,12 +303,12 @@
       var duration = +document.getElementById("duration").value; // Duration in seconds.
       var steps = +document.getElementById("steps").value * 1000; // Steps in simulation. Value from form times 1000.
       var projectileMass = +document.getElementById("mass").value; // Mass in kg.
-      var springK = +document.getElementById("spring").value; // Tendon spring constant in N/m. Realistic values not known.
+      var springK = +document.getElementById("spring").value; // Spring constant in N/m. Realistic values not known.
       var dampingConstant = +document.getElementById("damper").value; // Damping constant in Ns/m of damper on muscle mass. Damping may reduce fast oscillation of muscle mass.
-      var springL0 = +document.getElementById("springL0").value; // Tendon slack length in m.
+      var springL0 = +document.getElementById("springL0").value; // Spring slack length in m.
       var timeStep = duration / steps; // Size in seconds of time step.
       var time = [];
-      for (var i = 0; i != steps + 1; ++i) time[i] = i * timeStep; // Loop to fill time vector with timesteps to be used in graphing. Numbers will not be precise at 14 decimal places, but it doesn't matter.
+      for (var i = 0; i != steps + 1; ++i) time[i] = i * timeStep; // Loop to fill time vector with timesteps to be used in graphing. Numbers will not be precise at 14 decimal places, but that level of precision is unnecessary.
 
       // Morphological and physiological parameters
       var muscleL0 = +document.getElementById("muscleL0").value; // Muscle resting length in meters.
@@ -320,7 +321,7 @@
       var muscleFraction = +document.getElementById("muscleFraction").value; // Fraction of muscle mass that is modeled as accelerated muscle mass.
       var excitationTime = +document.getElementById("excitationTime").value; // Time for muscle excitation in seconds.
       var excitationRate = 2; // Higher numbers have higher peak rate of excitation. Must be greater than 1.
-
+      var gearChangeRate = 2; // Higher numbers have higher peak rate of gear ratio change. Must be greater than 1. A value of 2 gives the sharpest transition, which other function may rely on!
       // Trial parameters that can change between trials.
 
       // One or more of these conditions can be used to release latch, depending on which if statements in loop are active. The first condition reached will release latch.
@@ -331,9 +332,11 @@
       var indexLatchTripped = 0; // Index latch tripped, to be filled later.
       var timeLatchTripped = 0; // Time latch tripped, to be filled later.
       var gearRatioIndex = 0; // Counter to index gear ratio profile array.
-      var maxGearRatio = +document.getElementById("initGearRatio").value; // Gear ratio at start of trial.
-      var minGearRatio = +document.getElementById("finalGearRatio").value; // Final gear ratio value during launch.
-      var durationGearChange = +document.getElementById("durGearChange").value; // Duration of latch release. Value near time step is effectively instantaneous.
+      // TODO: Change names of gear ratios and pop up comments, as well as descriptions in the text and ms to reflect their new functions.
+      var firstGearRatio = +document.getElementById("firstGearRatio").value; // Gear ratio at start of trial.
+      var secondGearRatio = +document.getElementById("secondGearRatio").value; // End-latch gear ratio value during launch.
+      var latchDuration = +document.getElementById("latchDur").value; // Duration of latch release. Value near time step is effectively instantaneous.
+      var positionMultiplier = +document.getElementById("posMult").value; // Value by which projectile position is multiplied to derive the gear ratio that corresponds to projectile position. Meant to mimic a jointed limb in which the changing mechanical advantage is a function of joint angle.
       var cumulativeWork = 0; // Place to store the cumulative work done by the muscle.
 
       // Define arrays of proper length to fill with values later.
@@ -364,11 +367,11 @@
           force = 0;
         }
         return (force);
-      } // Muscle force-length function
+      } // Muscle force-length function ends
 
-      // Create gear ratio profile
-      gearRatio = time.map(function(i) { // Create a sigmoidal gear ratio profile, starting to change from max to min at time zero over the specified duration. The first value in the Math.pow function determines the steepness of the curve.
-        return (maxGearRatio - minGearRatio) / (1 + Math.pow(2, 10 * -(2 * i - durationGearChange) / -durationGearChange)) + minGearRatio;
+      // Create gear ratio timed profile array
+      gearRatio = time.map(function(i) { // Create a sigmoidal gear ratio profile to be used with timed gearing (not with position-derived gearing), starting to change from max to min at time zero over the specified duration. The first value in the Math.pow function determines the steepness of the curve.
+        return (1.0009765 * firstGearRatio - secondGearRatio) / (1 + Math.pow(gearChangeRate, 10 * -(2 * i - latchDuration) / -latchDuration)) + secondGearRatio; // Contains a fudge factor of 1.0009765 to bring the initial gear ratio closer to that specified.
       })
 
       // First time step in simulation.
@@ -381,10 +384,10 @@
       muscleLength[0] = muscleStartLength; // Starting muscle length in m, set to muscle resting length.
       var muscleVel = [];
       muscleVel[0] = 0; // Starting velocity of muscle shortening in m/s.
-      springLength[0] = springL0; // Starting tendon length in m, set to tendon slack length.
-      projectileVel[0] = 0; // Starting velocity of tongue (projectile) mass in m/s.
-      projectileAcc[0] = 0; // Starting acceleration of tongue (projectile) mass in m/s/s.
-      projectilePos[0] = muscleLength[0] + springLength[0]; // Starting position of tongue projectile is defined as sum of starting muscle and spring lengths.
+      springLength[0] = springL0; // Starting spring length in m, set to slack length.
+      projectileVel[0] = 0; // Starting velocity of projectile mass in m/s.
+      projectileAcc[0] = 0; // Starting acceleration of projectile mass in m/s/s.
+      projectilePos[0] = muscleLength[0] + springLength[0]; // Starting position of projectile is defined as sum of starting muscle and spring lengths.
       var muscleExcForce = time.map(function(i) {
         return exciteMax / (1 + Math.pow(excitationRate, 10 * (-2 * i + excitationTime) / excitationTime));
       }); // Defines entire muscle excitation profile array, ramping up from zero to max defined as exciteMax in a sigmoidal fashion by excitationTime.
@@ -397,7 +400,7 @@
       muscleForce[0] = muscleFVForce[0] * muscleFLForce[0] * muscleExcForce[0] > 0 ?
         muscleFVForce[0] * muscleFLForce[0] * muscleExcForce[0] : 0; // Final muscle force, calculated from muscle length, velocity and excitation at first time step. Constrained to be positive because a muscle cannot push. Positive when muscle is shortening.
       springForce[0] = (springLength[0] - springL0) * springK > 0 ?
-        (springLength[0] - springL0) * springK : 0; // Spring force is calculated from tendon length relative to slack length, and spring constant at current time step, as a Hookean spring: F=kx. F=(current length-slack length)*spring constant. Constrained to be positive or zero because a tendon cannot push. Positive is shortening tendon and projecting tongue mass.
+        (springLength[0] - springL0) * springK : 0; // Spring force is calculated from spring length relative to slack length, and spring constant at current time step, as a Hookean spring: F=kx. F=(current length-slack length)*spring constant. Constrained to be positive or zero because a tendon spring cannot push. Positive is shortening spring and projecting mass.
       musclePower[0] = muscleVel[0] * muscleAcc[0]; // Calculate absolute muscle power.
 
       // Simulation loop: second time step and onward using Runge-Kutta 4th order integration"
@@ -405,17 +408,20 @@
       while (i != steps) { // Loop from 1 (the second step) to number of steps in simulation because arrays start at zero.
         i = i + 1; // Increment index.
 
-        // Calculate first of four parts of Runge-Kutta weighted average. Muscle and projectile mass acceleration, velocity, and position are calculated from muscle and tendon (spring) forces.
+        gearRatio[gearRatioIndex] = gearRatio[gearRatioIndex] + ((projectilePos[0] - projectilePos[i - 1]) * positionMultiplier); // Uses the current position of the projectile relative to its initial position to calculate the addition to the gear ratio, incorporating a multiplier of projectile position.
+
+
+        // Calculate first of four parts of Runge-Kutta weighted average. Muscle and projectile mass acceleration, velocity, and position are calculated from muscle and spring forces.
         var muscleLength1 = muscleLength[i - 1]; // Last position of muscle mass, to be used in Runge-Kutta integration.
-        var muscleVel1 = muscleVel[i - 1]; // Last velocity of muscle shortening, to be used in Runge-Kutta integration
+        var muscleVel1 = muscleVel[i - 1]; // Last velocity of muscle shortening, to be used in Runge-Kutta integration.
         var projectilePos1 = projectilePos[i - 1]; // Last position of projectile mass.
         var projectileVel1 = projectileVel[i - 1]; // Last velocity of projectile mass.
         var springLength1 = springLength[i - 1]; // Last spring length.
         var springForce1 = springForce[i - 1]; // Last spring force to be used in calculation of projectile acceleration.
         var muscleForce1 = muscleForce[i - 1]; // Last muscle force to be used in calculation of muscle acceleration.
         var muscleAcc1 = (muscleForce1 - springForce1 - dampingConstant * muscleVel1) /
-          (muscleMass * muscleFraction); // Muscle mass acceleration is calculated by balance of forces from tendon and muscle in previous time step, using a=F/m: a=(previous muscle force-previous tendon force)/(muscle mass*fraction of muscle mass accelerated). Positive is increasing muscle shortening velocity. Acceleration corresponding to last length and velocity, to be used in Runge-Kutta integration.
-        var projectileAcc1 = springForce1 / projectileMass / gearRatio[gearRatioIndex]; // Projectile mass acceleration is calculated using tendon force divided by gear ratio, as a=F/m: a=previous tendon force/projectile mass/gear ratio. Positive or zero. Positive is increasing projection velocity of projectile.
+          (muscleMass * muscleFraction); // Muscle mass acceleration is calculated by balance of forces from spring and muscle in previous time step, using a=F/m: a=(previous muscle force-previous spring force)/(muscle mass*fraction of muscle mass accelerated). Positive is increasing muscle shortening velocity. Acceleration corresponding to last length and velocity, to be used in Runge-Kutta integration.
+        var projectileAcc1 = springForce1 / projectileMass / gearRatio[gearRatioIndex]; // Projectile mass acceleration is calculated using spring force divided by gear ratio, as a=F/m: a=previous spring force/projectile mass/gear ratio. Positive or zero. Positive is increasing projection velocity of projectile.
 
         // Calculate second of four parts of Runge-Kutta weighted average.
         var muscleLength2 = muscleLength1 + muscleVel1 * timeStep / 2; // Intermediate muscle length estimate to be averaged into final estimate using Runge-Kutta integration.
@@ -431,7 +437,7 @@
         var springForce2 = (springLength2 - springL0) * springK > 0 ?
           (springLength2 - springL0) * springK : 0;
         var muscleAcc2 = (muscleForce2 - springForce2 - dampingConstant * muscleVel2) /
-          (muscleMass * muscleFraction); // Muscle mass acceleration is calculated by balance of forces from tendon and muscle
+          (muscleMass * muscleFraction); // Muscle mass acceleration is calculated by balance of forces from spring and muscle.
         var projectileAcc2 = springForce2 / projectileMass / gearRatio[gearRatioIndex];
 
         // Calculate third of four parts of Runge-Kutta weighted average.
@@ -469,7 +475,7 @@
         // Calculate new positions and velocities by weighted average.
         muscleLength[i] = muscleLength[i - 1] - (muscleVel1 + muscleVel2 * 2 + muscleVel3 * 2 + muscleVel4) *
           timeStep / 6; // Weighted average of four estimates of muscle length, put into vector as definitive muscle length at this time step. Length change is subtracted from old length because muscle is shortening.
-        muscleLength[i] = muscleLength[i] > 0.7 * muscleL0 ? muscleLength[i] : muscleLength[i - 1]; // If muscle strain is greater than specified amount, then previous length is used, to prevent extreme shortening.
+        muscleLength[i] = muscleLength[i] > 0.7 * muscleL0 ? muscleLength[i] : muscleLength[i - 1]; // If muscle strain is greater than specified amount, 70%, then previous length is used, to prevent extreme shortening.
         muscleVel[i] = muscleVel[i - 1] + (muscleAcc1 + muscleAcc2 * 2 + muscleAcc3 * 2 + muscleAcc4) *
           timeStep / 6; // Weighted average of four estimates of muscle velocity, put into vector as definitive muscle velocity at this time step.
         projectilePos[i] = projectilePos[i - 1] - (projectileVel1 + projectileVel2 * 2 + projectileVel3 * 2 + projectileVel4) * timeStep / 6; // Weighted average of four estimates of projectile position, put into vector as definitive position at this time step. Position change is subtracted from old position because spring is shortening.
@@ -483,7 +489,7 @@
         springLength[i] = (projectilePos[i] - muscleLength[i]) > springL0 ?
           (projectilePos[i] - muscleLength[i]) : springL0; // Calculate definitive spring length for this time step, never shorter than springL0.
         springForce[i] = (springLength[i] - springL0) * springK > 0 ?
-          (springLength[i] - springL0) * springK : 0; // Definitive spring force for this time step.
+          (springLength[i] - springL0) * springK : 0; // Definitive spring force for this time step, never negative.
         muscleAcc[i] = (muscleForce[i] - springForce[i] - dampingConstant *
           muscleVel[i]) / (muscleMass * muscleFraction); // Definitive muscle mass acceleration for this time step.
         projectileAcc[i] = springForce[i] / projectileMass / gearRatio[gearRatioIndex]; // Definitive projectile acceleration for this time step.
@@ -508,14 +514,14 @@
             latchTripped = 1; // switch latchTripped from 0 to 1.
           }
         }
-      } // End of main simulation loop.
+      } // End of main simulation 'while' loop.
 
-      // Create final gear ratio vs time for graphing.
+      // Create final gear ratio vs time for graphing and saving.
       var latchPadding = []; // Create array to fill with the first value of the gear ratio.
       var padding = indexLatchTripped; // Number of values to add to padding array.
       while (padding--) latchPadding[padding] = gearRatio[1]; // Fill padding array with first value of gear ratio.
-      var finalGearRatio = latchPadding.concat(gearRatio); // Add padding array to gear ratio array and put in new array.
-      finalGearRatio.length = gearRatio.length; // Trim new array to the length of the original gear ratio array.
+      var secondGearRatio = latchPadding.concat(gearRatio); // Add padding array to gear ratio array and put in new array.
+      secondGearRatio.length = gearRatio.length; // Trim new array to the length of the original gear ratio array.
 
       // Create the chart objects and link them to HTML elements
       {
@@ -632,7 +638,7 @@
       var data15 = new google.visualization.DataTable();
       data15.addColumn('number', '');
       data15.addColumn('number', '');
-      data15.addRows(transpose([shortTime, downSample(finalGearRatio)]));
+      data15.addRows(transpose([shortTime, downSample(secondGearRatio)]));
 
       // Call the draw function on the charts.
       options.title = 'Muscle Length (m)'; // Replace options for any subsequent graphs created.
@@ -689,16 +695,16 @@
       options.hAxis.minValue = 0;
       options.hAxis.maxValue = duration;
       options.vAxis.minValue = 0;
-      options.vAxis.maxValue = maxGearRatio;
+      options.vAxis.maxValue = firstGearRatio;
       chart15.draw(data15, options);
 
       allLabels = ["Time (s)", "Muscle Length (m)", "Muscle Force (N)", "Muscle Velocity (m/s)", "Muscle Power (W)", "Muscle Work (mJ)", "Projectile Position (m)", "Projectile Velocity (m/s)", "Projectile Acceleration (m/s/s)", "Projectile Power (W/kg)", "Spring Length (m)", "Spring Velocity (m/s)", "Muscle Excitation (%)", "Gear Ratio"]; // Collects all variable names to place in header column of data file.
 
       settingLabels = ["Blank", "Duration (s)", "Steps", "Muscle L0 (m)", "Muscle Mass (kg)", "Muscle P0 (N)", "Muscle Vmax (m/s)", "Muscle F-V curvature", "Muscle Initial Length (L0)", "Excitation Duration (s)", "Inertial Mass (muscle mass)", "Damping Constant (N s/m)", "Spring Constant (N/m)", "Spring Slack Length (m)", "Latch Time (s)", "Length Threshold (L0)", "Force Threshold (P0)", "Latch Duration (s)", "Initial Gear Ratio", "Final Gear Ratio", "Projectile Mass (kg)", "Timestep (s)", "Power Ratio", "Excitation Rate", "Time Latch Tripped (s)"];
 
-      allSettings = [duration, steps, muscleL0, muscleMass, muscleP0, muscleVmax, curveFV, muscleStartLength, excitationTime, muscleFraction, dampingConstant, springK, springL0, latchTime, lengthThreshold, forceThreshold, durationGearChange, maxGearRatio, minGearRatio, projectileMass, timeStep, powerRatio, excitationRate, timeLatchTripped]; // Collects all the settings to save to the data file.
+      allSettings = [duration, steps, muscleL0, muscleMass, muscleP0, muscleVmax, curveFV, muscleStartLength, excitationTime, muscleFraction, dampingConstant, springK, springL0, latchTime, lengthThreshold, forceThreshold, latchDuration, firstGearRatio, secondGearRatio, projectileMass, timeStep, powerRatio, excitationRate, timeLatchTripped]; // Collects all the settings to save to the data file.
       allData = [
-        [settingLabels], "\n", [allSettings], "\n", "\n", "\n", [allLabels], "\n", [transpose([time, muscleLength, muscleForce, muscleVel, musclePower, muscleWorkmJ, projectilePos, projectileVel, projectileAcc, projectilePower, springLength, springVel, muscleExcForce, finalGearRatio, endOfRow])]
+        [settingLabels], "\n", [allSettings], "\n", "\n", "\n", [allLabels], "\n", [transpose([time, muscleLength, muscleForce, muscleVel, musclePower, muscleWorkmJ, projectilePos, projectileVel, projectileAcc, projectilePower, springLength, springVel, muscleExcForce, secondGearRatio, endOfRow])]
       ];
 
     } // End of muscleSim function.
