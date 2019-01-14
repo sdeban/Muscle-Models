@@ -219,22 +219,22 @@
       <div class="variable" title="Start changing gearing at this time unless other conditions are met first, such as a muscle force or muscle length threshold. Will be set to zero if position multiplier is used, below.">Latch time (s):
         <input type="number" id="latchTime" value="0.06">
       </div>
-      <div class="variable" title="Start leverage change when this muscle length is reached, as fraction of muscle L0.">Length threshold (L0):
+      <div class="variable" title="Start leverage change when this muscle length is reached, as fraction of muscle L0, unless force or timing threshold is reached first. Will not be used if position multiplier is used, below.">Length threshold (L0):
         <input type="number" id="lengthThreshold" value="0.3">
       </div>
-      <div class="variable" title="Start leverage change at this muscle force, as fraction of muscle P0.">Force threshold (P0):
+      <div class="variable" title="Start leverage change at this muscle force, as fraction of muscle P0, unless length or timing threshold is reached first. Will not be used if position multiplier is used, below.">Force threshold (P0):
         <input type="number" id="forceThreshold" value="0.7">
       </div>
-      <div class="variable" title="Duration of the change in leverage in seconds.">Latch duration (s):
+      <div class="variable" title="Duration of the change in leverage in seconds. Will be set to a miniscule value if position multiplier is used, below.">Latch duration (s):
         <input type="number" id="latchDur" value="0.002">
       </div>
-      <div class="variable" title="Starting gear ratio of leverage change, the reciprocal of mechanical advantage. Will be set to zero if position multiplier is used, below.">First gear ratio:
+      <div class="variable" title="Starting gear ratio of leverage change (the reciprocal of mechanical advantage). Will be set to zero if position multiplier is used, below.">First gear ratio:
         <input type="number" id="firstGearRatio" value="10000">
       </div>
-      <div class="variable" title="Second gear ratio. A value of 1 would be no mechanical advantage.">Second gear ratio:
+      <div class="variable" title="Ending gear ratio. A value of one would be no mechanical advantage. Used as the initial gear ratio if position multiplier is used, below.">Second gear ratio:
         <input type="number" id="secondGearRatio" value="1">
       </div>
-      <div class="variable" title="Position multiplier to calculate gear ratio from projectile position. Positive values produce an increasing gear ratio, and negative values a decreasing gear ratio. If used, latch time and first gear ratio will not be used, and latch duration will be tiny. Set to 0 to use only timed gearing.">Position multiplier:
+      <div class="variable" title="Position multiplier to calculate gear ratio from projectile position. Positive values produce an increasing gear ratio, and negative values a decreasing gear ratio. If used, latch time and first gear ratio will not be used, and latch duration will be miniscule. Set to zero to use only timed gearing.">Position multiplier:
         <input type="number" id="posMult" value="0">
       </div>
       <p></p>
@@ -551,34 +551,34 @@
 
       // Place chart options into an object
       var options = { // Display options, such as line thickness, color, axis settings.
-          backgroundColor: '#f7f7f7',
-          title: ' ',
-          tooltip: {
-            trigger: 'selection',
-          },
-          legend: 'none',
-          lineWidth: 1.8,
-          //
-          chartArea: {
-            backgroundColor: '#ffffff',
-            left: '17%',
-            top: '15%',
-            width: '77%',
-            height: '60%'
-          },
-          fontName: 'Lucida Grande',
-          fontSize: 12,
-          hAxis: {
-            format: '#.####',
-            title: 'Time (s)',
-            minValue: 0,
-            maxValue: duration
-          },
-          vAxis: {
-            format: '#.####'
-          },
-          colors: ['royalblue', 'royalblue'],
-        } // End of chart options
+        backgroundColor: '#f7f7f7',
+        title: ' ',
+        tooltip: {
+          trigger: 'selection',
+        },
+        legend: 'none',
+        lineWidth: 1.8,
+        //
+        chartArea: {
+          backgroundColor: '#ffffff',
+          left: '17%',
+          top: '15%',
+          width: '77%',
+          height: '60%'
+        },
+        fontName: 'Lucida Grande',
+        fontSize: 12,
+        hAxis: {
+          format: '#.####',
+          title: 'Time (s)',
+          minValue: 0,
+          maxValue: duration
+        },
+        vAxis: {
+          format: '#.####'
+        },
+        colors: ['royalblue', 'royalblue'],
+      } // End of chart options
       var shortTime = downSample(time); // downSample the time array for faster graphing.
 
       // Create data arrays for graphs, using transpose fn.
