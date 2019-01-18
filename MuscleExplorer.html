@@ -229,7 +229,7 @@
         <input type="number" id="latchDur" value="0.002">
       </div>
       <div class="variable" title="Starting gear ratio of leverage change (the reciprocal of mechanical advantage). Will be set to zero if position multiplier is used, below.">First gear ratio:
-        <input type="number" id="firstGearRatio" value="10000">
+        <input type="number" id="firstGearRatio" value="10000000">
       </div>
       <div class="variable" title="Ending gear ratio. A value of one would be no mechanical advantage. Used as the initial gear ratio if position multiplier is used, below.">Second gear ratio:
         <input type="number" id="secondGearRatio" value="1">
@@ -551,34 +551,34 @@
 
       // Place chart options into an object
       var options = { // Display options, such as line thickness, color, axis settings.
-        backgroundColor: '#f7f7f7',
-        title: ' ',
-        tooltip: {
-          trigger: 'selection',
-        },
-        legend: 'none',
-        lineWidth: 1.8,
-        //
-        chartArea: {
-          backgroundColor: '#ffffff',
-          left: '17%',
-          top: '15%',
-          width: '77%',
-          height: '60%'
-        },
-        fontName: 'Lucida Grande',
-        fontSize: 12,
-        hAxis: {
-          format: '#.####',
-          title: 'Time (s)',
-          minValue: 0,
-          maxValue: duration
-        },
-        vAxis: {
-          format: '#.####'
-        },
-        colors: ['royalblue', 'royalblue'],
-      } // End of chart options
+          backgroundColor: '#f7f7f7',
+          title: ' ',
+          tooltip: {
+            trigger: 'selection',
+          },
+          legend: 'none',
+          lineWidth: 1.8,
+          //
+          chartArea: {
+            backgroundColor: '#ffffff',
+            left: '17%',
+            top: '15%',
+            width: '77%',
+            height: '60%'
+          },
+          fontName: 'Lucida Grande',
+          fontSize: 12,
+          hAxis: {
+            format: '#.####',
+            title: 'Time (s)',
+            minValue: 0,
+            maxValue: duration
+          },
+          vAxis: {
+            format: '#.####'
+          },
+          colors: ['royalblue', 'royalblue'],
+        } // End of chart options
       var shortTime = downSample(time); // downSample the time array for faster graphing.
 
       // Create data arrays for graphs, using transpose fn.
