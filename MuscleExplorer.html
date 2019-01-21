@@ -185,8 +185,8 @@
       <div class="variable" title="Maximum velocity of unloaded muscle shortening in meters per second.">Muscle Vmax (m/s):
         <input type="number" id="muscleVmax" value="0.3">
       </div>
-      <div class="variable" title="Curvature of force-velocity relation (power ratio). Lower is more curved. Value of 0.111 is about right for frog limb muscle. 0.25 is a straight line.">Muscle F-V curvature:
-        <input type="number" id="powerRatio" value="0.111">
+      <div class="variable" title="Curvature of force-velocity relation (power ratio). Lower is more curved. Value of 0.11 is about right for frog limb muscle. 0.25 is a straight line.">Muscle F-V curvature:
+        <input type="number" id="powerRatio" value="0.11">
       </div>
       <div class="variable" title="Muscle length at start of trial, as fraction of muscle L0.">Muscle init. length (L0):
         <input type="number" id="muscleStartLength" value="1.2">
@@ -313,8 +313,8 @@
       var muscleP0 = +document.getElementById("muscleP0").value; // Muscle isometric force in newtons.
       var muscleVmax = +document.getElementById("muscleVmax").value; // Muscle Vmax in m/s.
       var muscleStartLength = muscleL0 * +document.getElementById("muscleStartLength").value; // Starting length of muscle. Greater than 1.0 will make it start on  descending limb of force-length curve.
-      var powerRatio = +document.getElementById("powerRatio").value; // Curvature of force-velocity relation. Larger values are less curved, with 0.25 a straight line. Value of 0.111 is about what frog limb muscle shows. To convert to and from Marsh and Bennett's power ratio use powerRatio=1/(curveFV+2*Math.sqrt(curveFV+1)+2) and curveFV=(1-2*Math.sqrt(powerRatio))/powerRatio
-      var curveFV = (1 - 2 * Math.sqrt(powerRatio)) / powerRatio; // Convert Marsh and Bennett's power ratio to a scalable curve. Curvature of force-velocity relation. Larger values are more curved, with 0 a straight line. Value of 3 is about what frog limb muscle shows, equivalent to power ratio of 0.111. To convert the other way, use powerRatio=1/(curveFV+2*Math.sqrt(curveFV+1)+2)
+      var powerRatio = +document.getElementById("powerRatio").value; // Curvature of force-velocity relation. Larger values are less curved, with 0.25 a straight line. Value of 0.11 is about what frog limb muscle shows. To convert to and from Marsh and Bennett's power ratio use powerRatio=1/(curveFV+2*Math.sqrt(curveFV+1)+2) and curveFV=(1-2*Math.sqrt(powerRatio))/powerRatio
+      var curveFV = (1 - 2 * Math.sqrt(powerRatio)) / powerRatio; // Convert Marsh and Bennett's power ratio to a scalable curve. Curvature of force-velocity relation. Larger values are more curved, with 0 a straight line. Value of 3 is about what frog limb muscle shows, equivalent to power ratio of 0.11. To convert the other way, use powerRatio=1/(curveFV+2*Math.sqrt(curveFV+1)+2)
       var muscleMass = +document.getElementById("muscleMass").value; // Combined mass of projector muscles in kg. 8e-06 is realistic.
       var muscleFraction = +document.getElementById("muscleFraction").value; // Fraction of muscle mass that is modeled as accelerated muscle mass.
       var excitationTime = +document.getElementById("excitationTime").value; // Time for muscle excitation in seconds.
