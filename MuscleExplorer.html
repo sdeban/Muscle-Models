@@ -257,9 +257,9 @@
     <div title="Muscle velocity vs time. Positive velocity is the muscle shortening." class="graph" id="chart_02"></div>
     <div title="Absolute muscle power vs time, calculated as muscle velocity x muscle force. Not mass-specific power (unless the muscle mass is 1 kg)." class="graph" id="chart_04"></div>
     <div title="Absolute muscle work vs time, calculated as cumulative muscle force x amount of shortening. Not mass specific." class="graph" id="chart_13"></div>
-    <div title="Projectile position vs time." class="graph" id="chart_05"></div>
-    <div title="Projectile velocity vs time." class="graph" id="chart_06"></div>
-    <div title="Projectile acceleration vs time." class="graph" id="chart_07"></div>
+    <div title="Projectile position divided by gear ratio vs time." class="graph" id="chart_05"></div>
+    <div title="Projectile velocity divided by gear ratio vs time." class="graph" id="chart_06"></div>
+    <div title="Projectile acceleration divided by gear ratio vs time." class="graph" id="chart_07"></div>
     <div title="Mass-specific projectile power vs time. Calculated as projectile velocity x acceleration." class="graph" id="chart_08"></div>
     <div title="Spring length vs time. Constrained to be equal to or longer than initial length." class="graph" id="chart_09"></div>
     <div title="Spring velocity vs time. Positive velocity is spring shortening." class="graph" id="chart_10"></div>
@@ -659,13 +659,13 @@
       options.title = 'Muscle Power (mW)';
       options.colors = ['#c91700'];
       chart04.draw(data04, options);
-      options.title = 'Projectile Position (m)';
+      options.title = 'Projectile Position / GR (m)';
       options.colors = ['royalblue'];
       chart05.draw(data05, options);
-      options.title = 'Projectile Velocity (m/s)';
+      options.title = 'Projectile Velocity / GR (m/s)';
       options.colors = ['royalblue'];
       chart06.draw(data06, options);
-      options.title = 'Projectile Acceleration (m/s/s)'; // Remember, these options are inherited by the graphs below.
+      options.title = 'Projectile Acceleration / GR (m/s/s)'; // Remember, these options are inherited by the graphs below.
       options.colors = ['royalblue'];
       chart07.draw(data07, options);
       options.title = 'Projectile Power (W/kg)';
@@ -704,7 +704,7 @@
       options.vAxis.maxValue = firstGearRatio;
       chart15.draw(data15, options);
 
-      allLabels = ["Time (s)", "Muscle Length (m)", "Muscle Force (N)", "Muscle Velocity (m/s)", "Muscle Power (W)", "Muscle Work (mJ)", "Projectile Position (m)", "Projectile Velocity (m/s)", "Projectile Acceleration (m/s/s)", "Projectile Power (W/kg)", "Spring Length (m)", "Spring Velocity (m/s)", "Muscle Excitation (%)", "Gear Ratio"]; // Collects all variable names to place in header column of data file.
+      allLabels = ["Time (s)", "Muscle Length (m)", "Muscle Force (N)", "Muscle Velocity (m/s)", "Muscle Power (W)", "Muscle Work (mJ)", "Projectile Position / GR (m)", "Projectile Velocity / GR (m/s)", "Projectile Acceleration / GR (m/s/s)", "Projectile Power (W/kg)", "Spring Length (m)", "Spring Velocity (m/s)", "Muscle Excitation (%)", "Gear Ratio"]; // Collects all variable names to place in header column of data file.
 
       settingLabels = ["Blank", "Duration (s)", "Steps", "Muscle L0 (m)", "Muscle Mass (kg)", "Muscle P0 (N)", "Muscle Vmax (m/s)", "Muscle F-V curvature", "Muscle Initial Length (L0)", "Excitation Duration (s)", "Inertial Mass (muscle mass)", "Damping Constant (N s/m)", "Spring Constant (N/m)", "Spring Slack Length (m)", "Latch Time (s)", "Length Threshold (L0)", "Force Threshold (P0)", "Latch Duration (s)", "First Gear Ratio", "Second Gear Ratio", "Position Multiplier", "Projectile Mass (kg)", "Timestep (s)", "Power Ratio", "Excitation Rate", "Time Latch Tripped (s)"];
 
@@ -766,7 +766,6 @@
     }
 
     // NOTE: To find the maximum value of array: Math.max.apply(Math, arrayName); [Math.max(arrayName); will not work!].
-
   </script>
 
 </body>
