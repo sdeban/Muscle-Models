@@ -260,7 +260,7 @@
     <div title="Projectile position divided by gear ratio vs time." class="graph" id="chart_05"></div>
     <div title="Projectile velocity divided by gear ratio vs time." class="graph" id="chart_06"></div>
     <div title="Projectile acceleration divided by gear ratio vs time." class="graph" id="chart_07"></div>
-    <div title="Mass-specific projectile power vs time. Calculated as projectile velocity x acceleration." class="graph" id="chart_08"></div>
+    <div title="Mass-specific projectile power divided by gear ratio squared vs time. Calculated as projectile velocity x acceleration." class="graph" id="chart_08"></div>
     <div title="Spring length vs time. Constrained to be equal to or longer than initial length." class="graph" id="chart_09"></div>
     <div title="Spring velocity vs time. Positive velocity is spring shortening." class="graph" id="chart_10"></div>
     <div title="Muscle excitation vs time. Multiplied by the muscle force derived from the length-force and force-velocity curves to ramp up muscle force over time." class="graph" id="chart_11"></div>
@@ -415,7 +415,7 @@
       while (i != steps) { // Loop from 1 (the second step) to number of steps in simulation because arrays start at zero.
         i = i + 1; // Increment index.
 
-        gearRatio[gearRatioIndex] = gearRatio[gearRatioIndex] + ((projectilePos[0] - projectilePos[i - 1]) * positionMultiplier); // Uses the current position of the projectile relative to its initial position to calculate the addition to the gear ratio, incorporating a multiplier of projectile position.
+        gearRatio[gearRatioIndex] = gearRatio[gearRatioIndex] + (projectilePos[0] - projectilePos[i - 1]) * positionMultiplier; // Uses the current position of the projectile relative to its initial position to calculate the addition to the gear ratio, incorporating a multiplier of projectile position.
 
         // Calculate first of four parts of Runge-Kutta weighted average. Muscle and projectile mass acceleration, velocity, and position are calculated from muscle and spring forces.
         var muscleLength1 = muscleLength[i - 1]; // Last position of muscle mass, to be used in Runge-Kutta integration.
@@ -668,7 +668,7 @@
       options.title = 'Projectile Acceleration / GR (m/s/s)'; // Remember, these options are inherited by the graphs below.
       options.colors = ['royalblue'];
       chart07.draw(data07, options);
-      options.title = 'Projectile Power (W/kg)';
+      options.title = 'Projectile Power / GR^2 (W/kg)';
       options.colors = ['royalblue'];
       chart08.draw(data08, options);
       options.title = 'Spring Length (m)';
@@ -766,6 +766,7 @@
     }
 
     // NOTE: To find the maximum value of array: Math.max.apply(Math, arrayName); [Math.max(arrayName); will not work!].
+
   </script>
 
 </body>
